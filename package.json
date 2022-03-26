@@ -1,0 +1,23 @@
+{
+  "name": "learnchinese",
+  "version": "1.0.0",
+  "description": "Tools for imersion learning",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chinesereadingtools/makingFlashcards.git"
+  },
+  "author": "David Langevin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chinesereadingtools/makingFlashcards/issues"
+  },
+  "homepage": "https://github.com/chinesereadingtools/makingFlashcards#readme",
+  "dependencies": {
+    "express": "^4.17.3",
+    "pug": "^3.0.2"
+  }
+}

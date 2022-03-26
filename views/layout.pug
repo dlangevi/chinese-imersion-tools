@@ -1,0 +1,44 @@
+doctype html
+
+block config
+  - var pageTitle = "Page Title"
+
+html(lang='en')
+
+    head
+
+      title Learning Chinese
+      script(src='https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js')
+      link(rel='stylesheet',
+      href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css")
+      link(rel='stylesheet',
+      href="https://unpkg.com/ag-grid-community/dist/styles/ag-theme-balham-dark.css")
+      link(rel="stylesheet" type="text/css" href="www/css/shared.css")
+      link(rel="stylesheet" type="text/css" href="www/css/spinner.css")
+
+      script(src='www/js/agFilters.js')
+      script(src='www/js/agRenderers.js')
+      script(src='www/js/spinner.js')
+
+    body(class=bodyClass)
+
+      #loader
+      .wrapper
+        #layoutTopnav This is the top bar
+        #layoutSidenav
+            
+            #layoutSidenav_nav
+              a(href='library') Book Library 
+              br
+              a(href='booklists') Manage Book Lists
+              br
+              a(href='stats') Learning Stats
+
+            #layoutSidenav_content
+                
+                .content
+                main
+                    block content 
+                footer 
+                  p Copyright &copy; 2022
+

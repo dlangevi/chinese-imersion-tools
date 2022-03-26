@@ -1,0 +1,225 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+  background-color: #202020;
+  color: rgba(245, 245, 245, 0.64);
+  color-scheme: dark;
+}
+
+div {
+  border: 0.1em solid #FFFFFF;
+  border-radius: 0.12em;
+
+}
+
+#migaku-toolbar-container {
+  display: none;
+}
+
+#sentenceGrid {
+  font-size: 25px;
+
+}
+
+#wordGrid,
+#docWordGrid,
+#charGrid,
+#docCharGrid {
+  font-size: 30px;
+}
+
+.statsTable {
+  margin: 20px;
+  text-align: left;
+}
+
+
+.leftBar {
+  display: inline;
+  float: right;
+  margin: 20px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.title {
+  text-align: center;
+  font-size: 30px;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  height: 100%;
+  width: 100%;
+}
+
+#layoutSidenav {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  height: 100%;
+  width: 100%;
+}
+
+#layoutSidenav_nav {
+  flex: 0 1 auto;
+  width: 60px;
+  height: 100%;
+}
+
+#layoutSidenav_content {
+  flex: 1 1 auto;
+  height: 100%;
+}
+
+.wrapper .header {
+  flex: 0 1 auto;
+}
+
+.wrapper .tabs {
+  flex: 0 1 auto;
+}
+
+.wrapper .content {
+  display: flex;
+  flex-flow: column;
+  flex: 1 1 auto;
+  overflow-y: auto;
+}
+
+.myGrid {
+  height: 500px;
+}
+
+#stats {
+  display: inline;
+  float: left;
+}
+
+#wordStats {
+  display: inline;
+  float: right;
+}
+
+.titledGrid {
+  display: inline-flex;
+  flex-direction: column;
+  height: 100%;
+  width: 40%;
+}
+
+.titledGrid.narrow {
+  display: inline-flex;
+  flex-direction: column;
+  height: 100%;
+  width: 20%;
+}
+
+.nestedGrid {
+  display: inline-block;
+  height: 100%;
+}
+
+.wrapper .content-row {
+  height: 100%;
+}
+
+.tabcontent {
+  width: 100%;
+}
+
+.wrapper .footer {
+  flex: 0 1 40px;
+}
+
+
+button {
+  background-color: #6712a7;
+  padding: 0.35em 1.2em;
+  margin: 0 0.3em 0.3em 0;
+}
+
+select {
+  font-size: 20px;
+}
+
+button,
+select {
+  display: inline-block;
+  border: 0.1em solid #FFFFFF;
+  border-radius: 0.12em;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300;
+  color: #FFFFFF;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+button:hover {
+  color: #000000;
+  background-color: #FFFFFF;
+}
+
+@media all and (max-width:30em) {
+  button {
+    display: block;
+    margin: 0.4em auto;
+  }
+}
+
+.centered {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.markLearned {
+  margin: 0;
+  font-weight: 900;
+  background-color: #d91a1a;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-weight: 900;
+  padding: 0;
+  border-radius: 10px;
+  height: 20px;
+  width: 20px;
+}
+
+.loadButtons {
+  display: inline;
+  margin: 0.4em;
+  float: right;
+
+}
+
+button.markLearned:hover {
+  background-color: #18a30f;
+}
+
+
+button.tab {
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 7px 10px;
+  margin: 5px 0 0 0;
+  width: 180px;
+  transition: 0.3s;
+  font-size: 17px;
+  border-radius: 15px 15px 0px 0px;
+
+}
+
+button.active.tab {
+  background-color: #ccc;
+
+}
