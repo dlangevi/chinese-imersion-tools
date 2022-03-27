@@ -52,6 +52,17 @@ nav(class=['sb-sidenav', 'accordion'] class=sidenavStyle)#sidenavAccordion
                             a.nav-link(href='401.html') 401 Page
                             a.nav-link(href='404.html') 404 Page
                             a.nav-link(href='500.html') 500 Page
+
+            a.nav-link.collapsed(href='#', data-bs-toggle='collapse' data-bs-target='#collapseLibrary' aria-expanded='false' aria-controls='collapseLibrary')
+                .sb-nav-link-icon
+                    i.fas.fa-columns
+                | Library
+                .sb-sidenav-collapse-arrow
+                    i.fas.fa-angle-down
+            #collapseLibrary.collapse(aria-labelledby='headingOne', data-bs-parent='#sidenavAccordion')
+                nav.sb-sidenav-menu-nested.nav
+                    a.nav-link(href='library.html') Static Navigation
+                    a.nav-link(href='layout-sidenav-light.html') Light Sidenav
                             
             .sb-sidenav-menu-heading
                 | Addons

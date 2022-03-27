@@ -4,7 +4,7 @@
   "description": "Tools for imersion learning",
   "main": "app.js",
   "scripts": {
-    "start": "npm run build && node scripts/start.js",
+    "start": "node scripts/start.js",
     "build": "npm run clean && npm run build:pug && npm run build:scss && npm run build:scripts && npm run build:assets",
     "build:assets": "node scripts/build-assets.js",
     "build:pug": "node scripts/build-pug.js",

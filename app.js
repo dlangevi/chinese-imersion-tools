@@ -6,8 +6,7 @@ const bodyParser = require('body-parser')
 // Init App
 const app = express();
 
-app.use(express.static('./'))
-app.use(express.static('www/'))
+app.use(express.static('dist/'))
 app.use(bodyParser.json())
 
 // Load View Engine
