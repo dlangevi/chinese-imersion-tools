@@ -11,6 +11,7 @@ const bodyParser = require('body-parser')
 const app = express();
 
 app.use(express.static('dist/'))
+app.use(express.static('node_modules/ag-grid-community/dist/'))
 
 app.use(bodyParser.json())
 

@@ -3,7 +3,11 @@ async function main() {
   new agGrid.Grid(eGridDiv, Tables.sentences)
 
   Tables.sentences.columnApi.sizeColumnsToFit(eGridDiv.offsetWidth - 40)
+  ObserveTable('#sentenceGrid', Tables.sentences)
 
+
+  await loadFileList();
+  await loadFile()
 
   document.querySelector('#toggleButton').addEventListener('click',
     toggleMigakuContainer);
@@ -16,8 +20,6 @@ async function main() {
 
   document.querySelector('#jsonFiles').addEventListener('change',
     () => loadFile(false));
-  await loadFileList();
-  return
 
   document.querySelector('#loadAll').addEventListener('click',
     () => loadFile(false));
@@ -25,77 +27,13 @@ async function main() {
     () => loadFile(true));
   document.querySelector('#showfavorite').addEventListener('click',
     loadFavorites);
-  document.querySelector('#showKnown').addEventListener('click',
-    () => {
-      const filter = Tables.docWords.api.getFilterInstance('isKnown')
-      filter.setModel({
-        state: 'known'
-      })
-    });
-  document.querySelector('#showUnknown').addEventListener('click',
-    () => {
-      const filter = Tables.docWords.api.getFilterInstance('isKnown')
-      filter.setModel({
-        state: 'unknown'
-      })
-    }
-  );
-  document.querySelector('#showKnownChar').addEventListener('click',
-    () => {
-      const filter = Tables.docChars.api.getFilterInstance('isKnown')
-      filter.setModel({
-        state: 'known'
-      })
-    });
-  document.querySelector('#showUnknownChar').addEventListener('click',
-    () => {
-      const filter = Tables.docChars.api.getFilterInstance('isKnown')
-      filter.setModel({
-        state: 'unknown'
-      })
-    }
-  );
 
-  document.querySelectorAll('.tablinks').forEach((target) => {
-    target.addEventListener('click',
-      (event) => openGrid(target)
-    )
-  });
-
-  document.getElementById("defaultTab").click();
-
-  await loadFile()
-  await loadKnownWords()
   setTimeout(() => {
       migakuParse()
     },
     3000);
 
 }
-
-function openGrid(button) {
-  // Declare all variables
-  var gridName = button.getAttribute('target')
-  var i, tabcontent, tablinks;
-  // Get all elements with class="tabcontent" and hide them
-  tabcontent = document.getElementsByClassName("tabcontent");
-  for (i = 0; i < tabcontent.length; i++) {
-    tabcontent[i].style.display = "none";
-  }
-
-  // Get all elements with class="tablinks" and remove the class "active"
-  tablinks = document.getElementsByClassName("tablinks");
-  for (i = 0; i < tablinks.length; i++) {
-    tablinks[i].className = tablinks[i].className.replace(" active", "");
-  }
-
-  // Show the current tab, and add an "active" class to the button that opened the tab
-  var contents = document.getElementById(gridName)
-  document.getElementById(gridName).style.display = "";
-  button.className += " active";
-  migakuParse();
-}
-
 
 async function exportWords(rows) {
   withLoader(async () => {
@@ -188,29 +126,6 @@ async function ankiLoad() {
     let data = await response.json();
     console.log(data);
   });
-}
-
-async function loadKnownWords() {
-  let response = await fetch("/getKnownWords", {
-    method: 'POST',
-    headers: {
-      'Content-Type': "application/json;charset=utf-8"
-    },
-    body: JSON.stringify({})
-  });
-  let data = await response.json();
-
-  var words = data.words;
-  var chars = data.chars;
-
-  Tables.otherStats = data;
-
-  Tables.words.data = words;
-  Tables.words.api.setRowData(words);
-  Tables.chars.data = chars;
-  Tables.chars.api.setRowData(chars);
-  reCalcWordStats();
-
 }
 
 async function loadFile(wellKnown = false) {

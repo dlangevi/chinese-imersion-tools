@@ -1,4 +1,8 @@
 
+#migaku-toolbar-container {
+  display: none;
+}
+
 .wrapper {
   display: flex;
   flex-direction: column;
@@ -7,30 +11,11 @@
   width: 100%;
 }
 
-#layoutTopnav {
-  height: 50px;
-  background-color: #4e88d2;
-}
 
-#layoutSidenav {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  height: 100%;
-  width: 100%;
-}
+#sentenceGrid {
+  font-size: 25px;
+  min-height: 200px;
 
-#layoutSidenav_nav {
-  flex: 0 1 auto;
-  width: 150px;
-  height: 100%;
-  background-color: #4e887a;
-}
-
-#layoutSidenav_content {
-  flex: 1 1 auto;
-  height: 100%;
-  margin: 0 0  0 10px;
 }
 
 .myGrid {
@@ -42,4 +27,21 @@
   flex-direction: column;
   height: 100%;
   width: 40%;
+}
+
+
+.bg-purple {
+  background: rgb(48, 0, 50);
+}
+
+.bg-gray {
+  background: rgb(74, 74, 74);
+}
+
+.bg-blue {
+  background: rgb(50, 101, 196);
+}
+
+.bg-red {
+  background: rgb(196, 50, 53);
 }

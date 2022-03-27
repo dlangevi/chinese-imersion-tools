@@ -7,14 +7,24 @@ block config
 
 block content
 
-  .container-fluid.px-4
+  .container-fluid.h-100
+    .d-flex.flex-column.h-100
       include includes/page-header.pug
-      button#toggleButton Toggle Migaku
-      button#parseButton Migaku Parse
-      button#syncButton Sync Anki
-      button#saveProgress Save Progress
-      select#jsonFiles
-      div(id='sentenceGrid' class='ag-theme-balham-dark myGrid')
+      .row
+        .col-8
+          button#toggleButton.btn.btn-primary Toggle Migaku
+          button#parseButton.btn.btn-primary Migaku Parse
+          button#syncButton.btn.btn-primary Sync Anki
+          button#saveProgress.btn.btn-primary Save Progress
+          button#loadAll.btn.btn-primary Load all
+          button#loadKnown.btn.btn-primary Load well known
+          button#showfavorite.btn.btn-primary Show Favorites
+
+        .col-4
+          select#jsonFiles.form-select
+
+      .row.flex-grow-1
+        #sentenceGrid.ag-theme-material
 
 append scripts
     script(src='js/tableDefn.js')

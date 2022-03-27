@@ -10,25 +10,25 @@ block content
   .container-fluid.px-4
       include includes/page-header.pug
       .row
-        .col-xl-6
+        .col-xl-5
             .card.mb-4
               .card-header
                 | All Books
               .card-body
-                div(id='bookList' class='ag-theme-balham-dark myGrid')
+                div(id='bookList' class='ag-theme-material myGrid')
 
-        .col-xl-6
+        .col-xl-5
             .card.mb-4
               .card-header
                 | My Books
+                select(id="myBookLists" name="Files")
               .card-body
-                select(style="margin-top: 5px;" id="myBookLists" name="Files")
-                div(id='myBookList' class='ag-theme-balham-dark myGrid')
-      .row
-        #buttons
-          button#addList New List
-          button#deleteList Delete List
-          button#saveList Save List
+                div(id='myBookList' class='ag-theme-material myGrid')
+        .col-xl-2
+            #buttons
+              button#addList New List
+              button#deleteList Delete List
+              button#saveList Save List
 
 append scripts
     script(src='js/library.js')

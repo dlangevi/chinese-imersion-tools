@@ -11,7 +11,7 @@ html(lang='en')
         include includes/head/title.pug
         include includes/head/css.pug
         include includes/head/icons.pug
-        script(src='https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js')
+        script(src='ag-grid-community.min.noStyle.js')
         script(src='js/shared.js')
         script(src='js/agFilters.js')
         script(src='js/agRenderers.js')
@@ -29,11 +29,8 @@ html(lang='en')
 
             #layoutSidenav_content
                 
-                #loader
-                main
-
+                main.h-100
                     block content
-                    
-                include includes/footer.pug
+
 
         include includes/scripts.pug

@@ -4,8 +4,11 @@ async function main() {
   var wGridDiv = document.querySelector('#myBookList')
   new agGrid.Grid(wGridDiv, Tables.myBookList)
 
+
   Tables.bookList.columnApi.sizeColumnsToFit(eGridDiv.offsetWidth - 40)
   Tables.myBookList.columnApi.sizeColumnsToFit(wGridDiv.offsetWidth)
+  ObserveTable('#bookList', Tables.bookList)
+  ObserveTable('#myBookList', Tables.myBookList)
 
   var dropZoneParams = Tables.myBookList.api.getRowDropZoneParams();
   Tables.bookList.api.addRowDropZone(dropZoneParams);
