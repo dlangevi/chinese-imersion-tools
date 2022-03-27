@@ -103,16 +103,11 @@ async function loadListList() {
 async function loadListContents() {
   var selector = document.querySelector('#myBookLists');
   var currentList = selector.value;
-  let response = await fetch("/loadlist", {
-    method: 'POST',
-    headers: {
-      'Content-Type': "application/json;charset=utf-8"
-    },
-    body: JSON.stringify({
-      title: currentList,
-    })
+  let response = await post("/loadlist", {
+    title: currentList,
   });
-  let data = await response.json()
+
+  let data = await response.json();
   Tables.myBookList.api.setRowData(data);
 }
 

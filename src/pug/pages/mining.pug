@@ -1,0 +1,21 @@
+extends ../layouts/dashboard.pug
+
+block config
+    - var bodyClass = 'sb-nav-fixed'
+    - var pageTitle = 'Mining'
+    - var sidenavStyle = 'sb-sidenav-dark'
+
+block content
+
+  .container-fluid.px-4
+      include includes/page-header.pug
+      button#toggleButton Toggle Migaku
+      button#parseButton Migaku Parse
+      button#syncButton Sync Anki
+      button#saveProgress Save Progress
+      select#jsonFiles
+      div(id='sentenceGrid' class='ag-theme-balham-dark myGrid')
+
+append scripts
+    script(src='js/tableDefn.js')
+    script(src='js/mining.js')

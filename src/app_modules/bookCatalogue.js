@@ -34,34 +34,8 @@ module.exports = {
   listFavorites: () => {
     return listCustomList('favorites')
   },
-  allBookData: () => {
-    books = loadBooks()
-    return Object.values(books).map(book => {
-      var document = new documentStats.Document(book.segmentedText);
-      var stats = document.documentStats()
-      return {
-        author: book.author,
-        title: book.title,
-        words: stats.totalWords,
-        percent: stats.currentKnown.toFixed(2)
-      }
-    });
-  },
-  loadList: (listname) => {
-    books = loadBooks()
-    var ourBooks = listCustomList(listname)
-    return ourBooks.map(bookKey => {
-      var book = books[bookKey]
-      var document = new documentStats.Document(book.segmentedText);
-      var stats = document.documentStats()
-      return {
-        author: book.author,
-        title: book.title,
-        words: stats.totalWords,
-        percent: stats.currentKnown.toFixed(2)
-      }
-    });
-  },
+  allBookData: () => {},
+  loadList: (listname) => {},
   saveList: (listname, data) => {
     lists[listname] = data;
     fs.writeFileSync(listsFile, JSON.stringify(lists));
@@ -70,8 +44,53 @@ module.exports = {
     delete lists[listname];
     fs.writeFileSync(listsFile, JSON.stringify(lists));
   },
-  listList: () => {
-    return Object.keys(lists);
-  }
+  register: (app) => {
+    // Sentences
+    app.get("/filelist", (req, res, next) => {
+      books = loadBooks()
+      res.json(Object.keys(books));
+    });
 
+    // Library
+    app.get("/filelistdata", (req, res, next) => {
+      books = loadBooks()
+      var bookData = Object.values(books).map(book => {
+        var document = new documentStats.Document(book
+          .segmentedText);
+        var stats = document.documentStats()
+        return {
+          author: book.author,
+          title: book.title,
+          words: stats.totalWords,
+          percent: stats.currentKnown.toFixed(2)
+        }
+      });
+      res.json(bookData);
+    });
+
+    app.get("/listlist", (req, res, next) => {
+      res.json(Object.keys(lists));
+    });
+
+    app.post("/loadlist", (req, res, next) => {
+      var listname = req.body.title;
+      books = loadBooks()
+      var ourBooks = listCustomList(listname)
+      var listcts = ourBooks.map(bookKey => {
+        var book = books[bookKey]
+        var document = new documentStats.Document(book
+          .segmentedText);
+        var stats = document.documentStats()
+        return {
+          author: book.author,
+          title: book.title,
+          words: stats.totalWords,
+          percent: stats.currentKnown.toFixed(2)
+        }
+      });
+      res.json(listcts);
+    });
+
+
+  }
 }

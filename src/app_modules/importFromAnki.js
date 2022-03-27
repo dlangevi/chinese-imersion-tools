@@ -3,6 +3,7 @@
 const fetch = (...args) => import('node-fetch').then(({
   default: fetch
 }) => fetch(...args));
+const knownWords = require("./knownWords.js")
 
 const fs = require('fs/promises')
 const fsSync = require('fs')
@@ -59,6 +60,15 @@ async function exportAnkiKeywords() {
 }
 
 module.exports = {
-  exportAnkiKeywords: () => exportAnkiKeywords()
-
+  exportAnkiKeywords: () => exportAnkiKeywords(),
+  register: (app) => {
+    app.get("/loadAnki", (req, res, next) => {
+      exportAnkiKeywords().then(ankiObject => {
+        knownWords.mergeWords(ankiObject);
+        res.json({
+          success: 1
+        })
+      });
+    });
+  }
 }
