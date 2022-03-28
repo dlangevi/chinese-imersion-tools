@@ -3,8 +3,9 @@ class MarkLearnedRenderer {
   init(params) {
     this.eGui = document.createElement('i');
     this.eGui.classList.add('markLearned');
-    this.eGui.classList.add('far');
-    this.eGui.classList.add('fa-check-circle');
+    // Turns out those svgs really slow down the site
+    //this.eGui.classList.add('far');
+    //this.eGui.classList.add('fa-check-circle');
     this.eventListener = () => {
       var row = params.node
       var rowData = params.node.data
