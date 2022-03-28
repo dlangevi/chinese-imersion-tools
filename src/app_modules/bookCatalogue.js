@@ -48,6 +48,7 @@ module.exports = {
       res.json(Object.keys(books));
     });
 
+    // Load Favorites
     app.get("/favfilelist", (req, res, next) => {
       res.json(listCustomList('favorites'))
     });

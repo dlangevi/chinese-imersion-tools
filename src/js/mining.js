@@ -39,22 +39,12 @@ async function exportWords(rows) {
       })
     });
     let obj = await contents.json()
-    Tables.words.data = obj.words;
-    Tables.words.api.setRowData(obj.words);
-    reCalcWordStats();
-
     console.log(
       `Exported words ${words.join(',')} now know ${obj.totalWords} total words`
     )
   });
 }
 
-
-async function withLoader(fn) {
-  showLoader();
-  await fn();
-  finishLoader();
-}
 
 
 async function loadFileList() {
