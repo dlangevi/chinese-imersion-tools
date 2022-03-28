@@ -162,7 +162,7 @@ myBookListCols = [{
     field: 'removeBook',
     width: 50,
     cellRenderer: RemoveBookRenderer,
-    resizeable: false,
+    resizable: false,
   },
 
 ]

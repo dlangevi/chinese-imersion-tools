@@ -8,7 +8,14 @@ block config
 block content
 
   .container-fluid.px-4
-      include includes/page-header.pug
+      .row
+        .col-6
+          include includes/page-header.pug
+        .col-6.mt-auto.mb-4
+          button#addList.btn.btn-primary New List
+          button#deleteList.btn.btn-primary Delete List
+          button#saveList.btn.btn-primary Save List
+
       .row
         .col-xl-5
             .card.mb-4
@@ -24,11 +31,7 @@ block content
                 select(id="myBookLists" name="Files")
               .card-body
                 div(id='myBookList' class='ag-theme-material myGrid')
-        .col-xl-2
-            #buttons
-              button#addList New List
-              button#deleteList Delete List
-              button#saveList Save List
 
 append scripts
     script(src='js/library.js')
+
