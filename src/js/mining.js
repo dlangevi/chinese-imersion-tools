@@ -70,7 +70,6 @@ async function loadFileList() {
   });
 
   var savedFile = localStorage.getItem('ch|loadFile');
-  console.log(savedFile)
   if (savedFile) {
     var fileSelector = document.querySelector('#jsonFiles');
     fileSelector.value = savedFile
@@ -89,7 +88,6 @@ async function loadFavorites() {
     opt.innerHTML = title;
     fileSelector.appendChild(opt);
   });
-
 }
 
 

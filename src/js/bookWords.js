@@ -38,6 +38,11 @@ async function loadFileList() {
     opt.innerHTML = title;
     fileSelector.appendChild(opt);
   });
+  var savedFile = localStorage.getItem('ch|loadFile');
+  if (savedFile) {
+    var fileSelector = document.querySelector('#jsonFiles');
+    fileSelector.value = savedFile
+  }
   return
 }
 
@@ -45,6 +50,7 @@ async function loadFile(wellKnown = false) {
 
   var fileSelector = document.querySelector('#jsonFiles');
 
+  localStorage.setItem('ch|loadFile', fileSelector.value);
   let response = await fetch("/loadfile", {
     method: 'POST',
     headers: {

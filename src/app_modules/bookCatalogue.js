@@ -31,9 +31,6 @@ module.exports = {
   },
   getPath: bookName => books[bookName].segmentedText,
   listCustomList: listCustomList,
-  listFavorites: () => {
-    return listCustomList('favorites')
-  },
   allBookData: () => {},
   loadList: (listname) => {},
   saveList: (listname, data) => {
@@ -49,6 +46,10 @@ module.exports = {
     app.get("/filelist", (req, res, next) => {
       books = loadBooks()
       res.json(Object.keys(books));
+    });
+
+    app.get("/favfilelist", (req, res, next) => {
+      res.json(listCustomList('favorites'))
     });
 
     // Library
