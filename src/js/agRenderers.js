@@ -1,11 +1,13 @@
 class MarkLearnedRenderer {
   // init method gets the details of the cell to be renderer
   init(params) {
-    this.eGui = document.createElement('i');
+    this.eGui = document.createElement('img');
+    this.eGui.setAttribute('src', 'assets/img/circle-check.svg');
     this.eGui.classList.add('markLearned');
     // Turns out those svgs really slow down the site
     //this.eGui.classList.add('far');
     //this.eGui.classList.add('fa-check-circle');
+    //
     this.eventListener = () => {
       var row = params.node
       var rowData = params.node.data
@@ -16,7 +18,7 @@ class MarkLearnedRenderer {
       const filterInstance = Tables.sentences.api.getFilterInstance(
         'word');
       filterInstance.addWord(rowData.word);
-      reCalcWordStats();
+      // reCalcWordStats();
     }
     this.eGui.addEventListener('click', this.eventListener);
   }
@@ -33,12 +35,14 @@ class MarkLearnedRenderer {
 class RemoveBookRenderer {
   // init method gets the details of the cell to be renderer
   init(params) {
-    this.eGui = document.createElement('button');
-    this.eGui.innerHTML = 'x';
+    this.eGui = document.createElement('img');
+    this.eGui.setAttribute('src', 'assets/img/circle-check.svg');
     this.eGui.classList.add('markLearned');
     this.eventListener = () => {
       Tables.myBookList.api.applyTransaction({
-        remove:[{'title': params.node.id}]
+        remove: [{
+          'title': params.node.id
+        }]
       });
     }
     this.eGui.addEventListener('click', this.eventListener);
