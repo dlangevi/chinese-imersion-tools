@@ -115,22 +115,6 @@ async function loadListContents() {
 }
 
 
-// Prevent migaku empty spans from messing stuff up
-const observer = new MutationObserver(mutations_list => {
-  mutations_list.forEach(mutation => {
-    mutation.addedNodes.forEach(added_node => {
-      if (added_node.innerText == '' && added_node.nodeName ==
-        'SPAN') {
-        added_node.remove()
-      }
-    });
-  });
-});
-observer.observe(document.querySelector('body'), {
-  subtree: true,
-  childList: true
-});
-
 bookListCols = [{
     headerName: 'Title',
     field: 'title',

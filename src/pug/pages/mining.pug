@@ -7,15 +7,26 @@ block config
 
 block content
 
-  .container-fluid.h-100
+  .container-fluid.h-100.px-4
     .d-flex.flex-column.h-100
-      include includes/page-header.pug
+      .row
+        .col-6
+          h1.mt-4.me-auto #{pageTitle}
+        .col-6
+          #stats
+            div Total number of unknown words in 1T sentences:
+              span#oneTwords 
+              |(Currently know 
+              span#known
+              |p of the book)
+            div Total number of occurances covered: 
+              span#occurances
+              |(
+              span#percent 
+              |p of the total book)
+
       .row
         .col-8
-          button#toggleButton.btn.btn-primary Toggle Migaku
-          button#parseButton.btn.btn-primary Migaku Parse
-          button#syncButton.btn.btn-primary Sync Anki
-          button#saveProgress.btn.btn-primary Save Progress
           button#loadAll.btn.btn-primary Load all
           button#loadKnown.btn.btn-primary Load well known
           button#showfavorite.btn.btn-primary Show Favorites

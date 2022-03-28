@@ -138,10 +138,12 @@ var Tables = {
     columnDefs: sentenceCols,
     rowData: [],
     // todo, predict height based on number of characters in sentence
-    rowHeight: 100,
+    rowHeight: 30,
     getRowHeight: params => {
       var sentenceLength = params.data.sentence.length
-      if (sentenceLength > 100) {
+      if (sentenceLength > 150) {
+        return 250;
+      } else if (sentenceLength > 100) {
         return 150;
       } else {
         return 100;

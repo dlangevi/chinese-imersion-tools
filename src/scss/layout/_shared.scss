@@ -11,6 +11,12 @@
   width: 100%;
 }
 
+.ag-theme-material .ag-cell {
+
+  line-height: 25px !important;
+
+}
+
 
 #sentenceGrid {
   font-size: 25px;
@@ -29,19 +35,26 @@
   width: 40%;
 }
 
-
-.bg-purple {
-  background: rgb(48, 0, 50);
+.centered {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
-.bg-gray {
-  background: rgb(74, 74, 74);
+.markLearned {
+  margin: 0;
+  font-weight: 900;
+  background-color: #d91a1a;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-weight: 900;
+  padding: 0;
+  border-radius: 10px;
+  height: 20px;
+  width: 20px;
 }
 
-.bg-blue {
-  background: rgb(50, 101, 196);
-}
-
-.bg-red {
-  background: rgb(196, 50, 53);
+.markLearned:hover {
+  background-color: #18a30f;
 }

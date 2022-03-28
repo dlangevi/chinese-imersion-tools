@@ -1,9 +1,10 @@
 class MarkLearnedRenderer {
   // init method gets the details of the cell to be renderer
   init(params) {
-    this.eGui = document.createElement('button');
-    this.eGui.innerHTML = '+';
+    this.eGui = document.createElement('i');
     this.eGui.classList.add('markLearned');
+    this.eGui.classList.add('far');
+    this.eGui.classList.add('fa-check-circle');
     this.eventListener = () => {
       var row = params.node
       var rowData = params.node.data
