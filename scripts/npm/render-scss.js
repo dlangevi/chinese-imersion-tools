@@ -11,11 +11,10 @@ const stylesPath = '../src/scss/styles.scss';
 const destPath = upath.resolve('./dist/css/styles.css');
 
 export default function renderSCSS() {
-
   const results = sass.renderSync({
     data: entryPoint,
     includePaths: [
-      upath.resolve('./node_modules')
+      upath.resolve('./node_modules'),
     ],
   });
 
@@ -26,14 +25,13 @@ export default function renderSCSS() {
 
   postcss([autoprefixer]).process(results.css, {
     from: 'styles.css',
-    to: 'styles.css'
-  }).then(result => {
-    result.warnings().forEach(warn => {
-      console.warn(warn.toString())
-    })
+    to: 'styles.css',
+  }).then((result) => {
+    result.warnings().forEach((warn) => {
+      console.warn(warn.toString());
+    });
     fs.writeFileSync(destPath, result.css.toString());
-  })
-
+  });
 };
 
 const entryPoint = `/*!
@@ -42,4 +40,4 @@ const entryPoint = `/*!
 * Licensed under ${packageJSON.license} (https://github.com/StartBootstrap/${packageJSON.name}/blob/master/LICENSE)
 */
 @import "${stylesPath}"
-`
+`;
