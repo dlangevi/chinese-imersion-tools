@@ -1,5 +1,5 @@
-const fs = require('fs');
-const wordStats = require("./wordStats.js")
+import fs from 'fs';
+import wordStats from "./wordStats.js";
 
 const config = JSON.parse(fs.readFileSync("../config.json", "UTF-8", "r"))
 
@@ -54,7 +54,7 @@ function knownLevels() {
 }
 
 // exports various dictionaries
-module.exports = {
+const knownWords = {
   addWord: addWord,
   mergeWords: mergeWords,
   isKnown: (word, howKnown = 0) => {
@@ -75,5 +75,5 @@ module.exports = {
   saveWords: saveWords,
   knownCharacters: numKnownCharacters,
   knownLevels: knownLevels,
-
 }
+export default knownWords

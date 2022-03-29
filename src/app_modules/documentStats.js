@@ -1,10 +1,9 @@
-const fs = require('fs')
-const known = require("./knownWords.js")
-const wordStats = require("./wordStats.js")
+import fs from 'fs';
+import known from "./knownWords.js";
+import wordStats from "./wordStats.js";
+import config from "./config.js";
 
-const config = JSON.parse(fs.readFileSync("../config.json", "UTF-8", "r"));
-
-class Document {
+export class Document {
   #segText;
   constructor(filename) {
     this.filename = filename
@@ -134,10 +133,4 @@ class Document {
     }
 
   }
-
-
-}
-
-module.exports = {
-  Document: Document
 }

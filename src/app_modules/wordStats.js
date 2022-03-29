@@ -1,6 +1,6 @@
-const fs = require('fs')
+import fs from 'fs';
+import config from "./config.js";
 
-const config = JSON.parse(fs.readFileSync("../config.json", "UTF-8", "r"));
 const frequencyData = JSON.parse(fs.readFileSync(
   config.frequencyData + "Combined.json", "UTF-8", "r"));
 
@@ -38,7 +38,7 @@ function convertRankingNum(word) {
   }
 }
 
-function convertRanking(word) {
+export function frequency(word) {
   var rank = frequencyData[word]
   if (rank == undefined) {
     return "none"
@@ -57,8 +57,7 @@ function convertRanking(word) {
   }
 }
 
-function frequencyStats(knownWords) {
-
+export function frequencyStats(knownWords) {
   var knownCounts = {
     0: 0,
     1: 0,
@@ -76,13 +75,10 @@ function frequencyStats(knownWords) {
     counts: counts,
     knownCounts: knownCounts
   }
-
-
-
 }
 
-module.exports = {
-  frequency: convertRanking,
-  frequencyStats: frequencyStats
-
+var wordStats = {
+  frequency: frequency,
+  frequencyStats: frequencyStats,
 }
+export default wordStats;

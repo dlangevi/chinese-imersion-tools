@@ -1,12 +1,8 @@
-// import fetch from 'node-fetch'
-// const fetch = require('node-fetch')
-const fetch = (...args) => import('node-fetch').then(({
-  default: fetch
-}) => fetch(...args));
-const knownWords = require("./knownWords.js")
+import fetch from 'node-fetch'
+import knownWords from "./knownWords.js"
 
-const fs = require('fs/promises')
-const fsSync = require('fs')
+import fs from 'fs/promises'
+import fsSync from 'fs'
 const config = JSON.parse(fsSync.readFileSync("../config.json", "UTF-8", "r"));
 
 async function invoke(action, params) {
@@ -54,21 +50,19 @@ async function exportAnkiKeywords() {
   console.log(intervalMap);
   return intervalMap;
 
-  // var writeFile = fs.writeFile(config.ankiKeywords, words.join("\n"), (err) => console.log(err));
   var writeFile = await fs.writeFile(config.ankiKeywords, words.join(
     "\n"));
 }
 
-module.exports = {
-  exportAnkiKeywords: () => exportAnkiKeywords(),
-  register: (app) => {
-    app.get("/loadAnki", (req, res, next) => {
-      exportAnkiKeywords().then(ankiObject => {
-        knownWords.mergeWords(ankiObject);
-        res.json({
-          success: 1
-        })
-      });
+export function register(app) {
+  app.get("/loadAnki", (req, res, next) => {
+    exportAnkiKeywords().then(ankiObject => {
+      knownWords.mergeWords(ankiObject);
+      res.json({
+        success: 1,
+        words: knownWords.knownWords(),
+      })
     });
-  }
+  });
+
 }

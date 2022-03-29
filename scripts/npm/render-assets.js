@@ -1,11 +1,10 @@
-'use strict';
-const fs = require('fs');
-const upath = require('upath');
-const sh = require('shelljs');
+import fs from 'fs';
+import upath from 'upath';
+import sh from 'shelljs';
 
-module.exports = function renderAssets() {
-    const sourcePath = upath.resolve(upath.dirname(__filename), '../../src/assets');
-    const destPath = upath.resolve(upath.dirname(__filename), '../../dist/.');
+export default function renderAssets() {
+    const sourcePath = upath.resolve('./src/assets');
+    const destPath = upath.resolve('./dist/.');
     
     sh.cp('-R', sourcePath, destPath)
 };

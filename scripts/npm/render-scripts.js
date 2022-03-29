@@ -1,13 +1,11 @@
-'use strict';
-const fs = require('fs');
-const packageJSON = require('../../package.json');
-const upath = require('upath');
-const sh = require('shelljs');
+import fs from 'fs';
+import upath from 'upath';
+import sh from 'shelljs';
 
-module.exports = function renderScripts() {
+export default function renderScripts() {
 
-    const sourcePath = upath.resolve(upath.dirname(__filename), '../../src/js');
-    const destPath = upath.resolve(upath.dirname(__filename), '../../dist/.');
-    
-    sh.cp('-R', sourcePath, destPath)
+  const sourcePath = upath.resolve('./src/js');
+  const destPath = upath.resolve('./dist/.');
+
+  sh.cp('-R', sourcePath, destPath)
 };

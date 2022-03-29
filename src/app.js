@@ -1,13 +1,15 @@
-const express = require('express');
-const fs = require('fs');
-const path = require('path');
-const catalogue = require("./app_modules/bookCatalogue.js")
-const oneTsentences = require("./app_modules/oneTsentences.js")
-const importFromAnki = require("./app_modules/importFromAnki.js")
-const knownWords = require("./app_modules/knownWords.js")
-const documentStats = require("./app_modules/documentStats.js")
-const bodyParser = require('body-parser')
-const config = JSON.parse(fs.readFileSync("../config.json", "UTF-8", "r"))
+import express from 'express';
+import fs from 'fs';
+import path from 'path';
+import bodyParser from 'body-parser';
+
+
+import catalogue from "./app_modules/bookCatalogue.js";
+import oneTsentences from "./app_modules/oneTsentences.js";
+import { register } from './app_modules/importFromAnki.js';
+import knownWords from "./app_modules/knownWords.js";
+import { Document } from "./app_modules/documentStats.js";
+import config from "./app_modules/config.js";
 
 // Init App
 const app = express();
@@ -17,11 +19,12 @@ app.use(express.static('node_modules/ag-grid-community/dist/'))
 
 app.use(bodyParser.json())
 
+// Sentence Mining Calls
+register(app)
+
 // Book Library Calls
 catalogue.register(app);
 
-// Sentence Mining Calls
-importFromAnki.register(app)
 
 app.post("/loadfile", (req, res, next) => {
   var bookname = req.body.name;
@@ -34,7 +37,7 @@ app.post("/loadfile", (req, res, next) => {
 
   var filename = catalogue.getPath(bookname)
   console.log(`Loading ${filename}`)
-  var document = new documentStats.Document(filename);
+  var document = new Document(filename);
   var documentWords = document.documentWords();
   var documentChars = document.documentChars();
   var stats = document.documentStats()
@@ -73,7 +76,6 @@ app.post("/exportwords", (req, res, next) => {
       });
     });
 });
-
 
 app.listen(3000, () => {
   console.log('Server started on port 3000')

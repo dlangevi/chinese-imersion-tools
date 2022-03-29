@@ -1,5 +1,4 @@
-const documentStats = require("./documentStats.js")
-const known = require("./knownWords.js")
+import known from "./knownWords.js";
 
 function sentenceMostlyKnown(sentence, howKnown) {
 
@@ -84,6 +83,7 @@ function parseFile(document, howKnown) {
 
 }
 
-module.exports = {
+const oneTsentences = {
   parse: parseFile,
 }
+export default oneTsentences

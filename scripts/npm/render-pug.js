@@ -1,13 +1,12 @@
-'use strict';
-const fs = require('fs');
-const upath = require('upath');
-const pug = require('pug');
-const sh = require('shelljs');
-const prettier = require('prettier');
+import fs from 'fs';
+import upath from 'upath';
+import pug from 'pug';
+import sh from 'shelljs';
+import prettier from 'prettier';
 
-module.exports = function renderPug(filePath) {
+export default function renderPug(filePath) {
     const destPath = filePath.replace(/src\/pug\/\pages/, 'dist').replace(/\.pug$/, '.html');
-    const srcPath = upath.resolve(upath.dirname(__filename), '../../src');
+    const srcPath = upath.resolve('./src');
 
     console.log(`### INFO: Rendering ${filePath} to ${destPath}`);
     const html = pug.renderFile(filePath, {
