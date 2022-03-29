@@ -1,4 +1,9 @@
-import {withLoader} from './spinner.js';
+import {
+  withLoader,
+} from './spinner.js';
+import {
+  post,
+} from './shared.js';
 
 export class MarkLearnedRenderer {
   // init method gets the details of the cell to be renderer
@@ -79,14 +84,8 @@ export class CenteredRenderer {
 async function exportWords(rows) {
   withLoader(async () => {
     const words = [...new Set(rows.map((row) => row.word))];
-    const contents = await fetch('/exportwords', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8',
-      },
-      body: JSON.stringify({
-        words: words,
-      }),
+    const contents = await post('/exportwords', {
+      words: words,
     });
     const obj = await contents.json();
     console.log(

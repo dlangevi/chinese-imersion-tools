@@ -1,4 +1,7 @@
-import {observeTable} from './shared.js';
+import {
+  observeTable,
+  post,
+} from './shared.js';
 import Tables from './tableDefn.js';
 
 async function main() {
@@ -53,15 +56,9 @@ async function loadFile(wellKnown = false) {
   const fileSelector = document.querySelector('#jsonFiles');
 
   localStorage.setItem('ch|loadFile', fileSelector.value);
-  const response = await fetch('/loadfile', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json;charset=utf-8',
-    },
-    body: JSON.stringify({
-      name: fileSelector.value,
-      wellKnown: wellKnown,
-    }),
+  const response = await post('/loadfile', {
+    name: fileSelector.value,
+    wellKnown: wellKnown,
   });
 
   const data = await response.json();

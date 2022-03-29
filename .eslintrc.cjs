@@ -5,7 +5,6 @@ module.exports = {
     'node': true,
   },
   'extends': [
-    'plugin:react/recommended',
     'google',
   ],
   'parserOptions': {
@@ -16,7 +15,6 @@ module.exports = {
     'sourceType': 'module',
   },
   'plugins': [
-    'react',
   ],
   'rules': {
     'require-jsdoc': ["off"]

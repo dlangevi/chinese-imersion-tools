@@ -1,7 +1,10 @@
 import {
   RemoveBookRenderer,
 } from './agRenderers.js';
-import {observeTable, post} from './shared.js';
+import {
+  observeTable,
+  post,
+} from './shared.js';
 
 async function main() {
   const eGridDiv = document.querySelector('#bookList');
@@ -22,15 +25,9 @@ async function main() {
 
   document.querySelector('#addList').addEventListener('click', async () => {
     const name = prompt('Name please');
-    await fetch('/savelist', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8',
-      },
-      body: JSON.stringify({
-        title: name,
-        data: [],
-      }),
+    await post('/savelist', {
+      title: name,
+      data: [],
     });
     const selector = document.querySelector('#myBookLists');
     const opt = document.createElement('option');
@@ -46,15 +43,9 @@ async function main() {
     Tables.myBookList.api.forEachNode((node) => {
       books.push(`${node.data.author} - ${node.data.title}`);
     });
-    await fetch('/savelist', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8',
-      },
-      body: JSON.stringify({
-        title: currentList,
-        data: books,
-      }),
+    await post('/savelist', {
+      title: currentList,
+      data: books,
     });
   });
 
@@ -62,14 +53,8 @@ async function main() {
       async () => {
         const selector = document.querySelector('#myBookLists');
         const currentList = selector.value;
-        await fetch('/deletelist', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json;charset=utf-8',
-          },
-          body: JSON.stringify({
-            title: currentList,
-          }),
+        await post('/deletelist', {
+          title: currentList,
         });
       });
 
