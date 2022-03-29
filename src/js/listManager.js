@@ -74,12 +74,6 @@ async function main() {
 
 }
 
-async function withLoader(fn) {
-  showLoader();
-  await fn();
-  finishLoader();
-}
-
 async function loadFileList() {
   let response = await fetch("/filelistdata");
   let data = await response.json();

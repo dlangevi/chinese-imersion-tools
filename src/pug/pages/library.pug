@@ -1,0 +1,27 @@
+extends ../layouts/dashboard.pug
+
+block config
+    - var bodyClass = 'sb-nav-fixed'
+    - var pageTitle = 'Library'
+    - var sidenavStyle = 'sb-sidenav-dark'
+
+block content
+
+  .container-fluid.px-4
+      .row
+        .col-6
+          include includes/page-header.pug
+        .col-6.mt-auto.mb-4
+
+      .row
+        .col-xl-12
+            .card.mb-4
+              .card-header
+                | All Books
+              .card-body
+                #bookList.ag-theme-material.myGrid
+
+
+append scripts
+    script(src='js/library.js')
+
