@@ -1,3 +1,13 @@
+import {
+  CenteredRenderer,
+  MarkLearnedRenderer,
+} from './agRenderers.js';
+import {
+  KnownFilter,
+  StarsFilter,
+  WordFilter,
+} from './agFilters.js';
+
 function override(dictA, dictB) {
   return {
     ...dictA,
@@ -93,7 +103,7 @@ const sentenceCols = [
   },
 ];
 
-wordsCols = [
+const wordsCols = [
   wordColumn(),
   starsColumn(),
   {
@@ -108,7 +118,7 @@ wordsCols = [
 
 ];
 
-docWordsCols = [
+const docWordsCols = [
   markLearnedColumn(),
   wordColumn(),
   starsColumn(),
@@ -118,14 +128,14 @@ docWordsCols = [
   isKnownColumn(),
 ];
 
-charCols = [
+const charCols = [
   wordColumn(),
   isKnownColumn({
     headerName: 'Alone',
   }),
 ];
 
-docCharCols = [
+const docCharCols = [
   wordColumn(),
   occuranceColumn({
     width: 80,
@@ -133,8 +143,7 @@ docCharCols = [
   isKnownColumn(),
 ];
 
-
-const Tables = {
+export default {
   sentences: {
     columnDefs: sentenceCols,
     rowData: [],

@@ -1,3 +1,8 @@
+import {
+  RemoveBookRenderer,
+} from './agRenderers.js';
+import {observeTable, post} from './shared.js';
+
 async function main() {
   const eGridDiv = document.querySelector('#bookList');
   new agGrid.Grid(eGridDiv, Tables.bookList);
@@ -107,7 +112,7 @@ async function loadListContents() {
 }
 
 
-bookListCols = [{
+const bookListCols = [{
   headerName: 'Title',
   field: 'title',
   width: 200,
@@ -136,7 +141,7 @@ bookListCols = [{
 },
 ];
 
-myBookListCols = [{
+const myBookListCols = [{
   headerName: 'Title',
   field: 'title',
   width: 200,

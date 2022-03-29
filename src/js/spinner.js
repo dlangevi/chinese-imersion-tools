@@ -1,4 +1,4 @@
-async function withLoader(fn) {
+export async function withLoader(fn) {
   showLoader();
   await fn();
   finishLoader();

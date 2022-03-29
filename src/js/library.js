@@ -1,3 +1,5 @@
+import {observeTable} from './shared.js';
+
 async function main() {
   const eGridDiv = document.querySelector('#bookList');
   new agGrid.Grid(eGridDiv, Tables.bookList);
@@ -15,7 +17,7 @@ async function loadFileList() {
   return;
 }
 
-bookListCols = [{
+const bookListCols = [{
   headerName: 'Title',
   field: 'title',
   width: 200,

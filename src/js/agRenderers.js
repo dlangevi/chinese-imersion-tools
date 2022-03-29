@@ -1,4 +1,6 @@
-class MarkLearnedRenderer {
+import {withLoader} from './spinner.js';
+
+export class MarkLearnedRenderer {
   // init method gets the details of the cell to be renderer
   init(params) {
     this.eGui = document.createElement('img');
@@ -33,7 +35,7 @@ class MarkLearnedRenderer {
   }
 }
 
-class RemoveBookRenderer {
+export class RemoveBookRenderer {
   // init method gets the details of the cell to be renderer
   init(params) {
     this.eGui = document.createElement('img');
@@ -58,7 +60,7 @@ class RemoveBookRenderer {
   }
 }
 
-class CenteredRenderer {
+export class CenteredRenderer {
   init(params) {
     this.eGui = document.createElement('span');
     this.eGui.innerHTML = params.value;

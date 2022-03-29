@@ -1,17 +1,6 @@
-class StarsFilter {
+export class StarsFilter {
   init(params) {
     this.eGui = document.createElement('div');
-    // this.eGui.innerHTML = `<div style="display: inline-block;">
-    //            <select id="numberOfStars" name="fruit">
-    //              <option value ="0">Nothing</option>
-    //              <option value ="5">★★★★★</option>
-    //              <option value ="4">★★★★</option>
-    //              <option value ="3">★★★</option>
-    //              <option value ="2">★★</option>
-    //              <option value ="1">★</option>
-    //            </select>
-    //        </div>`;
-
     this.options = [
       '★★★★★',
       '★★★★',
@@ -64,7 +53,7 @@ class StarsFilter {
   }
 }
 
-class KnownFilter {
+export class KnownFilter {
   init(params) {
     this.eGui = document.createElement('div');
     this.eGui.innerHTML = `<div style="display: inline-block;">
@@ -119,7 +108,7 @@ class KnownFilter {
   }
 }
 
-class WordFilter {
+export class WordFilter {
   init(params) {
     this.eGui = document.createElement('div');
     this.eGui.innerHTML = `<div style="display: inline-block;">

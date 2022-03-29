@@ -1,4 +1,4 @@
-async function post(endpoint, object) {
+export async function post(endpoint, object) {
   const response = await fetch(endpoint, {
     method: 'POST',
     headers: {
@@ -9,7 +9,7 @@ async function post(endpoint, object) {
   return response;
 }
 
-function observeTable(divId, table) {
+export function observeTable(divId, table) {
   const tableDiv = document.querySelector(divId);
   const resizeObserver = new ResizeObserver((entries) => {
     for (const entry of entries) {
@@ -19,3 +19,13 @@ function observeTable(divId, table) {
   });
   resizeObserver.observe(tableDiv);
 }
+
+export function migakuParse() {
+  const migakuParse = document.querySelector('#migaku-toolbar-po-parse');
+  if (migakuParse) {
+    migakuParse.click();
+  } else {
+    console.log('Consider installing Migaku');
+  }
+}
+

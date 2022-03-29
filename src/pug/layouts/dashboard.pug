@@ -12,10 +12,10 @@ html(lang='en')
         include includes/head/css.pug
         include includes/head/icons.pug
         script(src='ag-grid-community.min.noStyle.js')
-        script(src='js/shared.js')
-        script(src='js/agFilters.js')
-        script(src='js/agRenderers.js')
-        script(src='js/spinner.js')
+        script(type='module', src='js/shared.js')
+        script(type='module', src='js/agFilters.js')
+        script(type='module', src='js/agRenderers.js')
+        script(type='module', src='js/spinner.js')
 
     body(class=bodyClass)
 

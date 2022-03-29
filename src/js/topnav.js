@@ -1,3 +1,6 @@
+import {withLoader} from './spinner.js';
+import {migakuParse} from './shared.js';
+
 window.addEventListener('DOMContentLoaded', (event) => {
   // Toggle the side navigation
   const sidebarToggle = document.body.querySelector('#sidebarToggle');
@@ -32,15 +35,6 @@ function toggleMigakuContainer() {
     container.style.display = 'block';
   } else {
     container.style.display = 'none';
-  }
-}
-
-function migakuParse() {
-  const migakuParse = document.querySelector('#migaku-toolbar-po-parse');
-  if (migakuParse) {
-    migakuParse.click();
-  } else {
-    console.log('Consider installing Migaku');
   }
 }
 

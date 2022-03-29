@@ -1,3 +1,10 @@
+import {
+  observeTable,
+  post,
+  migakuParse,
+} from './shared.js';
+import Tables from './tableDefn.js';
+
 async function main() {
   const eGridDiv = document.querySelector('#sentenceGrid');
   new agGrid.Grid(eGridDiv, Tables.sentences);
@@ -61,15 +68,9 @@ async function loadFile(wellKnown = false) {
   const fileSelector = document.querySelector('#jsonFiles');
 
   localStorage.setItem('ch|loadFile', fileSelector.value);
-  const response = await fetch('/loadfile', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json;charset=utf-8',
-    },
-    body: JSON.stringify({
-      name: fileSelector.value,
-      wellKnown: wellKnown,
-    }),
+  const response = await post('/loadfile', {
+    name: fileSelector.value,
+    wellKnown: wellKnown,
   });
 
   const data = await response.json();

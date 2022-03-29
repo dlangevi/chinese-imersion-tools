@@ -1,3 +1,6 @@
+import {observeTable} from './shared.js';
+import Tables from './tableDefn.js';
+
 async function main() {
   const dGridDiv = document.querySelector('#docWordGrid');
   new agGrid.Grid(dGridDiv, Tables.docWords);
