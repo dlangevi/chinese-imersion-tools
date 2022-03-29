@@ -1,9 +1,4 @@
-// 
-// Scripts
-// 
-
-window.addEventListener('DOMContentLoaded', event => {
-
+window.addEventListener('DOMContentLoaded', (event) => {
   // Toggle the side navigation
   const sidebarToggle = document.body.querySelector('#sidebarToggle');
   if (sidebarToggle) {
@@ -11,29 +6,28 @@ window.addEventListener('DOMContentLoaded', event => {
     // if (localStorage.getItem('sb|sidebar-toggle') === 'true') {
     //     document.body.classList.toggle('sb-sidenav-toggled');
     // }
-    sidebarToggle.addEventListener('click', event => {
+    sidebarToggle.addEventListener('click', (event) => {
       event.preventDefault();
       document.body.classList.toggle('sb-sidenav-toggled');
       localStorage.setItem('sb|sidebar-toggle', document.body.classList
-        .contains('sb-sidenav-toggled'));
+          .contains('sb-sidenav-toggled'));
     });
   }
 
   document.querySelector('#toggleButton').addEventListener('click',
-    toggleMigakuContainer);
+      toggleMigakuContainer);
   document.querySelector('#parseButton').addEventListener('click',
-    migakuParse);
+      migakuParse);
 
   document.querySelector('#syncButton').addEventListener('click',
-    ankiLoad);
+      ankiLoad);
   document.querySelector('#saveProgress').addEventListener('click',
-    saveWordList);
-
+      saveWordList);
 });
 
 function toggleMigakuContainer() {
-  var container = document.querySelector('#migaku-toolbar-container')
-  var state = container.style.display;
+  const container = document.querySelector('#migaku-toolbar-container');
+  const state = container.style.display;
   if (state != 'block') {
     container.style.display = 'block';
   } else {
@@ -42,44 +36,45 @@ function toggleMigakuContainer() {
 }
 
 function migakuParse() {
-  var migakuParse = document.querySelector('#migaku-toolbar-po-parse')
+  const migakuParse = document.querySelector('#migaku-toolbar-po-parse');
   if (migakuParse) {
-    migakuParse.click()
+    migakuParse.click();
   } else {
-    console.log("Consider installing Migaku")
+    console.log('Consider installing Migaku');
   }
 }
 
 
 async function saveWordList() {
   withLoader(async () => {
-    let response = await fetch("/saveWordlist");
-    let data = await response.json();
+    const response = await fetch('/saveWordlist');
+    const data = await response.json();
+    console.log(data);
   });
 }
 
 async function ankiLoad() {
   withLoader(async () => {
-    let response = await fetch("/loadAnki");
-    let data = await response.json();
+    const response = await fetch('/loadAnki');
+    const data = await response.json();
     console.log(data);
   });
 }
 
 
 // Prevent migaku empty spans from messing stuff up
-const observer = new MutationObserver(mutations_list => {
-  mutations_list.forEach(mutation => {
-    mutation.addedNodes.forEach(added_node => {
-      if (added_node.innerText == '' && added_node.nodeName ==
+const observer = new MutationObserver((mutationsList) => {
+  mutationsList.forEach((mutation) => {
+    mutation.addedNodes.forEach((addedNode) => {
+      if (addedNode.innerText == '' && addedNode.nodeName ==
         'SPAN') {
-        added_node.remove()
+        addedNode.remove();
       }
     });
   });
 });
 observer.observe(document.querySelector('body'), {
   subtree: true,
-  childList: true
+  childList: true,
 });
 

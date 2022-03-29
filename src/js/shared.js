@@ -1,22 +1,21 @@
 async function post(endpoint, object) {
-  let response = await fetch(endpoint, {
+  const response = await fetch(endpoint, {
     method: 'POST',
     headers: {
-      'Content-Type': "application/json;charset=utf-8"
+      'Content-Type': 'application/json;charset=utf-8',
     },
-    body: JSON.stringify(object)
+    body: JSON.stringify(object),
   });
-  return response ;
+  return response;
 }
 
-function ObserveTable(divId, table) {
-  var tableDiv = document.querySelector(divId);
-  var resizeObserver = new ResizeObserver(entries => {
-    for (let entry of entries) {
-      let tableWidth = entry.contentBoxSize[0].inlineSize
-      table.columnApi.sizeColumnsToFit(tableWidth - 10)
+function observeTable(divId, table) {
+  const tableDiv = document.querySelector(divId);
+  const resizeObserver = new ResizeObserver((entries) => {
+    for (const entry of entries) {
+      const tableWidth = entry.contentBoxSize[0].inlineSize;
+      table.columnApi.sizeColumnsToFit(tableWidth - 10);
     }
   });
   resizeObserver.observe(tableDiv);
-
 }

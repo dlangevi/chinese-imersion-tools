@@ -5,21 +5,22 @@ class MarkLearnedRenderer {
     this.eGui.setAttribute('src', 'assets/img/circle-check.svg');
     this.eGui.classList.add('markLearned');
     // Turns out those svgs really slow down the site
-    //this.eGui.classList.add('far');
-    //this.eGui.classList.add('fa-check-circle');
+    // this.eGui.classList.add('far');
+    // this.eGui.classList.add('fa-check-circle');
     //
     this.eventListener = () => {
-      var row = params.node
-      var rowData = params.node.data
-      exportWords([rowData])
+      const row = params.node;
+      const rowData = params.node.data;
+      exportWords([rowData]);
       if (rowData.isKnown == false) {
-        row.setDataValue('isKnown', true)
+        row.setDataValue('isKnown', true);
       }
-      const filterInstance = Tables.sentences.api.getFilterInstance(
-        'word');
-      filterInstance.addWord(rowData.word);
-      // reCalcWordStats();
-    }
+      if (Tables.sentences.api) {
+        const filterInstance = Tables.sentences.api.getFilterInstance(
+            'word');
+        filterInstance.addWord(rowData.word);
+      }
+    };
     this.eGui.addEventListener('click', this.eventListener);
   }
 
@@ -41,10 +42,10 @@ class RemoveBookRenderer {
     this.eventListener = () => {
       Tables.myBookList.api.applyTransaction({
         remove: [{
-          'title': params.node.id
-        }]
+          'title': params.node.id,
+        }],
       });
-    }
+    };
     this.eGui.addEventListener('click', this.eventListener);
   }
 
@@ -59,9 +60,9 @@ class RemoveBookRenderer {
 
 class CenteredRenderer {
   init(params) {
-    this.eGui = document.createElement('span')
-    this.eGui.innerHTML = params.value
-    this.eGui.classList.add('centered')
+    this.eGui = document.createElement('span');
+    this.eGui.innerHTML = params.value;
+    this.eGui.classList.add('centered');
   }
 
   getGui() {
@@ -71,5 +72,24 @@ class CenteredRenderer {
   refresh(params) {
     return false;
   }
+}
 
+async function exportWords(rows) {
+  withLoader(async () => {
+    const words = [...new Set(rows.map((row) => row.word))];
+    const contents = await fetch('/exportwords', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+      },
+      body: JSON.stringify({
+        words: words,
+      }),
+    });
+    const obj = await contents.json();
+    console.log(
+        `Exported words ${words.join(',')} now ` +
+      `know ${obj.totalWords} total words`,
+    );
+  });
 }

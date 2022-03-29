@@ -1,79 +1,55 @@
 async function main() {
-  var eGridDiv = document.querySelector('#sentenceGrid')
-  new agGrid.Grid(eGridDiv, Tables.sentences)
+  const eGridDiv = document.querySelector('#sentenceGrid');
+  new agGrid.Grid(eGridDiv, Tables.sentences);
 
-  Tables.sentences.columnApi.sizeColumnsToFit(eGridDiv.offsetWidth - 40)
-  ObserveTable('#sentenceGrid', Tables.sentences)
-
+  Tables.sentences.columnApi.sizeColumnsToFit(eGridDiv.offsetWidth - 40);
+  observeTable('#sentenceGrid', Tables.sentences);
 
   await loadFileList();
-  await loadFile()
+  await loadFile();
 
   document.querySelector('#jsonFiles').addEventListener('change',
-    () => loadFile(false));
-
+      () => loadFile(false));
   document.querySelector('#loadAll').addEventListener('click',
-    () => loadFile(false));
+      () => loadFile(false));
   document.querySelector('#loadKnown').addEventListener('click',
-    () => loadFile(true));
+      () => loadFile(true));
   document.querySelector('#showfavorite').addEventListener('click',
-    loadFavorites);
+      loadFavorites);
 
   setTimeout(() => {
-      migakuParse()
-    },
-    3000);
-
+    migakuParse();
+  },
+  3000);
 }
-
-async function exportWords(rows) {
-  withLoader(async () => {
-    var words = [...new Set(rows.map(row => row.word))];
-    let contents = await fetch("/exportwords", {
-      method: 'POST',
-      headers: {
-        'Content-Type': "application/json;charset=utf-8"
-      },
-      body: JSON.stringify({
-        words: words
-      })
-    });
-    let obj = await contents.json()
-    console.log(
-      `Exported words ${words.join(',')} now know ${obj.totalWords} total words`
-    )
-  });
-}
-
-
 
 async function loadFileList() {
-  let response = await fetch("/filelist");
-  let data = await response.json();
-  var fileSelector = document.querySelector('#jsonFiles');
-  fileSelector.innerHTML = ""
-  data.forEach(title => {
-    var opt = document.createElement('option');
+  const response = await fetch('/filelist');
+  const data = await response.json();
+  const fileSelector = document.querySelector('#jsonFiles');
+  fileSelector.innerHTML = '';
+  data.forEach((title) => {
+    const opt = document.createElement('option');
     opt.value = title;
     opt.innerHTML = title;
     fileSelector.appendChild(opt);
   });
 
-  var savedFile = localStorage.getItem('ch|loadFile');
+  const savedFile = localStorage.getItem('ch|loadFile');
   if (savedFile) {
-    var fileSelector = document.querySelector('#jsonFiles');
-    fileSelector.value = savedFile
+    const fileSelector = document.querySelector('#jsonFiles');
+    fileSelector.value = savedFile;
   }
-  return
+  return;
 }
 
 async function loadFavorites() {
-  let response = await fetch("/favfilelist");
-  let data = await response.json();
-  var fileSelector = document.querySelector('#jsonFiles');
-  fileSelector.innerHTML = ""
-  data.forEach(title => {
-    var opt = document.createElement('option');
+  const response = await fetch('/favfilelist');
+  const data = await response.json();
+  const fileSelector = document.querySelector('#jsonFiles');
+  fileSelector.innerHTML = '';
+  data.forEach((title) => {
+    const opt = document.createElement('option');
     opt.value = title;
     opt.innerHTML = title;
     fileSelector.appendChild(opt);
@@ -82,56 +58,54 @@ async function loadFavorites() {
 
 
 async function loadFile(wellKnown = false) {
-
-  var fileSelector = document.querySelector('#jsonFiles');
+  const fileSelector = document.querySelector('#jsonFiles');
 
   localStorage.setItem('ch|loadFile', fileSelector.value);
-  let response = await fetch("/loadfile", {
+  const response = await fetch('/loadfile', {
     method: 'POST',
     headers: {
-      'Content-Type': "application/json;charset=utf-8"
+      'Content-Type': 'application/json;charset=utf-8',
     },
     body: JSON.stringify({
       name: fileSelector.value,
-      wellKnown: wellKnown
-    })
+      wellKnown: wellKnown,
+    }),
   });
 
-  let data = await response.json();
+  const data = await response.json();
 
-  var sentences = data.sentences;
+  const sentences = data.sentences;
 
-  Tables.sentences.data = sentences
+  Tables.sentences.data = sentences;
   Tables.sentences.data.wellKnown = wellKnown;
-  Tables.sentences.api.setRowData(sentences.rowData)
+  Tables.sentences.api.setRowData(sentences.rowData);
 
-  reCalcSentenceStats()
-  return
+  reCalcSentenceStats();
+  return;
 }
 
 function reCalcSentenceStats() {
-  var data = Tables.sentences.data
+  const data = Tables.sentences.data;
   if (data == undefined) {
     return;
   }
-  var wellKnown = Tables.sentences.data.wellKnown
-  var currentWords = {}
+  const wellKnown = Tables.sentences.data.wellKnown;
+  const currentWords = {};
   Tables.sentences.api.forEachNodeAfterFilter((rowNode, index) => {
-    currentWords[rowNode.data.word] = rowNode.data.occurances
+    currentWords[rowNode.data.word] = rowNode.data.occurances;
   });
-  var words = 0;
-  var occurances = 0;
+  let words = 0;
+  let occurances = 0;
 
   Object.entries(currentWords).forEach(([word, val]) => {
     words += 1;
     occurances += val;
   });
-  var percent = occurances / data.totalWords * 100;
+  const percent = occurances / data.totalWords * 100;
 
+  let currentKnown = data.currentKnown;
   if (wellKnown) {
-    var currentKnown = data.currentWellKnown
-  } else {
-    var currentKnown = data.currentKnown
+    currentKnown = data.currentWellKnown;
   }
   document.querySelector('#oneTwords').innerHTML = words;
   document.querySelector('#occurances').innerHTML = occurances;
@@ -139,4 +113,4 @@ function reCalcSentenceStats() {
   document.querySelector('#known').innerHTML = currentKnown.toFixed(2);
 }
 
-main()
+main();

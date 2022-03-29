@@ -1,7 +1,7 @@
 class StarsFilter {
   init(params) {
     this.eGui = document.createElement('div');
-    //this.eGui.innerHTML = `<div style="display: inline-block;">
+    // this.eGui.innerHTML = `<div style="display: inline-block;">
     //            <select id="numberOfStars" name="fruit">
     //              <option value ="0">Nothing</option>
     //              <option value ="5">★★★★★</option>
@@ -9,43 +9,44 @@ class StarsFilter {
     //              <option value ="3">★★★</option>
     //              <option value ="2">★★</option>
     //              <option value ="1">★</option>
-    //            </select> 
+    //            </select>
     //        </div>`;
 
     this.options = [
-      "★★★★★",
-      "★★★★",
-      "★★★",
-      "★★",
-      "★",
-      "none",
-    ]
-    var optionsHtml = this.options.map(elem => {
+      '★★★★★',
+      '★★★★',
+      '★★★',
+      '★★',
+      '★',
+      'none',
+    ];
+    const optionsHtml = this.options.map((elem) => {
       return `<div>
           <label for="${elem}">
-            <input type="checkbox" id="${elem}" value="${elem}" checked> ${elem}  
+            <input type="checkbox" id="${elem}" 
+                   value="${elem}" checked> ${elem}  
           </label>
-          </div>`
-    }).join("");
+          </div>`;
+    }).join('');
 
     this.eGui.innerHTML = `<div style="display: inline-block;">
               ${optionsHtml}
             </div>`;
     this.starsCheckboxes = this.eGui.querySelectorAll('input[type=checkbox]');
-    this.starsCheckboxes.forEach(checkbox => {
-      checkbox.addEventListener('change', event => {
-        this.onChanged()
+    this.starsCheckboxes.forEach((checkbox) => {
+      checkbox.addEventListener('change', (event) => {
+        this.onChanged();
       });
     });
     this.filterActive = false;
-    this.stars = 0
+    this.stars = 0;
     this.filterChangedCallback = params.filterChangedCallback;
   }
 
   onChanged() {
-    var checkBoxes = [...this.starsCheckboxes.values()];
-    var checked = checkBoxes.filter(checkbox => checkbox.checked).map(
-      checkbox => checkbox.value);
+    const checkBoxes = [...this.starsCheckboxes.values()];
+    const checked = checkBoxes.filter((checkbox) => checkbox.checked).map(
+        (checkbox) => checkbox.value);
     this.options = checked;
     this.filterChangedCallback();
   }
@@ -74,14 +75,14 @@ class KnownFilter {
       <input class='knownRadio' type='radio' name='known' value='unknown'>
       <lable>show unknown</lable>
     </div>`;
-    this.radios = this.eGui.querySelectorAll("[name='known']");
-    this.radios.forEach(radio => {
-      radio.addEventListener('change', event => {
+    this.radios = this.eGui.querySelectorAll('[name=\'known\']');
+    this.radios.forEach((radio) => {
+      radio.addEventListener('change', (event) => {
         this.onChanged(radio);
       });
     });
     this.filterActive = false;
-    this.value = 'all'
+    this.value = 'all';
     this.filterChangedCallback = params.filterChangedCallback;
   }
 
@@ -108,12 +109,12 @@ class KnownFilter {
 
   getModel() {
     return {
-      state: this.value
-    }
+      state: this.value,
+    };
   }
 
   setModel(newModel) {
-    this.value = newModel.state
+    this.value = newModel.state;
     this.filterChangedCallback();
   }
 }
@@ -127,16 +128,16 @@ class WordFilter {
     this.wordsSpan = this.eGui.querySelector('.words');
     this.filterActive = false;
     this.filterChangedCallback = params.filterChangedCallback;
-    this.addedWords = new Set()
+    this.addedWords = new Set();
   }
 
   addWord(word) {
-    this.addedWords.add(word)
+    this.addedWords.add(word);
     this.filterChangedCallback();
   }
 
   getGui() {
-    this.wordsSpan = [...this.addedWords.values()].join(",");
+    this.wordsSpan = [...this.addedWords.values()].join(',');
     return this.eGui;
   }
 

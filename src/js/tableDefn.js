@@ -1,8 +1,8 @@
 function override(dictA, dictB) {
   return {
     ...dictA,
-    ...dictB
-  }
+    ...dictB,
+  };
 }
 
 function starsColumn(other) {
@@ -17,13 +17,13 @@ function starsColumn(other) {
 
 function markLearnedColumn(other) {
   return override({
-      headerName: 'Mark',
-      field: 'markButton',
-      cellRenderer: MarkLearnedRenderer,
-      resizable: false,
-      width: 50,
-    },
-    other);
+    headerName: 'Mark',
+    field: 'markButton',
+    cellRenderer: MarkLearnedRenderer,
+    resizable: false,
+    width: 50,
+  },
+  other);
 }
 
 function wordColumn(other) {
@@ -47,7 +47,7 @@ function occuranceColumn(other) {
     sortIndex: 1,
     width: 100,
     cellRenderer: CenteredRenderer,
-    filter: 'agNumberColumnFilter'
+    filter: 'agNumberColumnFilter',
   }, other);
 }
 
@@ -58,23 +58,23 @@ function isKnownColumn(other) {
     resizable: false,
     filter: KnownFilter,
     cellRenderer: CenteredRenderer,
-    width: 160
+    width: 160,
   }, other);
 }
 
-var sentenceCols = [
+const sentenceCols = [
   markLearnedColumn({
-    suppressSizeToFit: true
+    suppressSizeToFit: true,
   }),
   wordColumn({
-    suppressSizeToFit: true
+    suppressSizeToFit: true,
   }),
   occuranceColumn({
-    suppressSizeToFit: true
+    suppressSizeToFit: true,
   }),
   starsColumn({
     width: 160,
-    suppressSizeToFit: true
+    suppressSizeToFit: true,
   }),
   {
     headerName: 'Pos',
@@ -82,7 +82,7 @@ var sentenceCols = [
     width: 100,
     filter: true,
     cellRenderer: CenteredRenderer,
-    suppressSizeToFit: true
+    suppressSizeToFit: true,
   },
   {
     headerName: 'Sentence',
@@ -91,7 +91,7 @@ var sentenceCols = [
     cellRenderer: CenteredRenderer,
     wrapText: true,
   },
-]
+];
 
 wordsCols = [
   wordColumn(),
@@ -103,44 +103,45 @@ wordsCols = [
     sortable: true,
     cellRenderer: CenteredRenderer,
     width: 160,
-    suppressSizeToFit: true
+    suppressSizeToFit: true,
   },
 
-]
+];
 
 docWordsCols = [
   markLearnedColumn(),
   wordColumn(),
   starsColumn(),
   occuranceColumn({
-    width: 80
+    width: 80,
   }),
-  isKnownColumn()
-]
+  isKnownColumn(),
+];
 
 charCols = [
   wordColumn(),
   isKnownColumn({
     headerName: 'Alone',
   }),
-]
+];
 
 docCharCols = [
   wordColumn(),
   occuranceColumn({
-    width: 80
+    width: 80,
   }),
-  isKnownColumn()
-]
+  isKnownColumn(),
+];
 
-var Tables = {
+
+const Tables = {
   sentences: {
     columnDefs: sentenceCols,
     rowData: [],
     // todo, predict height based on number of characters in sentence
     rowHeight: 30,
-    getRowHeight: params => {
-      var sentenceLength = params.data.sentence.length
+    getRowHeight: (params) => {
+      const sentenceLength = params.data.sentence.length;
       if (sentenceLength > 150) {
         return 250;
       } else if (sentenceLength > 100) {
@@ -191,5 +192,5 @@ var Tables = {
     rowBuffer: 20,
     enableCellTextSelection: true,
     suppressRowClickSelection: true,
-  }
-}
+  },
+};

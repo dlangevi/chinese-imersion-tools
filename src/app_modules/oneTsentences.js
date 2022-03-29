@@ -1,9 +1,8 @@
-import known from "./knownWords.js";
+import known from './knownWords.js';
 
 function sentenceMostlyKnown(sentence, howKnown) {
-
-  var unknown = 0;
-  var unknownWord = ""
+  let unknown = 0;
+  let unknownWord = '';
   sentence.forEach(([word, type]) => {
     if (type != 3) return;
 
@@ -14,12 +13,11 @@ function sentenceMostlyKnown(sentence, howKnown) {
   });
 
   return [unknown == 1, unknownWord];
-
 }
 
 
 function sentenceKnown(sentence, exception, howKnown) {
-  var allKnown = true;
+  let allKnown = true;
   sentence.forEach(([word, type]) => {
     if (type != 3) return;
     if (word == exception) return;
@@ -31,59 +29,58 @@ function sentenceKnown(sentence, exception, howKnown) {
 }
 
 function toText(sentence) {
-  return sentence.map(([word, type]) => word).join("");
+  return sentence.map(([word, type]) => word).join('');
 }
 
 function parseFile(document, howKnown) {
-  var segText = document.text
+  const segText = document.text;
 
-  var oneT = []
+  const oneT = [];
   segText.forEach((sentence, index) => {
-    var [isOneT, unknownWord] = sentenceMostlyKnown(sentence, howKnown);
+    const [isOneT, unknownWord] = sentenceMostlyKnown(sentence, howKnown);
 
 
     if (isOneT && !known.isKnown(unknownWord)) {
-      var combinedSentence = toText(sentence)
-      for (var i = index - 1; i >= Math.max(index - 6, 0); i--) {
-        var isKnown = sentenceKnown(segText[i], unknownWord, howKnown)
+      let combinedSentence = toText(sentence);
+      for (let i = index - 1; i >= Math.max(index - 6, 0); i--) {
+        const isKnown = sentenceKnown(segText[i], unknownWord, howKnown);
         if (!isKnown) {
           break;
         }
-        combinedSentence = toText(segText[i]) + combinedSentence
+        combinedSentence = toText(segText[i]) + combinedSentence;
       }
-      for (var i = index + 1; i < Math.min(index + 6, segText
+      for (let i = index + 1; i < Math.min(index + 6, segText
           .length); i++) {
-        var isKnown = sentenceKnown(segText[i], unknownWord, howKnown)
+        const isKnown = sentenceKnown(segText[i], unknownWord, howKnown);
         if (!isKnown) {
           break;
         }
-        combinedSentence = combinedSentence + toText(segText[i])
+        combinedSentence = combinedSentence + toText(segText[i]);
       }
 
-      var stats = document.stats(unknownWord)
+      const stats = document.stats(unknownWord);
 
       oneT.push({
         word: unknownWord,
         occurances: stats.occurances,
         stars: stats.stars,
         position: (index / segText.length * 100).toFixed(2),
-        sentence: combinedSentence
+        sentence: combinedSentence,
       });
     }
   });
 
-  var candidateWords = new Set([...oneT.map((entry) => entry.word)])
-  var stats = document.documentStats()
+  const candidateWords = new Set([...oneT.map((entry) => entry.word)]);
+  const stats = document.documentStats();
 
   return {
     rowData: oneT,
     words: candidateWords.length,
-    ...stats
-  }
-
+    ...stats,
+  };
 }
 
 const oneTsentences = {
   parse: parseFile,
-}
-export default oneTsentences
+};
+export default oneTsentences;

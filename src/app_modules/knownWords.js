@@ -1,13 +1,13 @@
 import fs from 'fs';
-import wordStats from "./wordStats.js";
+import wordStats from './wordStats.js';
 
-const config = JSON.parse(fs.readFileSync("../config.json", "UTF-8", "r"))
+const config = JSON.parse(fs.readFileSync('../config.json', 'UTF-8', 'r'));
 
-var known = JSON.parse(fs.readFileSync(
-  config.knownWordsJson, "UTF-8", "r"));
-var knownCharacters = new Set();
-Object.keys(known).forEach(word => {
-  Array.from(word).forEach(ch => knownCharacters.add(ch));
+const known = JSON.parse(fs.readFileSync(
+    config.knownWordsJson, 'UTF-8', 'r'));
+const knownCharacters = new Set();
+Object.keys(known).forEach((word) => {
+  Array.from(word).forEach((ch) => knownCharacters.add(ch));
 });
 
 function addWord(word, age) {
@@ -16,9 +16,9 @@ function addWord(word, age) {
 
 function saveWords(callback) {
   fs.writeFile(config.knownWordsJson, JSON.stringify(known), (err) => {
-    words = Object.keys(known);
-    console.log(`Saved ${words.length} words`)
-    fs.writeFile(config.knownWords, words.join("\n"), callback);
+    const words = Object.keys(known);
+    console.log(`Saved ${words.length} words`);
+    fs.writeFile(config.knownWords, words.join('\n'), callback);
   });
 }
 
@@ -31,17 +31,17 @@ function knownWordsTable() {
     return {
       word: key,
       interval: value,
-      stars: wordStats.frequency(key)
-    }
+      stars: wordStats.frequency(key),
+    };
   });
 }
 
 function knownCharsTable() {
-  return [... knownCharacters].map(ch => {
+  return [...knownCharacters].map((ch) => {
     return {
       word: ch,
       isKnown: (ch in known),
-    }
+    };
   });
 }
 
@@ -50,7 +50,7 @@ function numKnownCharacters() {
 }
 
 function knownLevels() {
-  return wordStats.frequencyStats(known)
+  return wordStats.frequencyStats(known);
 }
 
 // exports various dictionaries
@@ -75,5 +75,5 @@ const knownWords = {
   saveWords: saveWords,
   knownCharacters: numKnownCharacters,
   knownLevels: knownLevels,
-}
-export default knownWords
+};
+export default knownWords;
