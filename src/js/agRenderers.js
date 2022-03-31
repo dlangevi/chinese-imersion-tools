@@ -22,11 +22,9 @@ export class MarkLearnedRenderer {
       if (rowData.isKnown == false) {
         row.setDataValue('isKnown', true);
       }
-      if (Tables.sentences.api) {
-        const filterInstance = Tables.sentences.api.getFilterInstance(
-            'word');
-        filterInstance.addWord(rowData.word);
-      }
+      const filterInstance = params.api.getFilterInstance(
+          'word');
+      filterInstance.addWord(rowData.word);
     };
     this.eGui.addEventListener('click', this.eventListener);
   }
@@ -47,7 +45,7 @@ export class RemoveBookRenderer {
     this.eGui.setAttribute('src', 'assets/img/circle-check.svg');
     this.eGui.classList.add('markLearned');
     this.eventListener = () => {
-      Tables.myBookList.api.applyTransaction({
+      params.api.applyTransaction({
         remove: [{
           'title': params.node.id,
         }],
@@ -84,7 +82,7 @@ export class CenteredRenderer {
 async function exportWords(rows) {
   withLoader(async () => {
     const words = [...new Set(rows.map((row) => row.word))];
-    const contents = await post('/exportwords', {
+    const contents = await post('/addWords', {
       words: words,
     });
     const obj = await contents.json();

@@ -1,4 +1,6 @@
 import known from './knownWords.js';
+import {Document} from './documentStats.js';
+import catalogue from './bookCatalogue.js';
 
 function sentenceMostlyKnown(sentence, howKnown) {
   let unknown = 0;
@@ -32,7 +34,15 @@ function toText(sentence) {
   return sentence.map(([word, type]) => word).join('');
 }
 
-function parseFile(document, howKnown) {
+
+function parseFile(bookname, wellKnown) {
+  let howKnown = 0;
+  if (wellKnown) {
+    howKnown = 20;
+  }
+  const filename = catalogue.getPath(bookname);
+  console.log(`Loading ${filename}`);
+  const document = new Document(filename);
   const segText = document.text;
 
   const oneT = [];
@@ -72,15 +82,39 @@ function parseFile(document, howKnown) {
 
   const candidateWords = new Set([...oneT.map((entry) => entry.word)]);
   const stats = document.documentStats();
-
+  const documentWords = document.documentWords();
+  const documentChars = document.documentChars();
   return {
-    rowData: oneT,
-    words: candidateWords.length,
-    ...stats,
+    stats: stats,
+    sentences: {
+      rowData: oneT,
+      words: candidateWords.size,
+    },
   };
 }
 
 const oneTsentences = {
-  parse: parseFile,
+  register: (app) => {
+    app.post('/loadfile', (req, res, next) => {
+      const bookname = req.body.name;
+      const wellKnown = req.body.wellKnown;
+      const parsed = parseFile(bookname, wellKnown);
+      res.json(parsed);
+    });
+
+    app.post('/loadCombinedList', (req, res, next) => {
+      const listname = req.body.name;
+      const wellKnown = req.body.wellKnown;
+
+      const books = catalogue.loadList(listname);
+      const output = [];
+
+      books.forEach((bookname) => {
+        const parsed = parseFile(bookname, wellKnown);
+        output.push(parsed);
+      });
+      res.json(output);
+    });
+  },
 };
 export default oneTsentences;

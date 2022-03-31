@@ -29,7 +29,10 @@ const bookCatalogue = {
   getPath: (bookName) => loadBooks()[bookName].segmentedText,
   listCustomList: listCustomList,
   allBookData: () => {},
-  loadList: (listname) => {},
+  loadList: (listname) => {
+    return lists[listname];
+
+  },
   saveList: (listname, data) => {
     lists[listname] = data;
     fs.writeFileSync(listsFile, JSON.stringify(lists));

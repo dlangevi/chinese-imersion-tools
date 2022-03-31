@@ -2,43 +2,68 @@ import fs from 'fs';
 import known from './knownWords.js';
 import wordStats from './wordStats.js';
 
+export class CombinedDocument {
+  #listname;
+  #documents
+
+  constructor(listname) {
+    this.#listname = listname;
+    this.#documents = {};
+    const books = catalogue.loadList(listname);
+    books.forEach((bookname) => {
+      const filename = catalogue.getPath(bookname);
+      this.#documents.push(new Document(filename));
+    });
+  }
+}
+
 export class Document {
   #segText;
+  #filename;
+  #wordTable;
+  #charTable;
+  #totalWords;
+  #wellKnownWords;
+  #knownWords;
+  #unKnownWords;
+  #totalKnownWords;
+  #totalWellKnownWords;
+
   constructor(filename) {
-    this.filename = filename;
+    this.#filename = filename;
 
 
     const cachedFileData = filename + '.cached';
     if (fs.existsSync(cachedFileData)) {
       const cachedData = JSON.parse(fs.readFileSync(cachedFileData, 'UTF-8',
           'r'));
-      [this.wordTable, this.charTable, this.totalWords] = cachedData;
+      [this.#wordTable, this.#charTable, this.#totalWords] = cachedData;
     } else {
       // This is the most computationally heavy block and also
       // is deterministic, so cache the results
       this.#loadSegText();
       const dataToCache = this.#computeFrequencyData();
       fs.writeFileSync(cachedFileData, JSON.stringify(dataToCache));
-      [this.wordTable, this.charTable, this.totalWords] = dataToCache;
+      [this.#wordTable, this.#charTable, this.#totalWords] = dataToCache;
     }
     this.#generateStats();
 
-    this.wellKnownWords = {};
-    this.knownWords = {};
-    this.unKnownWords = {};
+    this.#wellKnownWords = {};
+    this.#knownWords = {};
+    this.#unKnownWords = {};
 
-    Object.entries(this.wordTable).forEach(([word, occurances]) => {
+    Object.entries(this.#wordTable).forEach(([word, occurances]) => {
       if (known.isKnown(word)) {
-        this.knownWords[word] = occurances;
+        this.#knownWords[word] = occurances;
       } else {
-        this.unKnownWords[word] = occurances;
+        this.#unKnownWords[word] = occurances;
       }
     });
   };
 
   #loadSegText() {
     this.#segText = JSON.parse(fs.readFileSync(
-        this.filename,
+        this.#filename,
         'UTF-8', 'r'));
   };
 
@@ -69,13 +94,13 @@ export class Document {
   }
 
   #generateStats() {
-    this.totalKnownWords = 0;
-    this.totalWellKnownWords = 0;
-    Object.entries(this.wordTable).forEach(([word, frequency]) => {
+    this.#totalKnownWords = 0;
+    this.#totalWellKnownWords = 0;
+    Object.entries(this.#wordTable).forEach(([word, frequency]) => {
       if (known.isKnown(word)) {
-        this.totalKnownWords += frequency;
+        this.#totalKnownWords += frequency;
         if (known.isKnown(word, 20)) {
-          this.totalWellKnownWords += frequency;
+          this.#totalWellKnownWords += frequency;
         }
       }
     });
@@ -89,11 +114,11 @@ export class Document {
   };
 
   inDocument(word) {
-    return word in this.wordTable;
+    return word in this.#wordTable;
   }
 
   documentWords() {
-    return Object.entries(this.wordTable).map(([word, occurances]) => {
+    return Object.entries(this.#wordTable).map(([word, occurances]) => {
       return {
         word: word,
         occurances: occurances,
@@ -104,7 +129,7 @@ export class Document {
   }
 
   documentChars() {
-    return Object.entries(this.charTable).map(([ch, occurances]) => {
+    return Object.entries(this.#charTable).map(([ch, occurances]) => {
       return {
         word: ch,
         occurances: occurances,
@@ -115,20 +140,24 @@ export class Document {
 
   documentStats() {
     return {
-      totalWords: this.totalWords,
-      curentKnownWords: this.totalKnownWords,
-      currentWellKnownWords: this.totalWellKnownWords,
-      currentKnown: this.totalKnownWords / this.totalWords * 100,
-      currentWellKnown: this.totalWellKnownWords / this.totalWords * 100,
+      totalWords: this.#totalWords,
+      curentKnownWords: this.#totalKnownWords,
+      currentWellKnownWords: this.#totalWellKnownWords,
+      currentKnown: this.#totalKnownWords / this.#totalWords * 100,
+      currentWellKnown: this.#totalWellKnownWords / this.#totalWords * 100,
     };
   }
 
   stats(word) {
-    const occurances = this.wordTable[word];
+    const occurances = this.#wordTable[word];
     return {
       occurances: occurances,
-      percent: occurances / this.totalWords * 100,
+      percent: occurances / this.#totalWords * 100,
       stars: wordStats.frequency(word),
     };
+  }
+
+  combine(otherDocument) {
+
   }
 }

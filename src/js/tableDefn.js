@@ -166,8 +166,8 @@ export default {
     // onBodyScrollEnd: (event) => migakuParse(),
     onSortChanged: (event) => migakuParse(),
     onFilterChanged: (event) => {
-      reCalcSentenceStats();
-      migakuParse();
+      //reCalcSentenceStats();
+      // migakuParse();
     },
   },
   words: {

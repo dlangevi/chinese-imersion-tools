@@ -75,5 +75,34 @@ const knownWords = {
   saveWords: saveWords,
   knownCharacters: numKnownCharacters,
   knownLevels: knownLevels,
+
+  register: (app) => {
+    app.get('/saveWordlist', (req, res, next) => {
+      // todo, do a callback promise or smth
+      saveWords((err) => {
+        console.log('Saved wordlist')
+        res.json({
+          success: err,
+          totalWords: knownWords.knownWords(),
+        });
+      });
+    });
+
+    app.post('/addWords', (req, res, next) => {
+      const words = req.body.words;
+      console.log(words);
+      words.forEach((word) => addWord(word, 365));
+      fs.appendFile(config.exportedWords,
+          words.join('\n') + '\n',
+          (err) => {
+            const myWords = knownWordsTable();
+            res.json({
+              success: err,
+              totalWords: myWords.length,
+              words: myWords,
+            });
+          });
+    });
+  },
 };
 export default knownWords;

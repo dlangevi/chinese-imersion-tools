@@ -23,6 +23,8 @@ async function main() {
       () => loadFile(true));
   document.querySelector('#showfavorite').addEventListener('click',
       loadFavorites);
+  document.querySelector('#loadfavorite').addEventListener('click',
+      loadFavoritesList);
 
   setTimeout(() => {
     migakuParse();
@@ -63,6 +65,15 @@ async function loadFavorites() {
   });
 }
 
+async function loadFavoritesList() {
+  const response = await post('/loadCombinedList', {
+    name: 'favorites',
+    wellKnown: false,
+  });
+  const data = await response.json();
+  console.log(data);
+}
+
 
 async function loadFile(wellKnown = false) {
   const fileSelector = document.querySelector('#jsonFiles');
@@ -74,10 +85,9 @@ async function loadFile(wellKnown = false) {
   });
 
   const data = await response.json();
-
   const sentences = data.sentences;
 
-  Tables.sentences.data = sentences;
+  Tables.sentences.data = data;
   Tables.sentences.data.wellKnown = wellKnown;
   Tables.sentences.api.setRowData(sentences.rowData);
 
@@ -87,9 +97,6 @@ async function loadFile(wellKnown = false) {
 
 function reCalcSentenceStats() {
   const data = Tables.sentences.data;
-  if (data == undefined) {
-    return;
-  }
   const wellKnown = Tables.sentences.data.wellKnown;
   const currentWords = {};
   Tables.sentences.api.forEachNodeAfterFilter((rowNode, index) => {
@@ -102,11 +109,11 @@ function reCalcSentenceStats() {
     words += 1;
     occurances += val;
   });
-  const percent = occurances / data.totalWords * 100;
+  const percent = occurances / data.stats.totalWords * 100;
 
-  let currentKnown = data.currentKnown;
+  let currentKnown = data.stats.currentKnown;
   if (wellKnown) {
-    currentKnown = data.currentWellKnown;
+    currentKnown = data.stats.currentWellKnown;
   }
   document.querySelector('#oneTwords').innerHTML = words;
   document.querySelector('#occurances').innerHTML = occurances;

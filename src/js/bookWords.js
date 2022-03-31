@@ -56,17 +56,16 @@ async function loadFile(wellKnown = false) {
   const fileSelector = document.querySelector('#jsonFiles');
 
   localStorage.setItem('ch|loadFile', fileSelector.value);
-  const response = await post('/loadfile', {
+  const response = await post('/loadFileWords', {
     name: fileSelector.value,
-    wellKnown: wellKnown,
   });
 
   const data = await response.json();
 
-  const words = data.docWords;
+  const words = data;
 
   Tables.docWords.data = words;
-  Tables.docWords.stats = data.stats;
+  // Tables.docWords.stats = data.stats;
   Tables.docWords.api.setRowData(words);
 
   return;
