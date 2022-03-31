@@ -1,7 +1,7 @@
 import fs from 'fs';
 import wordStats from './wordStats.js';
+import config from './config.js';
 
-const config = JSON.parse(fs.readFileSync('../config.json', 'UTF-8', 'r'));
 
 const known = JSON.parse(fs.readFileSync(
     config.knownWordsJson, 'UTF-8', 'r'));

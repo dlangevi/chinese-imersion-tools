@@ -1,9 +1,7 @@
 import fetch from 'node-fetch';
 import knownWords from './knownWords.js';
-
+import config from './config.js';
 import fs from 'fs/promises';
-import fsSync from 'fs';
-const config = JSON.parse(fsSync.readFileSync('../config.json', 'UTF-8', 'r'));
 
 async function invoke(action, params) {
   const response = await fetch('http://127.0.0.1:8765', {
