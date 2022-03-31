@@ -3,14 +3,80 @@ import {
   post,
   migakuParse,
 } from './shared.js';
-import Tables from './tableDefn.js';
+import {
+  markLearnedColumn,
+  wordColumn,
+  occuranceColumn,
+  starsColumn,
+} from './tableDefn.js';
+import {
+  CenteredRenderer,
+} from './agRenderers.js';
+
+const sentenceCols = [
+  markLearnedColumn({
+    suppressSizeToFit: true,
+  }),
+  wordColumn({
+    suppressSizeToFit: true,
+  }),
+  occuranceColumn({
+    suppressSizeToFit: true,
+  }),
+  starsColumn({
+    width: 160,
+    suppressSizeToFit: true,
+  }),
+  {
+    headerName: 'Pos',
+    field: 'position',
+    width: 100,
+    filter: true,
+    cellRenderer: CenteredRenderer,
+    suppressSizeToFit: true,
+  },
+  {
+    headerName: 'Sentence',
+    field: 'sentence',
+    resizable: true,
+    cellRenderer: CenteredRenderer,
+    wrapText: true,
+  },
+];
+
+const Sentences = {
+  columnDefs: sentenceCols,
+  rowData: [],
+  // todo, predict height based on number of characters in sentence
+  rowHeight: 30,
+  getRowHeight: (params) => {
+    const sentenceLength = params.data.sentence.length;
+    if (sentenceLength > 150) {
+      return 250;
+    } else if (sentenceLength > 100) {
+      return 150;
+    } else {
+      return 100;
+    }
+  },
+  rowBuffer: 100,
+  enableCellTextSelection: true,
+  suppressRowClickSelection: true,
+  // If these can be ratelimited then reenable
+  // onBodyScrollEnd: (event) => migakuParse(),
+  onSortChanged: (event) => migakuParse(),
+  onFilterChanged: (event) => {
+    // reCalcSentenceStats();
+    // migakuParse();
+  },
+};
 
 async function main() {
   const eGridDiv = document.querySelector('#sentenceGrid');
-  new agGrid.Grid(eGridDiv, Tables.sentences);
+  new agGrid.Grid(eGridDiv, Sentences);
 
-  Tables.sentences.columnApi.sizeColumnsToFit(eGridDiv.offsetWidth - 40);
-  observeTable('#sentenceGrid', Tables.sentences);
+  Sentences.columnApi.sizeColumnsToFit(eGridDiv.offsetWidth - 40);
+  observeTable('#sentenceGrid', Sentences);
 
   await loadFileList();
   await loadFile();
@@ -73,9 +139,9 @@ async function loadFavoritesList() {
   const data = await response.json();
   const sentences = data.sentences;
 
-  Tables.sentences.data = data;
-  Tables.sentences.data.wellKnown = false;
-  Tables.sentences.api.setRowData(sentences.rowData);
+  Sentences.data = data;
+  Sentences.data.wellKnown = false;
+  Sentences.api.setRowData(sentences.rowData);
 
   reCalcSentenceStats();
   return;
@@ -94,19 +160,19 @@ async function loadFile(wellKnown = false) {
   const data = await response.json();
   const sentences = data.sentences;
 
-  Tables.sentences.data = data;
-  Tables.sentences.data.wellKnown = wellKnown;
-  Tables.sentences.api.setRowData(sentences.rowData);
+  Sentences.data = data;
+  Sentences.data.wellKnown = wellKnown;
+  Sentences.api.setRowData(sentences.rowData);
 
   reCalcSentenceStats();
   return;
 }
 
 function reCalcSentenceStats() {
-  const data = Tables.sentences.data;
-  const wellKnown = Tables.sentences.data.wellKnown;
+  const data = Sentences.data;
+  const wellKnown = Sentences.data.wellKnown;
   const currentWords = {};
-  Tables.sentences.api.forEachNodeAfterFilter((rowNode, index) => {
+  Sentences.api.forEachNodeAfterFilter((rowNode, index) => {
     currentWords[rowNode.data.word] = rowNode.data.occurances;
   });
   let words = 0;

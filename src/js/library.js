@@ -17,33 +17,34 @@ async function loadFileList() {
   return;
 }
 
-const bookListCols = [{
-  headerName: 'Title',
-  field: 'title',
-  width: 200,
-  rowDrag: true,
-  sortable: true,
-},
-{
-  headerName: 'Author',
-  field: 'author',
-  width: 100,
-  sortable: true,
-},
-{
-  headerName: 'Words',
-  field: 'words',
-  width: 50,
-  filter: 'agNumberColumnFilter',
-  sortable: true,
-},
-{
-  headerName: 'Percent',
-  field: 'percent',
-  width: 50,
-  sortable: true,
-  filter: 'agNumberColumnFilter',
-},
+const bookListCols = [
+  {
+    headerName: 'Title',
+    field: 'title',
+    width: 200,
+    rowDrag: true,
+    sortable: true,
+  },
+  {
+    headerName: 'Author',
+    field: 'author',
+    width: 100,
+    sortable: true,
+  },
+  {
+    headerName: 'Words',
+    field: 'words',
+    width: 50,
+    filter: 'agNumberColumnFilter',
+    sortable: true,
+  },
+  {
+    headerName: 'Percent',
+    field: 'percent',
+    width: 50,
+    sortable: true,
+    filter: 'agNumberColumnFilter',
+  },
 ];
 
 const Tables = {

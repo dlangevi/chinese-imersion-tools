@@ -2,14 +2,37 @@ import {
   observeTable,
   post,
 } from './shared.js';
-import Tables from './tableDefn.js';
+import {
+   markLearnedColumn,
+   wordColumn,
+   starsColumn,
+   occuranceColumn,
+   isKnownColumn,
+} from './tableDefn.js';
+
+const DocumentWords = {
+  columnDefs: [
+   markLearnedColumn(),
+   wordColumn(),
+   starsColumn(),
+   occuranceColumn({
+     width: 80,
+   }),
+   isKnownColumn(),
+ ],
+  rowData: [],
+  rowHeight: 60,
+  rowBuffer: 20,
+  enableCellTextSelection: true,
+  suppressRowClickSelection: true,
+};
 
 async function main() {
   const dGridDiv = document.querySelector('#docWordGrid');
-  new agGrid.Grid(dGridDiv, Tables.docWords);
+  new agGrid.Grid(dGridDiv, DocumentWords);
 
-  Tables.docWords.columnApi.sizeColumnsToFit(dGridDiv.offsetWidth - 40);
-  observeTable('#docWordGrid', Tables.docWords);
+  DocumentWords.columnApi.sizeColumnsToFit(dGridDiv.offsetWidth - 40);
+  observeTable('#docWordGrid', DocumentWords);
 
   await loadFileList();
   await loadFile();
@@ -18,14 +41,14 @@ async function main() {
       () => loadFile(false));
   document.querySelector('#showKnown').addEventListener('click',
       () => {
-        const filter = Tables.docWords.api.getFilterInstance('isKnown');
+        const filter = DocumentWords.api.getFilterInstance('isKnown');
         filter.setModel({
           state: 'known',
         });
       });
   document.querySelector('#showUnknown').addEventListener('click',
       () => {
-        const filter = Tables.docWords.api.getFilterInstance('isKnown');
+        const filter = DocumentWords.api.getFilterInstance('isKnown');
         filter.setModel({
           state: 'unknown',
         });
@@ -64,9 +87,9 @@ async function loadFile(wellKnown = false) {
 
   const words = data;
 
-  Tables.docWords.data = words;
-  // Tables.docWords.stats = data.stats;
-  Tables.docWords.api.setRowData(words);
+  DocumentWords.data = words;
+  // DocumentWords.stats = data.stats;
+  DocumentWords.api.setRowData(words);
 
   return;
 }
