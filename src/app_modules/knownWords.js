@@ -80,7 +80,7 @@ const knownWords = {
     app.get('/saveWordlist', (req, res, next) => {
       // todo, do a callback promise or smth
       saveWords((err) => {
-        console.log('Saved wordlist')
+        console.log('Saved wordlist');
         res.json({
           success: err,
           totalWords: knownWords.knownWords(),

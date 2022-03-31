@@ -1,13 +1,11 @@
 import express from 'express';
-import fs from 'fs';
 import bodyParser from 'body-parser';
 
 import catalogue from './app_modules/bookCatalogue.js';
-import oneTsentences from './app_modules/oneTsentences.js';
-import {Document} from './app_modules/documentStats.js';
+import oneTsentences from './app_modules/documentProcessor.js';
+import {MultiDocumentProcessor} from './app_modules/documentProcessor.js';
 import {register} from './app_modules/importFromAnki.js';
 import knownWords from './app_modules/knownWords.js';
-import config from './app_modules/config.js';
 
 // Init App
 const app = express();
@@ -31,7 +29,7 @@ app.post('/loadFileWords', (req, res, next) => {
   const bookname = req.body.name;
   const filename = catalogue.getPath(bookname);
   console.log(`Loading ${filename}`);
-  const document = new Document(filename);
+  const document = new MultiDocumentProcessor(filename);
   const documentWords = document.documentWords();
   res.json(documentWords);
 });

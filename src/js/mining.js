@@ -71,7 +71,14 @@ async function loadFavoritesList() {
     wellKnown: false,
   });
   const data = await response.json();
-  console.log(data);
+  const sentences = data.sentences;
+
+  Tables.sentences.data = data;
+  Tables.sentences.data.wellKnown = false;
+  Tables.sentences.api.setRowData(sentences.rowData);
+
+  reCalcSentenceStats();
+  return;
 }
 
 

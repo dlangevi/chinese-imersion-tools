@@ -45,7 +45,7 @@ async function main() {
     });
     await post('/savelist', {
       title: currentList,
-      data: books,
+      books: books,
     });
   });
 

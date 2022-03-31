@@ -14,6 +14,7 @@ const lists = JSON.parse(fs.readFileSync(listsFile, 'UTF-8', 'r'));
 
 function listCustomList(listName) {
   const books = loadBooks();
+  console.log(lists);
   const list = lists[listName];
   console.log(list);
   return Object.keys(books).filter((title) => {
@@ -31,7 +32,6 @@ const bookCatalogue = {
   allBookData: () => {},
   loadList: (listname) => {
     return lists[listname];
-
   },
   saveList: (listname, data) => {
     lists[listname] = data;
@@ -72,6 +72,13 @@ const bookCatalogue = {
 
     app.get('/listlist', (req, res, next) => {
       res.json(Object.keys(lists));
+    });
+
+    app.post('/savelist', (req, res) => {
+      const listname = req.body.title;
+      const books = req.body.books;
+      bookCatalogue.saveList(listname, books);
+      res.json({success: 'success'});
     });
 
     app.post('/loadlist', (req, res, next) => {
