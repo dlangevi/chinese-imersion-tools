@@ -2,7 +2,7 @@ extends ../layouts/dashboard.pug
 
 block config
     - var bodyClass = 'sb-nav-fixed'
-    - var pageTitle = 'Mining'
+    - var pageTitle = 'List Mining'
     - var sidenavStyle = 'sb-sidenav-dark'
 
 block content
@@ -18,26 +18,24 @@ block content
               span#oneTwords 
               |(Currently know 
               span#known
-              |p of the book)
+              |p of the list)
             div Total number of occurances covered: 
               span#occurances
               |(
               span#percent 
-              |p of the total book)
+              |p of the total list)
 
       .row
-        .col-7
+        .col-8
           button#loadAll.btn.btn-primary Load all
           button#loadKnown.btn.btn-primary Load well known
 
-        .col-5
-          .input-group
-            button#showfavorite.input-group-text.btn-primary Show Favorites
-            select#jsonFiles.form-select
+        .col-4
+          select#lists.form-select
 
       .row.flex-grow-1
         #sentenceGrid.ag-theme-material
 
 append scripts
     script(type='module', src='js/tableDefn.js')
-    script(type='module', src='js/mining.js')
+    script(type='module', src='js/listMining.js')

@@ -91,7 +91,7 @@ const knownWords = {
     app.post('/addWords', (req, res, next) => {
       const words = req.body.words;
       console.log(words);
-      words.forEach((word) => addWord(word, 365));
+      words.forEach((word) => addWord(word, 10000));
       fs.appendFile(config.exportedWords,
           words.join('\n') + '\n',
           (err) => {

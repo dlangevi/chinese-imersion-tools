@@ -17,8 +17,9 @@ export class Document {
   totalWellKnownWords;
   segText;
 
-  constructor(filename) {
+  constructor(filename, title) {
     this.#filename = filename;
+    this.title = title; // TODO use real name
     const cachedFileData = filename + '.cached';
     if (fs.existsSync(cachedFileData)) {
       const cachedData = JSON.parse(fs.readFileSync(cachedFileData, 'UTF-8',

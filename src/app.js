@@ -27,9 +27,7 @@ oneTsentences.register(app);
 
 app.post('/loadFileWords', (req, res, next) => {
   const bookname = req.body.name;
-  const filename = catalogue.getPath(bookname);
-  console.log(`Loading ${filename}`);
-  const document = new MultiDocumentProcessor(filename);
+  const document = new MultiDocumentProcessor(bookname);
   const documentWords = document.documentWords();
   res.json(documentWords);
 });

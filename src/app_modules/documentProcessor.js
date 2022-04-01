@@ -8,7 +8,6 @@ import wordStats from './wordStats.js';
  * sits, it can take a single filename, or a list of filenames
  */
 export class MultiDocumentProcessor {
-  #filenames = [];
   #documents = [];
 
   #aggregateWordTable = {};
@@ -17,16 +16,15 @@ export class MultiDocumentProcessor {
   #aggregateTotalKnownWords = 0;
   #aggregateTotalWellKnownWords = 0;
 
-  constructor(filenames) {
-    if (filenames instanceof Array) {
-      this.#filenames = filenames;
-      this.#documents = this.#filenames.map((filename) => {
-        return new Document(filename);
-      });
-    } else {
-      this.#filenames[0] = filenames;
-      this.#documents[0] = new Document(filenames);
+  constructor(booknames) {
+    if (!(booknames instanceof Array)) {
+      booknames = [booknames];
     }
+    this.#documents = booknames.map((bookname) => {
+      const filename = catalogue.getPath(bookname);
+      console.log(`Loading ${filename}`);
+      return new Document(filename, bookname);
+    });
 
     this.#aggregateStats();
   }
@@ -56,6 +54,7 @@ export class MultiDocumentProcessor {
           }
 
           // TODO aggregate this
+          // const stats = this.wordStats(unknownWord);
           const stats = document.wordStats(unknownWord);
 
           oneT.push({
@@ -63,12 +62,22 @@ export class MultiDocumentProcessor {
             occurances: stats.occurances,
             stars: stats.stars,
             position: (index / segText.length * 100).toFixed(2),
+            bookTitle: document.title,
             sentence: combinedSentence,
           });
         }
       });
     });
     return oneT;
+  }
+
+  wordStats(word) {
+    const occurances = this.#aggregateWordTable[word];
+    return {
+      occurances: occurances,
+      percent: occurances / this.#aggregateTotalWords * 100,
+      stars: wordStats.frequency(word),
+    };
   }
 
   /*
@@ -192,10 +201,7 @@ function parseFile(bookname, wellKnown) {
   if (wellKnown) {
     howKnown = 20;
   }
-  const filename = catalogue.getPath(bookname);
-  console.log(`Loading ${filename}`);
-  // Todo, just load a single document?
-  const document = new MultiDocumentProcessor(filename);
+  const document = new MultiDocumentProcessor(bookname);
 
   const oneT = document.candidateSentences(howKnown);
   const candidateWords = new Set([...oneT.map((entry) => entry.word)]);
@@ -217,14 +223,12 @@ function parseList(listname, wellKnown) {
     howKnown = 20;
   }
   const books = catalogue.loadList(listname);
-  const filenames = books.map((bookname) => catalogue.getPath(bookname));
-  const document = new MultiDocumentProcessor(filenames);
+  const document = new MultiDocumentProcessor(books);
 
   const oneT = document.candidateSentences(howKnown);
   const candidateWords = new Set([...oneT.map((entry) => entry.word)]);
 
   const stats = document.documentStats();
-  console.log(stats);
   return {
     stats: stats,
     sentences: {

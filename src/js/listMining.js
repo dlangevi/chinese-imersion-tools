@@ -28,11 +28,12 @@ const sentenceCols = [
     suppressSizeToFit: true,
   }),
   {
-    headerName: 'Pos',
-    field: 'position',
-    width: 100,
+    headerName: 'Book',
+    field: 'bookTitle',
+    width: 200,
     filter: true,
     cellRenderer: CenteredRenderer,
+    wrapText: true,
     suppressSizeToFit: true,
   },
   {
@@ -41,6 +42,7 @@ const sentenceCols = [
     resizable: true,
     cellRenderer: CenteredRenderer,
     wrapText: true,
+    flex: 1,
   },
 ];
 
@@ -75,20 +77,19 @@ async function main() {
   const eGridDiv = document.querySelector('#sentenceGrid');
   new agGrid.Grid(eGridDiv, Sentences);
 
+  // Sentences.columnApi.sizeColumnsToFit();
   Sentences.columnApi.sizeColumnsToFit(eGridDiv.offsetWidth - 40);
   observeTable('#sentenceGrid', Sentences);
 
-  await loadFileList();
-  await loadFile();
+  await loadListList();
+  await loadList();
 
-  document.querySelector('#jsonFiles').addEventListener('change',
-      () => loadFile(false));
+  document.querySelector('#lists').addEventListener('change',
+      () => loadList(false));
   document.querySelector('#loadAll').addEventListener('click',
-      () => loadFile(false));
+      () => loadList(false));
   document.querySelector('#loadKnown').addEventListener('click',
-      () => loadFile(true));
-  document.querySelector('#showfavorite').addEventListener('click',
-      loadFavorites);
+      () => loadList(true));
 
   setTimeout(() => {
     migakuParse();
@@ -96,53 +97,38 @@ async function main() {
   3000);
 }
 
-async function loadFileList() {
-  const response = await fetch('/filelist');
+async function loadListList() {
+  const response = await fetch('/listlist');
   const data = await response.json();
-  const fileSelector = document.querySelector('#jsonFiles');
-  fileSelector.innerHTML = '';
+  const listSelector = document.querySelector('#lists');
+  listSelector.innerHTML = '';
   data.forEach((title) => {
     const opt = document.createElement('option');
     opt.value = title;
     opt.innerHTML = title;
-    fileSelector.appendChild(opt);
+    listSelector.appendChild(opt);
   });
 
-  const savedFile = localStorage.getItem('ch|loadFile');
+  const savedFile = localStorage.getItem('ch|loadList');
   if (savedFile) {
-    const fileSelector = document.querySelector('#jsonFiles');
-    fileSelector.value = savedFile;
+    const listSelector = document.querySelector('#lists');
+    listSelector.value = savedFile;
   }
   return;
 }
 
-async function loadFavorites() {
-  const response = await fetch('/favfilelist');
-  const data = await response.json();
-  const fileSelector = document.querySelector('#jsonFiles');
-  fileSelector.innerHTML = '';
-  data.forEach((title) => {
-    const opt = document.createElement('option');
-    opt.value = title;
-    opt.innerHTML = title;
-    fileSelector.appendChild(opt);
+async function loadList(wellKnown = false) {
+  const listSelector = document.querySelector('#lists');
+  localStorage.setItem('ch|loadList', listSelector.value);
+  const response = await post('/loadCombinedList', {
+    name: listSelector.value,
+    wellKnown: false,
   });
-}
-
-async function loadFile(wellKnown = false) {
-  const fileSelector = document.querySelector('#jsonFiles');
-
-  localStorage.setItem('ch|loadFile', fileSelector.value);
-  const response = await post('/loadfile', {
-    name: fileSelector.value,
-    wellKnown: wellKnown,
-  });
-
   const data = await response.json();
   const sentences = data.sentences;
 
   Sentences.data = data;
-  Sentences.data.wellKnown = wellKnown;
+  Sentences.data.wellKnown = false;
   Sentences.api.setRowData(sentences.rowData);
 
   reCalcSentenceStats();
