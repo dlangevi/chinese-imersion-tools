@@ -14,9 +14,7 @@ const lists = JSON.parse(fs.readFileSync(listsFile, 'UTF-8', 'r'));
 
 function listCustomList(listName) {
   const books = loadBooks();
-  console.log(lists);
   const list = lists[listName];
-  console.log(list);
   return Object.keys(books).filter((title) => {
     return list.includes(title);
   });
@@ -28,7 +26,6 @@ const bookCatalogue = {
     return Object.keys(books);
   },
   getPath: (bookName) => loadBooks()[bookName].segmentedText,
-  listCustomList: listCustomList,
   allBookData: () => {},
   loadList: (listname) => {
     return lists[listname];
@@ -43,9 +40,17 @@ const bookCatalogue = {
   },
   register: (app) => {
     // Sentences
-    app.get('/filelist', (req, res, next) => {
+    app.post('/filelist', (req, res, next) => {
       const books = loadBooks();
-      res.json(Object.keys(books));
+      const listName = req.body.list;
+      if (listName == 'all' || listName == undefined) {
+        res.json(Object.keys(books));
+      } else {
+        const list = lists[listName];
+        res.json(Object.keys(books).filter((title) => {
+          return list.includes(title);
+        }));
+      }
     });
 
     // Load Favorites
@@ -84,7 +89,11 @@ const bookCatalogue = {
     app.post('/loadlist', (req, res, next) => {
       const listname = req.body.title;
       const books = loadBooks();
-      const ourBooks = listCustomList(listname);
+      let ourBooks = Object.keys(books);
+      if (listname !== 'all') {
+        console.log('loading' + listname);
+        ourBooks = listCustomList(listname);
+      }
       const listcts = ourBooks.map((bookKey) => {
         const book = books[bookKey];
         const document = new Document(book

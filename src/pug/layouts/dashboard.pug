@@ -2,6 +2,7 @@ doctype html
 
 block config
     - var pageTitle = "Page Title"
+    - var showSideBar = false
 
 html(lang='en')
 
@@ -17,20 +18,23 @@ html(lang='en')
         script(type='module', src='js/agRenderers.js')
         script(type='module', src='js/spinner.js')
 
-    body(class=bodyClass)
+    if showSideBar
+      body(class="bodyClass")
+    else
+      body(class="bodyClass sb-sidenav-toggled")
 
-        include includes/navigation/topnav.pug
+    include includes/navigation/topnav.pug
 
-        #layoutSidenav
+    #layoutSidenav
+        
+        #layoutSidenav_nav
+
+            include includes/navigation/sidenav.pug
+
+        #layoutSidenav_content
             
-            #layoutSidenav_nav
+            #loader
+            main.h-100
+                block content
 
-                include includes/navigation/sidenav.pug
-
-            #layoutSidenav_content
-                
-                #loader
-                main.h-100
-                    block content
-
-        include includes/scripts.pug
+    include includes/scripts.pug

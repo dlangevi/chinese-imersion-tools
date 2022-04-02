@@ -78,7 +78,14 @@ async function main() {
   Sentences.columnApi.sizeColumnsToFit(eGridDiv.offsetWidth - 40);
   observeTable('#sentenceGrid', Sentences);
 
-  await loadFileList();
+  const params = new URLSearchParams(window.location.search);
+  console.log(params);
+  const customList = params.get('list');
+  if (customList) {
+    await loadFileList(customList);
+  } else {
+    await loadFileList('all');
+  }
   await loadFile();
 
   document.querySelector('#jsonFiles').addEventListener('change',
@@ -88,7 +95,7 @@ async function main() {
   document.querySelector('#loadKnown').addEventListener('click',
       () => loadFile(true));
   document.querySelector('#showfavorite').addEventListener('click',
-      loadFavorites);
+      () => loadFileList('favorites'));
 
   setTimeout(() => {
     migakuParse();
@@ -96,38 +103,29 @@ async function main() {
   3000);
 }
 
-async function loadFileList() {
-  const response = await fetch('/filelist');
+async function loadFileList(list) {
+  const response = await post('/filelist', {
+    list: list,
+  });
   const data = await response.json();
   const fileSelector = document.querySelector('#jsonFiles');
   fileSelector.innerHTML = '';
+
+  const savedFile = localStorage.getItem('ch|loadFile');
+
   data.forEach((title) => {
     const opt = document.createElement('option');
     opt.value = title;
     opt.innerHTML = title;
     fileSelector.appendChild(opt);
+    if (title == savedFile) {
+      fileSelector.value = savedFile;
+    }
   });
 
-  const savedFile = localStorage.getItem('ch|loadFile');
-  if (savedFile) {
-    const fileSelector = document.querySelector('#jsonFiles');
-    fileSelector.value = savedFile;
-  }
   return;
 }
 
-async function loadFavorites() {
-  const response = await fetch('/favfilelist');
-  const data = await response.json();
-  const fileSelector = document.querySelector('#jsonFiles');
-  fileSelector.innerHTML = '';
-  data.forEach((title) => {
-    const opt = document.createElement('option');
-    opt.value = title;
-    opt.innerHTML = title;
-    fileSelector.appendChild(opt);
-  });
-}
 
 async function loadFile(wellKnown = false) {
   const fileSelector = document.querySelector('#jsonFiles');

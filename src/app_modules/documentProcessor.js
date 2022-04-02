@@ -253,6 +253,15 @@ const oneTsentences = {
       const parsed = parseList(listname, wellKnown);
       res.json(parsed);
     });
+
+    app.post('/loadFileWords', (req, res, next) => {
+      const bookname = req.body.name;
+      const document = new MultiDocumentProcessor(bookname);
+      const documentWords = document.documentWords();
+      const stats = document.documentStats();
+      res.json({words: documentWords, stats: stats});
+    });
   },
+
 };
 export default oneTsentences;

@@ -27,7 +27,7 @@ async function main() {
     const name = prompt('Name please');
     await post('/savelist', {
       title: name,
-      data: [],
+      books: [],
     });
     const selector = document.querySelector('#myBookLists');
     const opt = document.createElement('option');
@@ -56,6 +56,13 @@ async function main() {
         await post('/deletelist', {
           title: currentList,
         });
+      });
+
+  document.querySelector('#openList').addEventListener('click',
+      async () => {
+        const selector = document.querySelector('#myBookLists');
+        const currentList = selector.value;
+        window.location = '/mining.html?list=' + currentList;
       });
 
   document.querySelector('#myBookLists').addEventListener('change',

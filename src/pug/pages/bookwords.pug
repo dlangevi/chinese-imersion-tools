@@ -9,7 +9,21 @@ block content
 
   .container-fluid.h-100
     .d-flex.flex-column.h-100
-      include includes/page-header.pug
+      .row
+        .col-6 
+          include includes/page-header.pug
+        .col-6.my-auto.ms-auto
+            #stats
+              div 
+                | Currently know 
+                span#known
+                |p of the book
+              div 
+                | Learn the
+                span#neededWords
+                | top words to reach 
+                span#target
+                |p of the total book
       .row
         .col-8
           button#showKnown.btn.btn-primary Show Known

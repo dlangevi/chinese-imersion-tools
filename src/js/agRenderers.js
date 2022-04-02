@@ -14,7 +14,6 @@ export class MarkLearnedRenderer {
     // Turns out those svgs really slow down the site
     // this.eGui.classList.add('far');
     // this.eGui.classList.add('fa-check-circle');
-    //
     this.eventListener = () => {
       const row = params.node;
       const rowData = params.node.data;

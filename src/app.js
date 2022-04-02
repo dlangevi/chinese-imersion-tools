@@ -2,8 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 
 import catalogue from './app_modules/bookCatalogue.js';
-import oneTsentences from './app_modules/documentProcessor.js';
-import {MultiDocumentProcessor} from './app_modules/documentProcessor.js';
+import documentProcessor from './app_modules/documentProcessor.js';
 import {register} from './app_modules/importFromAnki.js';
 import knownWords from './app_modules/knownWords.js';
 
@@ -23,15 +22,7 @@ catalogue.register(app);
 
 knownWords.register(app);
 
-oneTsentences.register(app);
-
-app.post('/loadFileWords', (req, res, next) => {
-  const bookname = req.body.name;
-  const document = new MultiDocumentProcessor(bookname);
-  const documentWords = document.documentWords();
-  res.json(documentWords);
-});
-
+documentProcessor.register(app);
 
 app.listen(3000, () => {
   console.log('Server started on port 3000');

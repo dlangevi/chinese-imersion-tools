@@ -1,4 +1,4 @@
-import {observeTable} from './shared.js';
+import {observeTable, post} from './shared.js';
 
 async function main() {
   const eGridDiv = document.querySelector('#bookList');
@@ -7,14 +7,42 @@ async function main() {
   Tables.bookList.columnApi.sizeColumnsToFit(eGridDiv.offsetWidth - 40);
   observeTable('#bookList', Tables.bookList);
 
-  await loadFileList();
+  await loadListContents('all');
+  await loadListList();
+
+
+  document.querySelector('#myBookLists').addEventListener('change',
+      () => {
+        const selector = document.querySelector('#myBookLists');
+        const currentList = selector.value;
+        loadListContents(currentList);
+      });
 }
 
-async function loadFileList() {
-  const response = await fetch('/filelistdata');
+async function loadListList() {
+  const response = await fetch('/listlist');
+  const data = await response.json();
+  const selector = document.querySelector('#myBookLists');
+  const opt = document.createElement('option');
+  opt.value = 'all';
+  opt.innerHTML = 'all';
+  selector.appendChild(opt);
+  data.forEach((title) => {
+    const opt = document.createElement('option');
+    opt.value = title;
+    opt.innerHTML = title;
+    selector.appendChild(opt);
+  });
+  return;
+}
+
+async function loadListContents(sublist) {
+  const response = await post('/loadlist', {
+    title: sublist,
+  });
+
   const data = await response.json();
   Tables.bookList.api.setRowData(data);
-  return;
 }
 
 const bookListCols = [
