@@ -101,8 +101,8 @@ export class MultiDocumentProcessor {
           }
 
           // TODO aggregate this
-          // const stats = this.wordStats(unknownWord);
-          const stats = document.wordStats(word);
+          const stats = this.wordStats(unknownWord);
+          // const stats = document.wordStats(word);
 
           oneT.push({
             word: word,
@@ -306,17 +306,17 @@ async function parseList(listname, wellKnown) {
 
 const oneTsentences = {
   register: (app) => {
-    app.post('/loadfile', (req, res, next) => {
+    app.post('/loadfile', async (req, res, next) => {
       const bookname = req.body.name;
       const wellKnown = req.body.wellKnown;
-      const parsed = parseFile(bookname, wellKnown);
+      const parsed = await parseFile(bookname, wellKnown);
       res.json(parsed);
     });
 
-    app.post('/loadCombinedList', (req, res, next) => {
+    app.post('/loadCombinedList', async (req, res, next) => {
       const listname = req.body.name;
       const wellKnown = req.body.wellKnown;
-      const parsed = parseList(listname, wellKnown);
+      const parsed = await parseList(listname, wellKnown);
       res.json(parsed);
     });
 

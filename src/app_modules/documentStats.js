@@ -72,8 +72,8 @@ export class Document {
 
     if (bookValue.length > 0) {
       const book = bookValue[0];
-      this.wordTable = book.wordTable;
-      this.charTable = book.charTable;
+      this.wordTable = Object.fromEntries(book.wordTable);
+      this.charTable = Object.fromEntries(book.charTable);
       this.totalWords = book.totalWords;
       this.segTextSource = book.segTextSource;
       this.segText = JSON.parse(this.segTextSource);
