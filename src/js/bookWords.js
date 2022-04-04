@@ -28,7 +28,7 @@ const DocumentWords = {
   suppressRowClickSelection: true,
   onFilterChanged: (event) => {
     // todo, move this logic to all client side if possible
-    reCalcWordStats(); 
+    reCalcWordStats();
     migakuParse();
   },
 };
@@ -104,11 +104,9 @@ function reCalcWordStats() {
   const stats = DocumentWords.stats;
 
 
-
   let currentKnown = 0;
   const currentWords = [];
   DocumentWords.api.forEachNode((rowNode, index) => {
-
     if (rowNode.data.isKnown == false) {
       currentWords.push(rowNode.data);
     } else {

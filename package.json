@@ -2,7 +2,7 @@
   "name": "learnchinese",
   "version": "1.0.0",
   "description": "Tools for imersion learning",
-  "main": "app.js",
+  "main": "src/app.js",
   "type": "module",
   "scripts": {
     "start": "node scripts/npm/start.js",

@@ -1,0 +1,44 @@
+extends ../layouts/dashboard.pug
+
+block config
+    - var bodyClass = 'sb-nav-fixed'
+    - var pageTitle = 'Word Lookup'
+    - var sidenavStyle = 'sb-sidenav-dark'
+
+block content
+
+  .container-fluid.h-100
+    .d-flex.flex-column.h-100
+      .row
+        .col-6 
+          include includes/page-header.pug
+        .col-6.my-auto.ms-auto
+            #stats
+              div 
+                | Currently know 
+                span#known
+                |p of the book
+              div 
+                | Learn the
+                span#neededWords
+                | top words to reach 
+                span#target
+                |p of the total book
+      .row
+        .col-8
+          .input-group
+            input#searchBox.form-control-lg.form-control
+            button#searchButton.search.btn.btn-primary
+              i.fas.fa-search
+
+          
+
+        .col-4
+          select#myBookLists.form-select-lg.form-select
+
+      .row.flex-grow-1
+        #sentenceGrid.ag-theme-material
+
+append scripts
+    script(type='module', src='js/tableDefn.js')
+    script(type='module', src='js/wordLookup.js')

@@ -22,7 +22,6 @@ export class MultiDocumentProcessor {
     }
     this.#documents = booknames.map((bookname) => {
       const filename = catalogue.getPath(bookname);
-      console.log(`Loading ${filename}`);
       return new Document(filename, bookname);
     });
 
@@ -53,12 +52,54 @@ export class MultiDocumentProcessor {
             combinedSentence = combinedSentence + toText(segText[i]);
           }
 
-          // TODO aggregate this
-          // const stats = this.wordStats(unknownWord);
-          const stats = document.wordStats(unknownWord);
+          const stats = this.wordStats(unknownWord);
+          // I think the above works?
+          // const stats = document.wordStats(unknownWord);
 
           oneT.push({
             word: unknownWord,
+            occurances: stats.occurances,
+            stars: stats.stars,
+            position: (index / segText.length * 100).toFixed(2),
+            bookTitle: document.title,
+            sentence: combinedSentence,
+          });
+        }
+      });
+    });
+    return oneT;
+  }
+
+  lookupSentences(word, howKnown) {
+    const oneT = [];
+    this.#documents.forEach((document) => {
+      const segText = document.text;
+      segText.forEach((sentence, index) => {
+        const isCandidate = sentenceKnownIncludes(sentence, word, howKnown);
+        if (isCandidate) {
+          let combinedSentence = toText(sentence);
+          for (let i = index - 1; i >= Math.max(index - 6, 0); i--) {
+            const isKnown = sentenceKnown(segText[i], word, howKnown);
+            if (!isKnown) {
+              break;
+            }
+            combinedSentence = toText(segText[i]) + combinedSentence;
+          }
+          for (let i = index + 1; i < Math.min(index + 6, segText
+              .length); i++) {
+            const isKnown = sentenceKnown(segText[i], word, howKnown);
+            if (!isKnown) {
+              break;
+            }
+            combinedSentence = combinedSentence + toText(segText[i]);
+          }
+
+          // TODO aggregate this
+          // const stats = this.wordStats(unknownWord);
+          const stats = document.wordStats(word);
+
+          oneT.push({
+            word: word,
             occurances: stats.occurances,
             stars: stats.stars,
             position: (index / segText.length * 100).toFixed(2),
@@ -177,6 +218,23 @@ function sentenceMostlyKnown(sentence, howKnown) {
     }
   });
   return [unknown == 1, unknownWord];
+}
+
+function sentenceKnownIncludes(sentence, target, howKnown) {
+  let allKnown = true;
+  let found = false;
+  sentence.forEach(([word, type]) => {
+    if (type != 3) return;
+    if (word == target) {
+      found = true;
+      return;
+    }
+    if (!(known.isKnown(word, howKnown))) {
+      allKnown = false;
+    }
+  });
+  return allKnown && found;
+
 }
 
 function sentenceKnown(sentence, exception, howKnown) {
