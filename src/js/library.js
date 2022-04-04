@@ -17,6 +17,13 @@ async function main() {
         const currentList = selector.value;
         loadListContents(currentList);
       });
+
+  document.querySelector('#openList').addEventListener('click',
+      async () => {
+        const selector = document.querySelector('#myBookLists');
+        const currentList = selector.value;
+        window.location = '/mining.html?list=' + currentList;
+      });
 }
 
 async function loadListList() {
