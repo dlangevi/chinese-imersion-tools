@@ -7,18 +7,16 @@ import {MultiDocumentProcessor} from './documentProcessor.js';
  */
 export class SentenceDB {
   constructor() {
-    const start = Date.now();
     this.books = catalogue.listBooks();
-    this.reloadSentences();
-    const end = Date.now();
-    console.log(`${(end - start) / 1000} seconds to load books`);
   }
 
-  reloadSentences() {
+  async reloadSentences() {
+    const start = Date.now();
     this.sentences = {};
     this.documents = {};
-    this.books.forEach((book) => {
+    await Promise.all(this.books.map(async (book) => {
       const document = new MultiDocumentProcessor(book);
+      await document.init();
       this.documents[book] = document;
       this.sentences[book] = {};
       const currentDict = this.sentences[book];
@@ -30,22 +28,27 @@ export class SentenceDB {
         }
         currentDict[word].push(candidate);
       });
-    });
+    }));
+    const end = Date.now();
+    console.log(`${(end - start) / 1000} seconds to load books`);
   }
 
   // todo, look up already known words somehow
-  lookupWordFast(word) {
+  lookupWordFast(word, list) {
+    list = catalogue.loadList(list);
     const start = Date.now();
     console.log(word);
     const targets = [];
-    Object.values(this.sentences).forEach((book) => {
-      Object.entries(book).forEach(([entry, sentences]) => {
-        if (entry == word) {
-          sentences.forEach((sentence) => {
-            targets.push(sentence);
-          });
-        }
-      });
+    Object.entries(this.sentences).forEach(([bookName, book]) => {
+      if (list.includes(bookName)) {
+        Object.entries(book).forEach(([entry, sentences]) => {
+          if (entry == word) {
+            sentences.forEach((sentence) => {
+              targets.push(sentence);
+            });
+          }
+        });
+      }
     });
     const end = Date.now();
     console.log(`${(end - start) / 1000} seconds to lookup`);
@@ -53,15 +56,18 @@ export class SentenceDB {
   }
 
   // todo, look up already known words somehow
-  lookupWordSlow(word) {
+  lookupWordSlow(word, list) {
+    list = catalogue.loadList(list);
     const start = Date.now();
     console.log(word);
     const targets = [];
-    Object.values(this.documents).forEach((document) => {
-      const sentences = document.lookupSentences(word, 20);
-      sentences.forEach((sentence) => {
-        targets.push(sentence);
-      });
+    Object.entries(this.documents).forEach(([bookName, document]) => {
+      if (list.includes(bookName)) {
+        const sentences = document.lookupSentences(word, 20);
+        sentences.forEach((sentence) => {
+          targets.push(sentence);
+        });
+      }
     });
     const end = Date.now();
     console.log(`${(end - start) / 1000} seconds to lookup`);
@@ -70,4 +76,6 @@ export class SentenceDB {
 }
 
 const sentenceDB = new SentenceDB();
+// if we dont await does the service come up faster?
+sentenceDB.reloadSentences();
 export default sentenceDB;

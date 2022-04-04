@@ -26,9 +26,11 @@ knownWords.register(app);
 documentProcessor.register(app);
 
 app.post('/lookupWord', (req, res, next) => {
-  let sentences = sentenceDB.lookupWordFast(req.body.word);
+  const word = req.body.word;
+  const list = req.body.list;
+  let sentences = sentenceDB.lookupWordFast(word, list);
   if (sentences.length == 0) {
-    sentences = sentenceDB.lookupWordSlow(req.body.word);
+    sentences = sentenceDB.lookupWordSlow(word, list);
   }
   res.json(sentences);
 });

@@ -1,6 +1,44 @@
 import fs from 'fs';
 import known from './knownWords.js';
 import wordStats from './wordStats.js';
+import process from 'process';
+
+import mongoose from 'mongoose';
+const url = 'mongodb://127.0.0.1:27017/chinese';
+mongoose.connect(url);
+const db = mongoose.connection;
+
+const bookSchema = mongoose.Schema({
+  filename: {
+    type: String,
+    required: true,
+  },
+  wordTable: {
+    type: Map,
+    of: Number, // occurances
+    required: true,
+  },
+  charTable: {
+    type: Map,
+    of: Number, // occurances
+    required: true,
+  },
+  totalWords: {
+    type: Number,
+    required: true,
+  },
+  /* segText: {
+    type: Array,
+    of: Array,
+    required: true,
+  }*/
+  segTextSource: {
+    type: String,
+    required: true,
+  },
+});
+
+const Book = mongoose.model('book', bookSchema);
 
 /*
  * This class now just calculates the aggregate stats and list words for a piece
@@ -16,30 +54,72 @@ export class Document {
   totalKnownWords;
   totalWellKnownWords;
   segText;
+  segTextSource;
 
   constructor(filename, title) {
     this.#filename = filename;
-    this.title = title; // TODO use real name
-    const cachedFileData = filename + '.cached';
-    if (fs.existsSync(cachedFileData)) {
+  }
+
+  async init(title) {
+    this.title = title;
+    const cachedFileData = this.#filename + '.cached';
+
+    const bookValue = await Book.find({filename: this.#filename}).exec();
+
+    if (bookValue.length > 1) {
+      console.log(`duplicate books for ${filename}`);
+    }
+
+    if (bookValue.length > 0) {
+      const book = bookValue[0];
+      this.wordTable = book.wordTable;
+      this.charTable = book.charTable;
+      this.totalWords = book.totalWords;
+      this.segTextSource = book.segTextSource;
+      this.segText = JSON.parse(this.segTextSource);
+
+    /* } else if (fs.existsSync(cachedFileData)) {
       const cachedData = JSON.parse(fs.readFileSync(cachedFileData, 'UTF-8',
           'r'));
       [this.wordTable, this.charTable, this.totalWords] = cachedData;
+
+      */
     } else {
       // This is the most computationally heavy block and also
       // is deterministic, so cache the results
       this.#loadSegText();
-      const dataToCache = this.#computeFrequencyData();
-      fs.writeFileSync(cachedFileData, JSON.stringify(dataToCache));
-      [this.wordTable, this.charTable, this.totalWords] = dataToCache;
+
+      [
+        this.wordTable,
+        this.charTable,
+        this.totalWords,
+      ] = this.#computeFrequencyData();
+
+      const book = new Book();
+      book.filename = this.#filename;
+      book.wordTable = this.wordTable;
+      book.charTable = this.charTable;
+      book.totalWords = this.totalWords;
+      book.segTextSource = this.segTextSource;
+      // book.segText = this.segText;
+      book.save((err) => {
+        if (err) {
+          console.log(this.segText.length);
+          console.log(this.#filename);
+          console.log(err);
+        }
+      });
     }
+
+
     this.#generateStats();
   };
 
   #loadSegText() {
-    this.segText = JSON.parse(fs.readFileSync(
+    this.segTextSource = fs.readFileSync(
         this.#filename,
-        'UTF-8', 'r'));
+        'UTF-8', 'r');
+    this.segText = JSON.parse(this.segTextSource);
   };
 
   #computeFrequencyData() {

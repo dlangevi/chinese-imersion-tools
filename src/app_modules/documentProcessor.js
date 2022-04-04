@@ -17,13 +17,19 @@ export class MultiDocumentProcessor {
   #aggregateTotalWellKnownWords = 0;
 
   constructor(booknames) {
-    if (!(booknames instanceof Array)) {
-      booknames = [booknames];
+    this.booknames = booknames
+  }
+
+  async init() {
+    if (!(this.booknames instanceof Array)) {
+      this.booknames = [this.booknames];
     }
-    this.#documents = booknames.map((bookname) => {
+    this.#documents = await Promise.all(this.booknames.map(async (bookname) => {
       const filename = catalogue.getPath(bookname);
-      return new Document(filename, bookname);
-    });
+      const doc = new Document(filename);
+      await doc.init(bookname);
+      return doc;
+    }));
 
     this.#aggregateStats();
   }
@@ -254,12 +260,13 @@ function toText(sentence) {
 }
 
 
-function parseFile(bookname, wellKnown) {
+async function parseFile(bookname, wellKnown) {
   let howKnown = 0;
   if (wellKnown) {
     howKnown = 20;
   }
   const document = new MultiDocumentProcessor(bookname);
+  await document.init();
 
   const oneT = document.candidateSentences(howKnown);
   const candidateWords = new Set([...oneT.map((entry) => entry.word)]);
@@ -275,13 +282,14 @@ function parseFile(bookname, wellKnown) {
   };
 }
 
-function parseList(listname, wellKnown) {
+async function parseList(listname, wellKnown) {
   let howKnown = 0;
   if (wellKnown) {
     howKnown = 20;
   }
   const books = catalogue.loadList(listname);
   const document = new MultiDocumentProcessor(books);
+  await document.init();
 
   const oneT = document.candidateSentences(howKnown);
   const candidateWords = new Set([...oneT.map((entry) => entry.word)]);
@@ -312,9 +320,10 @@ const oneTsentences = {
       res.json(parsed);
     });
 
-    app.post('/loadFileWords', (req, res, next) => {
+    app.post('/loadFileWords', async (req, res, next) => {
       const bookname = req.body.name;
       const document = new MultiDocumentProcessor(bookname);
+      await document.init();
       const documentWords = document.documentWords();
       const stats = document.documentStats();
       res.json({words: documentWords, stats: stats});

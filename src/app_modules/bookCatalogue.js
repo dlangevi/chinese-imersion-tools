@@ -12,14 +12,6 @@ if (!fs.existsSync(listsFile)) {
 }
 const lists = JSON.parse(fs.readFileSync(listsFile, 'UTF-8', 'r'));
 
-function listCustomList(listName) {
-  const books = loadBooks();
-  const list = lists[listName];
-  return Object.keys(books).filter((title) => {
-    return list.includes(title);
-  });
-}
-
 const bookCatalogue = {
   listBooks: () => {
     const books = loadBooks();
@@ -28,6 +20,10 @@ const bookCatalogue = {
   getPath: (bookName) => loadBooks()[bookName].segmentedText,
   allBookData: () => {},
   loadList: (listname) => {
+    if (listname == 'all' || listname == undefined) {
+      const books = loadBooks();
+      return Object.keys(books);
+    }
     return lists[listname];
   },
   saveList: (listname, data) => {
@@ -43,19 +39,12 @@ const bookCatalogue = {
     app.post('/filelist', (req, res, next) => {
       const books = loadBooks();
       const listName = req.body.list;
-      if (listName == 'all' || listName == undefined) {
-        res.json(Object.keys(books));
-      } else {
-        const list = lists[listName];
-        res.json(Object.keys(books).filter((title) => {
-          return list.includes(title);
-        }));
-      }
+      res.json(bookCatalogue.loadList(listName));
     });
 
     // Load Favorites
     app.get('/favfilelist', (req, res, next) => {
-      res.json(listCustomList('favorites'));
+      res.json(bookCatalogue.loadList('favorites'));
     });
 
     // Library
@@ -89,11 +78,8 @@ const bookCatalogue = {
     app.post('/loadlist', (req, res, next) => {
       const listname = req.body.title;
       const books = loadBooks();
-      let ourBooks = Object.keys(books);
-      if (listname !== 'all') {
-        console.log('loading' + listname);
-        ourBooks = listCustomList(listname);
-      }
+
+      const ourBooks = bookCatalogue.loadList(listname);
       const listcts = ourBooks.map((bookKey) => {
         const book = books[bookKey];
         const document = new Document(book
