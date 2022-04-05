@@ -101,7 +101,7 @@ export class MultiDocumentProcessor {
           }
 
           // TODO aggregate this
-          const stats = this.wordStats(unknownWord);
+          const stats = this.wordStats(word);
           // const stats = document.wordStats(word);
 
           oneT.push({

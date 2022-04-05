@@ -50,9 +50,10 @@ const bookCatalogue = {
     // Library
     app.get('/filelistdata', (req, res, next) => {
       const books = loadBooks();
-      const bookData = Object.values(books).map((book) => {
+      const bookData = Object.values(books).map(async (book) => {
         const document = new Document(book
             .segmentedText);
+        await document.init();
         const stats = document.documentStats();
         return {
           author: book.author,
@@ -75,23 +76,24 @@ const bookCatalogue = {
       res.json({success: 'success'});
     });
 
-    app.post('/loadlist', (req, res, next) => {
+    app.post('/loadlist', async (req, res, next) => {
       const listname = req.body.title;
       const books = loadBooks();
 
       const ourBooks = bookCatalogue.loadList(listname);
-      const listcts = ourBooks.map((bookKey) => {
+      const listcts = await Promise.all(ourBooks.map(async (bookKey) => {
         const book = books[bookKey];
-        const document = new Document(book
-            .segmentedText);
+        const document = new Document(book.segmentedText);
+        await document.init();
         const stats = document.documentStats();
         return {
           author: book.author,
           title: book.title,
           words: stats.totalWords,
           percent: stats.currentKnown.toFixed(2),
+          percentChars: stats.currentKnownChar.toFixed(2),
         };
-      });
+      }));
       res.json(listcts);
     });
   },

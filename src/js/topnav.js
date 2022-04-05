@@ -68,8 +68,9 @@ const observer = new MutationObserver((mutationsList) => {
     });
   });
 });
-observer.observe(document.querySelector('body'), {
-  subtree: true,
-  childList: true,
-});
-
+if (true) {
+  observer.observe(document.querySelector('body'), {
+    subtree: true,
+    childList: true,
+  });
+}

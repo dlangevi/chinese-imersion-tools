@@ -80,6 +80,13 @@ const bookListCols = [
     sortable: true,
     filter: 'agNumberColumnFilter',
   },
+  {
+    headerName: 'Percent By Char',
+    field: 'percentChars',
+    width: 50,
+    sortable: true,
+    filter: 'agNumberColumnFilter',
+  },
 ];
 
 const Tables = {

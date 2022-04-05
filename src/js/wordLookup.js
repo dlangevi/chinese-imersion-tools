@@ -14,6 +14,9 @@ import {
 } from './agRenderers.js';
 
 const sentenceCols = [
+  markLearnedColumn({
+    suppressSizeToFit: true,
+  }),
   wordColumn({
     suppressSizeToFit: true,
   }),

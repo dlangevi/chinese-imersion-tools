@@ -27,6 +27,10 @@ const bookSchema = mongoose.Schema({
     type: Number,
     required: true,
   },
+  totalCharacters: {
+    type: Number,
+    required: true,
+  },
   /* segText: {
     type: Array,
     of: Array,
@@ -75,6 +79,7 @@ export class Document {
       this.wordTable = Object.fromEntries(book.wordTable);
       this.charTable = Object.fromEntries(book.charTable);
       this.totalWords = book.totalWords;
+      this.totalCharacters = book.totalCharacters;
       this.segTextSource = book.segTextSource;
       this.segText = JSON.parse(this.segTextSource);
 
@@ -93,6 +98,7 @@ export class Document {
         this.wordTable,
         this.charTable,
         this.totalWords,
+        this.totalCharacters,
       ] = this.#computeFrequencyData();
 
       const book = new Book();
@@ -100,6 +106,7 @@ export class Document {
       book.wordTable = this.wordTable;
       book.charTable = this.charTable;
       book.totalWords = this.totalWords;
+      book.totalCharacters = this.totalCharacters;
       book.segTextSource = this.segTextSource;
       // book.segText = this.segText;
       book.save((err) => {
@@ -126,10 +133,12 @@ export class Document {
     const wordTable = {};
     const charTable = {};
     let totalWords = 0;
+    let totalCharacters = 0;
     this.segText.forEach((sentence) => {
       sentence.forEach(([word, type]) => {
         if (type != 3) return;
         totalWords += 1;
+        totalCharacters += word.length;
         if (word in wordTable) {
           wordTable[word] += 1;
         } else {
@@ -145,12 +154,13 @@ export class Document {
       });
     });
 
-    return [wordTable, charTable, totalWords];
+    return [wordTable, charTable, totalWords, totalCharacters];
   }
 
   #generateStats() {
     this.totalKnownWords = 0;
     this.totalWellKnownWords = 0;
+    this.totalKnownCharacters = 0
     Object.entries(this.wordTable).forEach(([word, frequency]) => {
       if (known.isKnown(word)) {
         this.totalKnownWords += frequency;
@@ -158,6 +168,11 @@ export class Document {
           this.totalWellKnownWords += frequency;
         }
       }
+    });
+    Object.entries(this.charTable).forEach(([ch, frequency]) => {
+      if (known.isKnownChar(ch)) {
+        this.totalKnownCharacters += frequency;
+      } 
     });
   }
 
@@ -198,6 +213,7 @@ export class Document {
       currentWellKnownWords: this.totalWellKnownWords,
       currentKnown: this.totalKnownWords / this.totalWords * 100,
       currentWellKnown: this.totalWellKnownWords / this.totalWords * 100,
+      currentKnownChar: this.totalKnownCharacters / this.totalCharacters * 100,
     };
   }
 
