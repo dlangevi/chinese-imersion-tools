@@ -60,6 +60,10 @@ async function main() {
         });
       },
   );
+  document.querySelector('#toSentences').addEventListener('click',
+      () => {
+        window.location = '/mining.html';
+      });
 }
 
 async function loadFileList() {

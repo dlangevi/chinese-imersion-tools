@@ -11,7 +11,7 @@ block content
     .d-flex.flex-column.h-100
       .row
         .col-6
-          h1.mt-4.me-auto #{pageTitle}
+          include includes/page-header.pug
         .col-6.my-auto.ms-auto
           #stats
             div Total number of unknown words in 1T sentences:
@@ -29,6 +29,7 @@ block content
         .col-7
           button#loadAll.btn.btn-primary Load all
           button#loadKnown.btn.btn-primary Load well known
+          button#toWords.btn.btn-primary To Words
 
         .col-5
           .input-group
