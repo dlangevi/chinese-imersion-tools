@@ -1,5 +1,5 @@
 import known from './knownWords.js';
-import {Document} from './documentStats.js';
+import {loadDocument} from './documentStats.js';
 import catalogue from './bookCatalogue.js';
 import wordStats from './wordStats.js';
 
@@ -26,8 +26,8 @@ export class MultiDocumentProcessor {
     }
     this.#documents = await Promise.all(this.booknames.map(async (bookname) => {
       const filename = catalogue.getPath(bookname);
-      const doc = new Document(filename);
-      await doc.init(bookname);
+      const doc = await loadDocument(filename, bookname);
+      doc.generateStats();
       return doc;
     }));
 

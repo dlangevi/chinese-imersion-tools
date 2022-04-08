@@ -64,7 +64,7 @@ export class Document {
     this.#filename = filename;
   }
 
-  async init(title) {
+  async load(title) {
     this.title = title;
     const cachedFileData = this.#filename + '.cached';
 
@@ -117,9 +117,6 @@ export class Document {
         }
       });
     }
-
-
-    this.#generateStats();
   };
 
   #loadSegText() {
@@ -157,7 +154,7 @@ export class Document {
     return [wordTable, charTable, totalWords, totalCharacters];
   }
 
-  #generateStats() {
+  generateStats() {
     this.totalKnownWords = 0;
     this.totalWellKnownWords = 0;
     this.totalKnownCharacters = 0
@@ -225,4 +222,18 @@ export class Document {
       stars: wordStats.frequency(word),
     };
   }
+}
+
+const documents = {};
+export async function loadDocument(filename, title) {
+  if (!documents[filename]) {
+    const doc = new Document(filename, title);
+    documents[filename] = doc;
+    await doc.load(title);
+  }
+  const loadedDoc = documents[filename];
+  loadedDoc.generateStats();
+
+  return loadedDoc;
+
 }

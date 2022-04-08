@@ -1,6 +1,6 @@
 import fs from 'fs';
 import config from './config.js';
-import {Document} from './documentStats.js';
+import {loadDocument} from './documentStats.js';
 
 function loadBooks() {
   return JSON.parse(fs.readFileSync(config.catalogue, 'UTF-8', 'r'));
@@ -51,9 +51,8 @@ const bookCatalogue = {
     app.get('/filelistdata', (req, res, next) => {
       const books = loadBooks();
       const bookData = Object.values(books).map(async (book) => {
-        const document = new Document(book
+        const document = await loadDocument(book
             .segmentedText);
-        await document.init();
         const stats = document.documentStats();
         return {
           author: book.author,
@@ -83,8 +82,7 @@ const bookCatalogue = {
       const ourBooks = bookCatalogue.loadList(listname);
       const listcts = await Promise.all(ourBooks.map(async (bookKey) => {
         const book = books[bookKey];
-        const document = new Document(book.segmentedText);
-        await document.init();
+        const document = await loadDocument(book.segmentedText);
         const stats = document.documentStats();
         return {
           author: book.author,
