@@ -28,9 +28,10 @@ async function exportAnkiKeywords() {
 
   const intervalMap = {};
   Object.assign(intervalMap, ...readingInfo.result.map(
-      (card) => ({
+      (card) => {
+        return {
         [card.fields.Simplified.value]: card.interval,
-      })));
+      }}));
 
   const skritter = await invoke('findCards', {
     query: 'deck:Skritter',

@@ -103,6 +103,14 @@ const knownWords = {
             });
           });
     });
+
+    app.get('/stats', (req, res, next) => {
+      const myWords = knownWordsTable();
+      res.json({
+        totalWords: myWords.length,
+        totalChars: knownCharacters.size,
+      });
+    });
   },
 };
 export default knownWords;

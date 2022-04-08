@@ -13,6 +13,11 @@ import {
 
 const DocumentWords = {
   columnDefs: [
+    {
+      headerName: 'Row',
+      valueGetter: 'node.rowIndex + 1',
+      width: 10,
+    },
     markLearnedColumn(),
     wordColumn(),
     starsColumn(),
@@ -106,19 +111,20 @@ async function loadFile(wellKnown = false) {
 
 function reCalcWordStats() {
   const stats = DocumentWords.stats;
-
-
   let currentKnown = 0;
   const currentWords = [];
   DocumentWords.api.forEachNode((rowNode, index) => {
-    if (rowNode.data.isKnown == false) {
-      currentWords.push(rowNode.data);
-    } else {
+    if (rowNode.data.isKnown == true) {
       currentKnown += rowNode.data.occurances;
     }
   });
+  DocumentWords.api.forEachNodeAfterFilter((rowNode, index) => {
+    if (rowNode.data.isKnown == false) {
+      currentWords.push(rowNode.data);
+    }
+  });
   currentKnown = currentKnown / stats.totalWords * 100;
-  const target = determineTarget(currentKnown).toFixed(0);
+  const target = determineTarget(currentKnown);
   const gap = target - currentKnown;
   let neededOccurances = (gap/100) * stats.totalWords;
   let neededWords = 0;
@@ -131,10 +137,17 @@ function reCalcWordStats() {
     neededOccurances -= row.occurances;
     return true;
   });
+  let willKnow = target;
+  console.log(neededOccurances);
+  console.log(stats.totalWords);
+  if (neededOccurances > 0) {
+    willKnow = target - (neededOccurances / stats.totalWords * 100);
+  }
+
 
   document.querySelector('#known').innerHTML = currentKnown.toFixed(2);
   document.querySelector('#neededWords').innerHTML = neededWords;
-  document.querySelector('#target').innerHTML = target;
+  document.querySelector('#target').innerHTML = willKnow.toFixed(1);
 }
 
 function determineTarget(currentKnown) {
