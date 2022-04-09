@@ -20,7 +20,7 @@ export class SentenceDB {
       this.documents[book] = document;
       this.sentences[book] = {};
       const currentDict = this.sentences[book];
-      const oneT = document.candidateSentences(20);
+      const oneT = await document.candidateSentences(20);
       oneT.forEach((candidate) => {
         const word = candidate.word;
         if (!currentDict[word]) {
@@ -56,19 +56,19 @@ export class SentenceDB {
   }
 
   // todo, look up already known words somehow
-  lookupWordSlow(word, list) {
+  async lookupWordSlow(word, list) {
     list = catalogue.loadList(list);
     const start = Date.now();
     console.log(word);
     const targets = [];
-    Object.entries(this.documents).forEach(([bookName, document]) => {
+    await Promise.all(Object.entries(this.documents).map(async ([bookName, document]) => {
       if (list.includes(bookName)) {
-        const sentences = document.lookupSentences(word, 20);
+        const sentences = await document.lookupSentences(word, 20);
         sentences.forEach((sentence) => {
           targets.push(sentence);
         });
       }
-    });
+    }));
     const end = Date.now();
     console.log(`${(end - start) / 1000} seconds to lookup`);
     return targets;

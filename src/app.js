@@ -25,12 +25,12 @@ knownWords.register(app);
 
 documentProcessor.register(app);
 
-app.post('/lookupWord', (req, res, next) => {
+app.post('/lookupWord', async (req, res, next) => {
   const word = req.body.word;
   const list = req.body.list;
   let sentences = sentenceDB.lookupWordFast(word, list);
   if (sentences.length == 0) {
-    sentences = sentenceDB.lookupWordSlow(word, list);
+    sentences = await sentenceDB.lookupWordSlow(word, list);
   }
   res.json(sentences);
 });

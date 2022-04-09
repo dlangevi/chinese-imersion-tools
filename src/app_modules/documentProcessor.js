@@ -34,10 +34,10 @@ export class MultiDocumentProcessor {
     this.#aggregateStats();
   }
 
-  candidateSentences(howKnown) {
+  async candidateSentences(howKnown) {
     const oneT = [];
-    this.#documents.forEach((document) => {
-      const segText = document.text;
+    await Promise.all(this.#documents.map(async (document) => {
+      const segText = await document.text();
       segText.forEach((sentence, index) => {
         const [isOneT, unknownWord] = sentenceMostlyKnown(sentence, howKnown);
         if (isOneT && !known.isKnown(unknownWord)) {
@@ -72,14 +72,14 @@ export class MultiDocumentProcessor {
           });
         }
       });
-    });
+    }));
     return oneT;
   }
 
-  lookupSentences(word, howKnown) {
+  async lookupSentences(word, howKnown) {
     const oneT = [];
-    this.#documents.forEach((document) => {
-      const segText = document.text;
+    await Promise.all(this.#documents.map(async (document) => {
+      const segText = await document.text();
       segText.forEach((sentence, index) => {
         const isCandidate = sentenceKnownIncludes(sentence, word, howKnown);
         if (isCandidate) {
@@ -114,7 +114,7 @@ export class MultiDocumentProcessor {
           });
         }
       });
-    });
+    }));
     return oneT;
   }
 
@@ -268,7 +268,7 @@ async function parseFile(bookname, wellKnown) {
   const document = new MultiDocumentProcessor(bookname);
   await document.init();
 
-  const oneT = document.candidateSentences(howKnown);
+  const oneT = await document.candidateSentences(howKnown);
   const candidateWords = new Set([...oneT.map((entry) => entry.word)]);
 
   const stats = document.documentStats();
@@ -291,7 +291,7 @@ async function parseList(listname, wellKnown) {
   const document = new MultiDocumentProcessor(books);
   await document.init();
 
-  const oneT = document.candidateSentences(howKnown);
+  const oneT = await document.candidateSentences(howKnown);
   const candidateWords = new Set([...oneT.map((entry) => entry.word)]);
 
   const stats = document.documentStats();

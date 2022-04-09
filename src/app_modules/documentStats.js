@@ -1,7 +1,7 @@
 import fs from 'fs';
 import known from './knownWords.js';
 import wordStats from './wordStats.js';
-import process from 'process';
+
 
 import mongoose from 'mongoose';
 const url = 'mongodb://127.0.0.1:27017/chinese';
@@ -68,7 +68,8 @@ export class Document {
     this.title = title;
     const cachedFileData = this.#filename + '.cached';
 
-    const bookValue = await Book.find({filename: this.#filename}).exec();
+    const bookValue = await Book.find({filename: this.#filename},
+        '-segTextSource').exec();
 
     if (bookValue.length > 1) {
       console.log(`duplicate books for ${filename}`);
@@ -80,8 +81,7 @@ export class Document {
       this.charTable = Object.fromEntries(book.charTable);
       this.totalWords = book.totalWords;
       this.totalCharacters = book.totalCharacters;
-      this.segTextSource = book.segTextSource;
-      this.segText = JSON.parse(this.segTextSource);
+
 
     /* } else if (fs.existsSync(cachedFileData)) {
       const cachedData = JSON.parse(fs.readFileSync(cachedFileData, 'UTF-8',
@@ -92,7 +92,10 @@ export class Document {
     } else {
       // This is the most computationally heavy block and also
       // is deterministic, so cache the results
-      this.#loadSegText();
+      this.segTextSource = fs.readFileSync(
+          this.#filename,
+          'UTF-8', 'r');
+      this.segText = JSON.parse(this.segTextSource);
 
       [
         this.wordTable,
@@ -119,11 +122,13 @@ export class Document {
     }
   };
 
-  #loadSegText() {
-    this.segTextSource = fs.readFileSync(
-        this.#filename,
-        'UTF-8', 'r');
-    this.segText = JSON.parse(this.segTextSource);
+  async #loadSegText() {
+    const bookValue = await Book.find({filename: this.#filename}).exec();
+    if (bookValue.length > 0) {
+      const book = bookValue[0];
+      this.segTextSource = book.segTextSource;
+      this.segText = JSON.parse(this.segTextSource);
+    }
   };
 
   #computeFrequencyData() {
@@ -157,7 +162,7 @@ export class Document {
   generateStats() {
     this.totalKnownWords = 0;
     this.totalWellKnownWords = 0;
-    this.totalKnownCharacters = 0
+    this.totalKnownCharacters = 0;
     Object.entries(this.wordTable).forEach(([word, frequency]) => {
       if (known.isKnown(word)) {
         this.totalKnownWords += frequency;
@@ -169,13 +174,13 @@ export class Document {
     Object.entries(this.charTable).forEach(([ch, frequency]) => {
       if (known.isKnownChar(ch)) {
         this.totalKnownCharacters += frequency;
-      } 
+      }
     });
   }
 
-  get text() {
+  async text() {
     if (this.segText == undefined) {
-      this.#loadSegText();
+      await this.#loadSegText();
     }
     return this.segText;
   };
@@ -235,5 +240,4 @@ export async function loadDocument(filename, title) {
   loadedDoc.generateStats();
 
   return loadedDoc;
-
 }
