@@ -48,9 +48,9 @@ const bookCatalogue = {
     });
 
     // Library
-    app.get('/filelistdata', (req, res, next) => {
+    app.get('/filelistdata', async (req, res, next) => {
       const books = loadBooks();
-      const bookData = Object.values(books).map(async (book) => {
+      const bookData = await Promise.all(Object.values(books).map(async (book) => {
         const document = await loadDocument(book
             .segmentedText);
         const stats = document.documentStats();
@@ -60,7 +60,7 @@ const bookCatalogue = {
           words: stats.totalWords,
           percent: stats.currentKnown.toFixed(2),
         };
-      });
+      }));
       res.json(bookData);
     });
 

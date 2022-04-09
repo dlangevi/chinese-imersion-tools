@@ -12,17 +12,52 @@ Object.keys(known).forEach((word) => {
 
 function currentDateString() {
   const d = new Date();
-  return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+  const year = d.getFullYear();
+  let month = d.getMonth() + 1;
+  if (month < 10) {
+    month = `0${month}`
+  }
+  let day = d.getDate()
+  if (day < 10) {
+    day = `0${day}`
+  }
+  return `${year}-${month}-${day}`;
+}
+
+
+
+function tableData() {
+  const summed = {}
+  Object.values(known).forEach(data => {
+    if (!(data.added in summed)) {
+      summed[data.added] = 0;
+    }
+    summed[data.added] += 1;
+  });
+
+  const sorted = Object.entries(summed).sort()
+  let acc = 0;
+  for (let i = 0; i < sorted.length; i++) {
+    acc += sorted[i][1];
+    sorted[i][1] = acc;
+  }
+
+  return {
+    lables: sorted.map(([x, y]) => x),
+    data : sorted.map(([x, y]) => y),
+  }
 }
 
 function addWord(word, age) {
   // If this is a new word, add it with the current date
   if (!known.hasOwnProperty(word)) {
     known[word] = {added: currentDateString()}
-    console.log(`Adding new word ${word} ${known[word]}`);
+    known[word].interval = age; 
+    console.log(`Adding new word ${word} ${JSON.stringify(known[word])}`);
+  } else {
+    // else just update the interval
+    known[word].interval = age; 
   }
-  // then set / update the interval
-  known[word].interval = age; 
 }
 
 function saveWords(callback) {
@@ -124,7 +159,7 @@ const knownWords = {
       res.json({
         totalWords: myWords.length,
         totalChars: knownCharacters.size,
-        words: myWords,
+        tableData: tableData(),
       });
     });
   },
