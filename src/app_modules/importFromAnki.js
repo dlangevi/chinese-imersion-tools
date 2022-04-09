@@ -27,11 +27,16 @@ async function exportAnkiKeywords() {
   });
 
   const intervalMap = {};
-  Object.assign(intervalMap, ...readingInfo.result.map(
+  Object.assign(intervalMap, ...readingInfo.result.filter((card) => {
+    return isChinese(card.fields.Simplified.value);
+  }).map(
       (card) => {
+        let word = card.fields.Simplified.value;
+        word = fixWord(word);
         return {
-        [card.fields.Simplified.value]: card.interval,
-      }}));
+          [word]: card.interval,
+        };
+      }));
 
   const skritter = await invoke('findCards', {
     query: 'deck:Skritter',
@@ -40,16 +45,41 @@ async function exportAnkiKeywords() {
     cards: skritter.result,
   });
 
-  Object.assign(intervalMap, ...skritterInfo.result.map(
-      (card) => ({
-        [card.fields.Word.value]: card.interval,
-      })));
+  Object.assign(intervalMap, ...skritterInfo.result.filter((card) => {
+    return isChinese(card.fields.Word.value);
+  }).map(
+      (card) => {
+        let word = card.fields.Word.value;
+        word = fixWord(word);
+        return {
+          [word]: card.interval,
+        };
+      }));
 
-
-  console.log(intervalMap);
   return intervalMap;
+}
 
-  await fs.writeFile(config.ankiKeywords, words.join('\n'));
+function isChinese(word) {
+  // unicode ranges for chinese characters
+  const isOnlyChinese = /^[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff66-\uff9f]*$/.test(word);
+  if (!isOnlyChinese) {
+    console.log(`${word} is sus, skipping it`);
+  }
+  return isOnlyChinese;
+}
+
+function fixWord(word) {
+  const origWord = word;
+  word = word.replace(/<br>/gi, '');
+  word = word.replace(/<div>/gi, '');
+  word = word.replace(/<\/div>/gi, '');
+  word = word.replace(/,/gi, '');
+  word = word.replace(/&nbsp/, '');
+
+  if (word != origWord) {
+    console.log(`warning ${word} is ${origWord}`);
+  }
+  return word;
 }
 
 export function register(app) {

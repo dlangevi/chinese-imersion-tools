@@ -10,8 +10,19 @@ Object.keys(known).forEach((word) => {
   Array.from(word).forEach((ch) => knownCharacters.add(ch));
 });
 
+function currentDateString() {
+  const d = new Date();
+  return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+}
+
 function addWord(word, age) {
-  known[word] = age;
+  // If this is a new word, add it with the current date
+  if (!known.hasOwnProperty(word)) {
+    known[word] = {added: currentDateString()}
+    console.log(`Adding new word ${word} ${known[word]}`);
+  }
+  // then set / update the interval
+  known[word].interval = age; 
 }
 
 function saveWords(callback) {
@@ -22,15 +33,19 @@ function saveWords(callback) {
   });
 }
 
-function mergeWords(other) {
-  Object.assign(known, other);
+// from Anki, a dict of word => interval
+function mergeWords(intervalDict) {
+  Object.entries(intervalDict).forEach(([word, interval]) => {
+    addWord(word, interval);
+  });
 }
 
 function knownWordsTable() {
   return Object.entries(known).map(([key, value]) => {
     return {
       word: key,
-      interval: value,
+      interval: value.interval,
+      added: value.added,
       stars: wordStats.frequency(key),
     };
   });
@@ -63,7 +78,7 @@ const knownWords = {
       return false;
     }
     // we know it at least somewhat known
-    return known[word] >= howKnown;
+    return known[word].interval >= howKnown;
   },
   isKnownChar: (ch) => {
     return knownCharacters.has(ch);
@@ -109,6 +124,7 @@ const knownWords = {
       res.json({
         totalWords: myWords.length,
         totalChars: knownCharacters.size,
+        words: myWords,
       });
     });
   },
