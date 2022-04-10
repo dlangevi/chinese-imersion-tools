@@ -10,10 +10,6 @@ async function main() {
   <p>Known chars ${data.totalChars}</p>
   `;
 
-  // Set new default font family and font color to mimic Bootstrap's default styling
-  Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
-  Chart.defaults.global.defaultFontColor = '#292b2c';
-
   // Area Chart Example
   const ctxArea = document.getElementById('myAreaChart');
   const myLineChartArea = new Chart(ctxArea, {
@@ -37,27 +33,12 @@ async function main() {
     },
     options: {
       scales: {
-        xAxes: [{
+        x: {
+          type: 'time',
           time: {
-            unit: 'date',
+            unit: 'month',
           },
-          gridLines: {
-            display: false,
-          },
-          ticks: {
-            maxTicksLimit: 100,
-          },
-        }],
-        yAxes: [{
-          ticks: {
-            min: 0,
-            max: 5000,
-            maxTicksLimit: 10,
-          },
-          gridLines: {
-            color: 'rgba(0, 0, 0, .125)',
-          },
-        }],
+        },
       },
       legend: {
         display: false,

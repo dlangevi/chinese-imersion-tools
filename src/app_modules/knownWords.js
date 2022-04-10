@@ -24,6 +24,11 @@ function currentDateString() {
   return `${year}-${month}-${day}`;
 }
 
+function toMilli(dateString) {
+  const [year, month, day] = dateString.split('-');
+  const date = new Date(year, month -1, day);
+  return date.getTime();
+}
 
 
 function tableData() {
@@ -43,7 +48,7 @@ function tableData() {
   }
 
   return {
-    lables: sorted.map(([x, y]) => x),
+    lables: sorted.map(([x, y]) => x).map(dateString => toMilli(dateString)),
     data : sorted.map(([x, y]) => y),
   }
 }
