@@ -7,14 +7,14 @@ import {
 } from './shared.js';
 
 async function main() {
-  const eGridDiv = document.querySelector('#bookList');
+  const eGridDiv = document.querySelector('#allBookList');
   new agGrid.Grid(eGridDiv, Tables.bookList);
   const wGridDiv = document.querySelector('#myBookList');
   new agGrid.Grid(wGridDiv, Tables.myBookList);
 
   Tables.bookList.columnApi.sizeColumnsToFit(eGridDiv.offsetWidth - 40);
   Tables.myBookList.columnApi.sizeColumnsToFit(wGridDiv.offsetWidth);
-  observeTable('#bookList', Tables.bookList);
+  observeTable('#allBookList', Tables.bookList);
   observeTable('#myBookList', Tables.myBookList);
 
   const dropZoneParams = Tables.myBookList.api.getRowDropZoneParams();

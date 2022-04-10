@@ -124,7 +124,7 @@ function reCalcWordStats() {
     }
   });
   currentKnown = currentKnown / stats.totalWords * 100;
-  const target = determineTarget(currentKnown);
+  const target = determineTarget(currentKnown).toFixed(0);
   const gap = target - currentKnown;
   let neededOccurances = (gap/100) * stats.totalWords;
   let neededWords = 0;
@@ -142,19 +142,20 @@ function reCalcWordStats() {
   console.log(stats.totalWords);
   if (neededOccurances > 0) {
     willKnow = target - (neededOccurances / stats.totalWords * 100);
+    willKnow = willKnow.toFixed(2)
   }
 
 
   document.querySelector('#known').innerHTML = currentKnown.toFixed(2);
   document.querySelector('#neededWords').innerHTML = neededWords;
-  document.querySelector('#target').innerHTML = willKnow.toFixed(1);
+  document.querySelector('#target').innerHTML = willKnow;
 }
 
 function determineTarget(currentKnown) {
   if (currentKnown < 86) {
     return 86;
   } else if (currentKnown < 90) {
-    return currentKnown;
+    return currentKnown + 2;
   } else if (currentKnown < 95) {
     return currentKnown + 2;
   } else if (currentKnown < 99) {
