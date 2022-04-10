@@ -5,92 +5,80 @@ import {open} from 'sqlite';
 import known from './knownWords.js';
 import wordStats from './wordStats.js';
 
+import mongoose from 'mongoose';
 
 // The data base will have functions that interact with the backend. Only will
 // handle saving and loading data
 class Database {
   constructor() {
+    const url = 'mongodb://127.0.0.1:27017/chinese';
+    mongoose.connect(url);
+    const db = mongoose.connection;
   }
 
-  async load() {
-    const start = Date.now();
-    this.db = await open({
-      // filename: ':memory:',
-      filename: 'theData',
-      driver: sqlite3.Database,
+  async getBookData(filename) {
+    return await Book.find({filename: filename},
+        '-segTextSource').exec();
+  }
+
+  saveBook(filename, book) {
+    const databaseBook = new Book();
+    databaseBook.filename = filename;
+    databaseBook.wordTable = book.wordTable;
+    databaseBook.charTable = book.charTable;
+    databaseBook.totalWords = book.totalWords;
+    databaseBook.totalCharacters = book.totalCharacters;
+    databaseBook.segTextSource = book.segTextSource;
+    // databaseBook.segText = book.segText;
+    databaseBook.save((err) => {
+      if (err) {
+        console.log(book.segText.length);
+        console.log(filename);
+        console.log(err);
+      }
     });
-    const end = Date.now();
-    console.log(`${(end - start) / 1000} seconds to load sqlite`);
   }
 
-  async createTables() {
-    // await this.db.exec('CREATE TABLE books (title TEXT) (info TEXT)');
-    await this.db.exec(`
-CREATE TABLE IF NOT EXISTS books (
-  title TEXT PRIMARY KEY, 
-  info TEXT
-)`);
-  }
-
-  async insertBook(filename, bookname) {
-    const hasBook = await this.hasBook(bookname);
-
-    if (!hasBook) {
-      const segTextSource = fs.readFileSync(filename, 'UTF-8', 'r');
-      const result = await this.db.run(`
-INSERT INTO books (title, info)
-VALUES (?, ?)
-`,
-      bookname,
-      segTextSource,
-      );
-    }
-  }
-
-  async loadBook(bookname) {
-    const result = await this.db.get('SELECT info FROM books WHERE title = ?', bookname);
-    return result.info
-  }
-
-  async hasBook(bookname) {
-    const result = await this.db.get('SELECT title FROM books WHERE title = ?', bookname);
-    return !(result == undefined);
-  }
-
-  closeDB() {
-    this.db.close();
+  async getBookText(filename) {
+    return await Book.find({filename: filename}).exec();
   }
 }
 
-const db = new Database();
+const bookSchema = mongoose.Schema({
+  filename: {
+    type: String,
+    required: true,
+  },
+  wordTable: {
+    type: Map,
+    of: Number, // occurances
+    required: true,
+  },
+  charTable: {
+    type: Map,
+    of: Number, // occurances
+    required: true,
+  },
+  totalWords: {
+    type: Number,
+    required: true,
+  },
+  totalCharacters: {
+    type: Number,
+    required: true,
+  },
+  /* segText: {
+    type: Array,
+    of: Array,
+    required: true,
+  }*/
+  segTextSource: {
+    type: String,
+    required: true,
+  },
+});
 
-const start = Date.now();
-await db.load();
-await db.createTables();
-const books = catalogue.listBooks();
-await Promise.all(books.map(async (bookname) => {
-  const filename = catalogue.getPath(bookname);
-  await db.insertBook(filename, bookname);
-}));
-// db.closeDB();
+const Book = mongoose.model('book', bookSchema);
 
-const end = Date.now();
-console.log(`${(end - start) / 1000} seconds to run operation`);
-
-
-
-const documents = {};
-export async function loadDocument(filename, bookname) {
-  
-  // const filename = catalogue.getPath(bookname);
-  if (!documents[filename]) {
-
-    const segText = await db.loadBook(bookname);
-    const doc = new Document(segText);
-    documents[filename] = doc;
-  }
-  const loadedDoc = documents[filename];
-  loadedDoc.generateStats();
-
-  return loadedDoc;
-}
+const database = new Database();
+export {database};

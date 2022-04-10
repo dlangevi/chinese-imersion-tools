@@ -1,48 +1,8 @@
 import fs from 'fs';
 import known from './knownWords.js';
 import wordStats from './wordStats.js';
+import {database} from './database.js'
 
-
-import mongoose from 'mongoose';
-const url = 'mongodb://127.0.0.1:27017/chinese';
-mongoose.connect(url);
-const db = mongoose.connection;
-
-const bookSchema = mongoose.Schema({
-  filename: {
-    type: String,
-    required: true,
-  },
-  wordTable: {
-    type: Map,
-    of: Number, // occurances
-    required: true,
-  },
-  charTable: {
-    type: Map,
-    of: Number, // occurances
-    required: true,
-  },
-  totalWords: {
-    type: Number,
-    required: true,
-  },
-  totalCharacters: {
-    type: Number,
-    required: true,
-  },
-  /* segText: {
-    type: Array,
-    of: Array,
-    required: true,
-  }*/
-  segTextSource: {
-    type: String,
-    required: true,
-  },
-});
-
-const Book = mongoose.model('book', bookSchema);
 
 /*
  * This class now just calculates the aggregate stats and list words for a piece
@@ -68,11 +28,10 @@ export class Document {
     this.title = title;
     const cachedFileData = this.#filename + '.cached';
 
-    const bookValue = await Book.find({filename: this.#filename},
-        '-segTextSource').exec();
+    const bookValue = await database.getBookData(this.#filename);
 
     if (bookValue.length > 1) {
-      console.log(`duplicate books for ${filename}`);
+      console.log(`duplicate books for ${this.#filename}`);
     }
 
     if (bookValue.length > 0) {
@@ -81,14 +40,6 @@ export class Document {
       this.charTable = Object.fromEntries(book.charTable);
       this.totalWords = book.totalWords;
       this.totalCharacters = book.totalCharacters;
-
-
-    /* } else if (fs.existsSync(cachedFileData)) {
-      const cachedData = JSON.parse(fs.readFileSync(cachedFileData, 'UTF-8',
-          'r'));
-      [this.wordTable, this.charTable, this.totalWords] = cachedData;
-
-      */
     } else {
       // This is the most computationally heavy block and also
       // is deterministic, so cache the results
@@ -104,26 +55,12 @@ export class Document {
         this.totalCharacters,
       ] = this.#computeFrequencyData();
 
-      const book = new Book();
-      book.filename = this.#filename;
-      book.wordTable = this.wordTable;
-      book.charTable = this.charTable;
-      book.totalWords = this.totalWords;
-      book.totalCharacters = this.totalCharacters;
-      book.segTextSource = this.segTextSource;
-      // book.segText = this.segText;
-      book.save((err) => {
-        if (err) {
-          console.log(this.segText.length);
-          console.log(this.#filename);
-          console.log(err);
-        }
-      });
+      database.saveBook(this.#filename, this);
     }
   };
 
   async #loadSegText() {
-    const bookValue = await Book.find({filename: this.#filename}).exec();
+    const bookValue = await database.getBookText(this.#filename);
     if (bookValue.length > 0) {
       const book = bookValue[0];
       this.segTextSource = book.segTextSource;
