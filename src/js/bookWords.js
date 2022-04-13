@@ -10,6 +10,9 @@ import {
   occuranceColumn,
   isKnownColumn,
 } from './tableDefn.js';
+import {
+  CenteredRenderer,
+} from './agRenderers.js';
 
 const DocumentWords = {
   columnDefs: [
@@ -17,6 +20,7 @@ const DocumentWords = {
       headerName: 'Row',
       valueGetter: 'node.rowIndex + 1',
       width: 10,
+      cellRenderer: CenteredRenderer,
     },
     markLearnedColumn(),
     wordColumn(),
@@ -45,7 +49,14 @@ async function main() {
   DocumentWords.columnApi.sizeColumnsToFit(dGridDiv.offsetWidth - 40);
   observeTable('#docWordGrid', DocumentWords);
 
-  await loadFileList();
+  const params = new URLSearchParams(window.location.search);
+  console.log(params);
+  const customList = params.get('list');
+  if (customList) {
+    await loadFileList(customList);
+  } else {
+    await loadFileList('all');
+  }
   await loadFile();
 
   document.querySelector('#jsonFiles').addEventListener('change',
@@ -67,26 +78,32 @@ async function main() {
   );
   document.querySelector('#toSentences').addEventListener('click',
       () => {
-        window.location = '/mining.html';
+        const query = window.location.search;
+
+        window.location = '/mining.html' + query;
       });
 }
 
-async function loadFileList() {
-  const response = await post('/filelist');
+async function loadFileList(list) {
+  const response = await post('/filelist', {
+    list: list,
+  });
   const data = await response.json();
   const fileSelector = document.querySelector('#jsonFiles');
   fileSelector.innerHTML = '';
+
+  const savedFile = localStorage.getItem('ch|loadFile');
+
   data.forEach((title) => {
     const opt = document.createElement('option');
     opt.value = title;
     opt.innerHTML = title;
     fileSelector.appendChild(opt);
+    if (title == savedFile) {
+      fileSelector.value = savedFile;
+    }
   });
-  const savedFile = localStorage.getItem('ch|loadFile');
-  if (savedFile) {
-    const fileSelector = document.querySelector('#jsonFiles');
-    fileSelector.value = savedFile;
-  }
+
   return;
 }
 
@@ -124,7 +141,7 @@ function reCalcWordStats() {
     }
   });
   currentKnown = currentKnown / stats.totalWords * 100;
-  const target = determineTarget(currentKnown).toFixed(0);
+  const target = Math.floor(determineTarget(currentKnown));
   const gap = target - currentKnown;
   let neededOccurances = (gap/100) * stats.totalWords;
   let neededWords = 0;
@@ -142,7 +159,7 @@ function reCalcWordStats() {
   console.log(stats.totalWords);
   if (neededOccurances > 0) {
     willKnow = target - (neededOccurances / stats.totalWords * 100);
-    willKnow = willKnow.toFixed(2)
+    willKnow = willKnow.toFixed(2);
   }
 
 
@@ -155,9 +172,7 @@ function determineTarget(currentKnown) {
   if (currentKnown < 86) {
     return 86;
   } else if (currentKnown < 90) {
-    return currentKnown + 2;
-  } else if (currentKnown < 95) {
-    return currentKnown + 2;
+    return 90;
   } else if (currentKnown < 99) {
     return currentKnown + 1;
   } else {

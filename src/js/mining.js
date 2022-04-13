@@ -96,7 +96,9 @@ async function main() {
       () => loadFile(true));
   document.querySelector('#toWords').addEventListener('click',
       () => {
-        window.location = '/bookwords.html';
+        const query = window.location.search;
+
+        window.location = '/bookwords.html' + query;
       });
   document.querySelector('#showfavorite').addEventListener('click',
       () => loadFileList('favorites'));

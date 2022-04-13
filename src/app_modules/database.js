@@ -28,8 +28,8 @@ class Database {
     databaseBook.charTable = book.charTable;
     databaseBook.totalWords = book.totalWords;
     databaseBook.totalCharacters = book.totalCharacters;
+    // todo, sometime segTextSource gets too big
     databaseBook.segTextSource = book.segTextSource;
-    // databaseBook.segText = book.segText;
     databaseBook.save((err) => {
       if (err) {
         console.log(book.segText.length);
