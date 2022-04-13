@@ -50,6 +50,10 @@ async function main() {
 
   DocumentWords.columnApi.sizeColumnsToFit(dGridDiv.offsetWidth - 40);
   observeTable('#docWordGrid', DocumentWords);
+	const filter = DocumentWords.api.getFilterInstance('isKnown');
+	filter.setModel({
+		state: 'unknown',
+	});
 
   const customList = localStorage.getItem('listSelect');
   if (customList) {
@@ -136,6 +140,7 @@ async function loadFile(wellKnown = false) {
 
 function reCalcWordStats() {
   const stats = DocumentWords.stats;
+  if (!stats) return;
   let currentKnown = 0;
   const currentWords = [];
   DocumentWords.api.forEachNode((rowNode, index) => {

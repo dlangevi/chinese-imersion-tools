@@ -2,14 +2,15 @@ import {observeTable, post} from './shared.js';
 import {topNavLoaded} from './topnav.js';
 
 async function main() {
-	await topNavLoaded();
+  await topNavLoaded();
   const eGridDiv = document.querySelector('#bookList');
   new agGrid.Grid(eGridDiv, Tables.bookList);
 
   Tables.bookList.columnApi.sizeColumnsToFit(eGridDiv.offsetWidth - 40);
   observeTable('#bookList', Tables.bookList);
 
-  await loadListContents('all');
+  const listSelector = document.querySelector('#listSelect');
+  await loadListContents( listSelector.value);
 
 
   document.querySelector('#listSelect').addEventListener('change',
@@ -18,7 +19,6 @@ async function main() {
         const currentList = selector.value;
         loadListContents(currentList);
       });
-
 }
 
 
