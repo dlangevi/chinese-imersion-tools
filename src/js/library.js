@@ -1,6 +1,8 @@
 import {observeTable, post} from './shared.js';
+import {topNavLoaded} from './topnav.js';
 
 async function main() {
+	await topNavLoaded();
   const eGridDiv = document.querySelector('#bookList');
   new agGrid.Grid(eGridDiv, Tables.bookList);
 
@@ -8,40 +10,17 @@ async function main() {
   observeTable('#bookList', Tables.bookList);
 
   await loadListContents('all');
-  await loadListList();
 
 
-  document.querySelector('#myBookLists').addEventListener('change',
+  document.querySelector('#listSelect').addEventListener('change',
       () => {
-        const selector = document.querySelector('#myBookLists');
+        const selector = document.querySelector('#listSelect');
         const currentList = selector.value;
         loadListContents(currentList);
       });
 
-  document.querySelector('#openList').addEventListener('click',
-      async () => {
-        const selector = document.querySelector('#myBookLists');
-        const currentList = selector.value;
-        window.location = '/mining.html?list=' + currentList;
-      });
 }
 
-async function loadListList() {
-  const response = await fetch('/listlist');
-  const data = await response.json();
-  const selector = document.querySelector('#myBookLists');
-  const opt = document.createElement('option');
-  opt.value = 'all';
-  opt.innerHTML = 'all';
-  selector.appendChild(opt);
-  data.forEach((title) => {
-    const opt = document.createElement('option');
-    opt.value = title;
-    opt.innerHTML = title;
-    selector.appendChild(opt);
-  });
-  return;
-}
 
 async function loadListContents(sublist) {
   const response = await post('/loadlist', {

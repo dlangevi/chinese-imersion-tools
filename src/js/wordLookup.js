@@ -12,6 +12,7 @@ import {
 import {
   CenteredRenderer,
 } from './agRenderers.js';
+import {topNavLoaded} from './topnav.js';
 
 const sentenceCols = [
   markLearnedColumn({
@@ -65,21 +66,13 @@ const Sentences = {
 };
 
 async function main() {
+	await topNavLoaded();
   const eGridDiv = document.querySelector('#sentenceGrid');
   new agGrid.Grid(eGridDiv, Sentences);
 
   Sentences.columnApi.sizeColumnsToFit(eGridDiv.offsetWidth - 40);
   observeTable('#sentenceGrid', Sentences);
 
-  await loadListList();
-
-  document.querySelector('#myBookLists').addEventListener('change',
-      () => {
-        const selector = document.querySelector('#myBookLists');
-        const currentList = selector.value;
-        // if searchBox has stuff
-        //   doSearch(list)
-      });
 
   document.querySelector('#searchBox').addEventListener('keyup', (event) => {
     console.log('keyup');
@@ -95,7 +88,7 @@ async function main() {
 
 async function searchWord() {
   const searchBox = document.querySelector('#searchBox');
-  const selector = document.querySelector('#myBookLists');
+  const selector = document.querySelector('#listSelect');
   const response = await post('/lookupWord', {
     word: searchBox.value,
     list: selector.value,
@@ -105,21 +98,5 @@ async function searchWord() {
   migakuParse();
 }
 
-async function loadListList() {
-  const response = await fetch('/listlist');
-  const data = await response.json();
-  const selector = document.querySelector('#myBookLists');
-  const opt = document.createElement('option');
-  opt.value = 'all';
-  opt.innerHTML = 'all';
-  selector.appendChild(opt);
-  data.forEach((title) => {
-    const opt = document.createElement('option');
-    opt.value = title;
-    opt.innerHTML = title;
-    selector.appendChild(opt);
-  });
-  return;
-}
 
 main();

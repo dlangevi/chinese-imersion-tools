@@ -1,7 +1,9 @@
 import {withLoader} from './spinner.js';
 import {migakuParse} from './shared.js';
 
-window.addEventListener('DOMContentLoaded', (event) => {
+let isTopNavLoaded = false;
+
+window.addEventListener('DOMContentLoaded', async (event) => {
   // Toggle the side navigation
   const sidebarToggle = document.body.querySelector('#sidebarToggle');
   // document.body.classList.toggle('sb-sidenav-toggled');
@@ -27,7 +29,55 @@ window.addEventListener('DOMContentLoaded', (event) => {
       ankiLoad);
   document.querySelector('#saveProgress').addEventListener('click',
       saveWordList);
+
+  document.querySelector('#listSelect').addEventListener('change', () => {
+    const selector = document.querySelector('#listSelect');
+    const currentList = selector.value;
+    localStorage.setItem('listSelect', currentList);
+  });
+
+  await loadLists();
+	isTopNavLoaded = true;
 });
+
+async function loadLists() {
+  const response = await fetch('/listlist');
+  const data = await response.json();
+  const selector = document.querySelector('#listSelect');
+  const opt = document.createElement('option');
+  opt.value = 'all';
+  opt.innerHTML = 'all';
+  selector.appendChild(opt);
+  const selectedList = localStorage.getItem('listSelect');
+  data.forEach((title) => {
+    const opt = document.createElement('option');
+    opt.value = title;
+    opt.innerHTML = title;
+    selector.appendChild(opt);
+    if (title == selectedList) {
+      selector.value = selectedList;
+    }
+  });
+  return;
+}
+
+export function topNavLoaded() {
+		var timeout = 10000; // 10s
+    var start = Date.now();
+    return new Promise(waitForLoad); // set the promise object within the ensureFooIsSet object
+ 
+    // waitForFoo makes the decision whether the condition is met
+    // or not met or the timeout has been exceeded which means
+    // this promise will be rejected
+    function waitForLoad(resolve, reject) {
+        if (isTopNavLoaded)
+            resolve(isTopNavLoaded);
+        else if (timeout && (Date.now() - start) >= timeout)
+            reject(new Error("timeout"));
+        else
+            setTimeout(waitForLoad.bind(this, resolve, reject), 30);
+    }
+}
 
 function toggleMigakuContainer() {
   const container = document.querySelector('#migaku-toolbar-container');

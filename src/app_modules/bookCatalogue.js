@@ -75,6 +75,11 @@ const bookCatalogue = {
       res.json({success: 'success'});
     });
 
+    app.post('/deletelist', (req,res) => {
+      const listname = req.body.title;
+      bookCatalogue.deleteList(listname);
+    });
+
     app.post('/loadlist', async (req, res, next) => {
       const listname = req.body.title;
       const books = loadBooks();

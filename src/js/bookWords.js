@@ -13,6 +13,7 @@ import {
 import {
   CenteredRenderer,
 } from './agRenderers.js';
+import {topNavLoaded} from './topnav.js';
 
 const DocumentWords = {
   columnDefs: [
@@ -43,15 +44,14 @@ const DocumentWords = {
 };
 
 async function main() {
+	await topNavLoaded();
   const dGridDiv = document.querySelector('#docWordGrid');
   new agGrid.Grid(dGridDiv, DocumentWords);
 
   DocumentWords.columnApi.sizeColumnsToFit(dGridDiv.offsetWidth - 40);
   observeTable('#docWordGrid', DocumentWords);
 
-  const params = new URLSearchParams(window.location.search);
-  console.log(params);
-  const customList = params.get('list');
+  const customList = localStorage.getItem('listSelect');
   if (customList) {
     await loadFileList(customList);
   } else {
@@ -81,6 +81,14 @@ async function main() {
         const query = window.location.search;
 
         window.location = '/mining.html' + query;
+      });
+
+  document.querySelector('#listSelect').addEventListener('change',
+      async () => {
+        const selector = document.querySelector('#listSelect');
+        const currentList = selector.value;
+        await loadFileList(currentList);
+        await loadFile();
       });
 }
 

@@ -12,6 +12,7 @@ import {
 import {
   CenteredRenderer,
 } from './agRenderers.js';
+import {topNavLoaded} from './topnav.js';
 
 const sentenceCols = [
   markLearnedColumn({
@@ -72,15 +73,14 @@ const Sentences = {
 };
 
 async function main() {
+	await topNavLoaded();
   const eGridDiv = document.querySelector('#sentenceGrid');
   new agGrid.Grid(eGridDiv, Sentences);
 
   Sentences.columnApi.sizeColumnsToFit(eGridDiv.offsetWidth - 40);
   observeTable('#sentenceGrid', Sentences);
 
-  const params = new URLSearchParams(window.location.search);
-  console.log(params);
-  const customList = params.get('list');
+  const customList = localStorage.getItem('listSelect');
   if (customList) {
     await loadFileList(customList);
   } else {
@@ -97,11 +97,16 @@ async function main() {
   document.querySelector('#toWords').addEventListener('click',
       () => {
         const query = window.location.search;
-
         window.location = '/bookwords.html' + query;
       });
-  document.querySelector('#showfavorite').addEventListener('click',
-      () => loadFileList('favorites'));
+
+  document.querySelector('#listSelect').addEventListener('change',
+      async () => {
+        const selector = document.querySelector('#listSelect');
+        const currentList = selector.value;
+        await loadFileList(currentList);
+        await loadFile();
+      });
 
   setTimeout(() => {
     migakuParse();

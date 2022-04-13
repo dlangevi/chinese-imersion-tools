@@ -12,6 +12,7 @@ import {
 import {
   CenteredRenderer,
 } from './agRenderers.js';
+import {topNavLoaded} from './topnav.js';
 
 const sentenceCols = [
   markLearnedColumn({
@@ -74,6 +75,7 @@ const Sentences = {
 };
 
 async function main() {
+	
   const eGridDiv = document.querySelector('#sentenceGrid');
   new agGrid.Grid(eGridDiv, Sentences);
 
@@ -81,10 +83,10 @@ async function main() {
   Sentences.columnApi.sizeColumnsToFit(eGridDiv.offsetWidth - 40);
   observeTable('#sentenceGrid', Sentences);
 
-  await loadListList();
+	await topNavLoaded();
   await loadList();
 
-  document.querySelector('#lists').addEventListener('change',
+  document.querySelector('#listSelect').addEventListener('change',
       () => loadList(false));
   document.querySelector('#loadAll').addEventListener('click',
       () => loadList(false));
@@ -97,29 +99,8 @@ async function main() {
   3000);
 }
 
-async function loadListList() {
-  const response = await fetch('/listlist');
-  const data = await response.json();
-  const listSelector = document.querySelector('#lists');
-  listSelector.innerHTML = '';
-  data.forEach((title) => {
-    const opt = document.createElement('option');
-    opt.value = title;
-    opt.innerHTML = title;
-    listSelector.appendChild(opt);
-  });
-
-  const savedFile = localStorage.getItem('ch|loadList');
-  if (savedFile) {
-    const listSelector = document.querySelector('#lists');
-    listSelector.value = savedFile;
-  }
-  return;
-}
-
 async function loadList(wellKnown = false) {
-  const listSelector = document.querySelector('#lists');
-  localStorage.setItem('ch|loadList', listSelector.value);
+  const listSelector = document.querySelector('#listSelect');
   const response = await post('/loadCombinedList', {
     name: listSelector.value,
     wellKnown: false,
