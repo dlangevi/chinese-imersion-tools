@@ -2,6 +2,7 @@ import fs from 'fs';
 import known from './knownWords.js';
 import wordStats from './wordStats.js';
 import {database} from './database.js'
+import {segmentation} from './segmentation.js';
 
 
 /*
@@ -20,14 +21,12 @@ export class Document {
   segText;
   segTextSource;
 
-  constructor(filename, title) {
+  constructor(filename) {
     this.#filename = filename;
   }
 
   async load(title) {
     this.title = title;
-    const cachedFileData = this.#filename + '.cached';
-
     const bookValue = await database.getBookData(this.#filename);
 
     if (bookValue.length > 1) {
@@ -46,7 +45,11 @@ export class Document {
       this.segTextSource = fs.readFileSync(
           this.#filename,
           'UTF-8', 'r');
-      this.segText = JSON.parse(this.segTextSource);
+      if (this.#filename.endsWith('json')) {
+        this.segText = JSON.parse(this.segTextSource);
+      } else {
+        this.segText = segmentation.loadJieba(this.#filename);
+      }
 
       [
         this.wordTable,
@@ -64,7 +67,11 @@ export class Document {
     if (bookValue.length > 0) {
       const book = bookValue[0];
       this.segTextSource = book.segTextSource;
-      this.segText = JSON.parse(this.segTextSource);
+      if (this.#filename.endsWith('json')) {
+        this.segText = JSON.parse(this.segTextSource);
+      } else {
+        this.segText = segmentation.loadJieba(this.#filename);
+      }
     }
   };
 
@@ -168,6 +175,7 @@ export class Document {
 
 const documents = {};
 export async function loadDocument(filename, title) {
+  console.log('loading ', filename, title);
   if (!documents[filename]) {
     const doc = new Document(filename, title);
     documents[filename] = doc;

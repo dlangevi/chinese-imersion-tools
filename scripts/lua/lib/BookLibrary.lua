@@ -33,19 +33,22 @@ function loadLibrary()
             local title = b.title
             local entry = author .. " - " .. title
             local segmentedText = config.segmentedText .. entry .. ".json"
+            local outputTxt = config.segmentedText .. entry .. ".txt"
             books[path] = {
                 author = author,
                 title = title,
                 path = path,
                 entry = entry,
-                segmentedText = segmentedText
+                segmentedText = segmentedText,
+                outputTxt = outputTxt
             }
             catalogue[entry] = {
                 author = author,
                 title = title,
                 path = path,
                 entry = entry,
-                segmentedText = segmentedText
+                segmentedText = segmentedText,
+                outputTxt = outputTxt
             }
         end
     end

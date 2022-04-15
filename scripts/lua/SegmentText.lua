@@ -9,6 +9,7 @@ local cta = require "cta"
 local lfs = require "lfs"
 local JSON = require "JSON"
 local Library = require "BookLibrary"
+local os = require "os"
 
 --This function finds the filename when given a complete path
 function GetFilename(fullpath)
@@ -58,10 +59,12 @@ function segmentFile(filename)
     local info = Library.getBookData(filename)
     local bookName = info.entry
     local outputFile = info.segmentedText
+    local outputTxt = info.outputTxt
     if file_exists(outputFile) then
         print(outputFile .. " already exists")
         return
     end
+    os.execute("cp '" .. filename .. "' '" .. outputTxt .. "'")
 
     local document = cta.Document(filename)
     local sentences = {}
@@ -80,6 +83,7 @@ function segmentFile(filename)
     io.output(output)
     io.write(JSON:encode(sentences))
     io.close(output)
+
 end
 
 local directory = config.library

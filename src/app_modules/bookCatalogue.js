@@ -3,7 +3,19 @@ import config from './config.js';
 import {loadDocument} from './documentStats.js';
 
 function loadBooks() {
-  return JSON.parse(fs.readFileSync(config.catalogue, 'UTF-8', 'r'));
+  const allBooks = JSON.parse(fs.readFileSync(config.catalogue, 'UTF-8', 'r'));
+  const ourBooks = {};
+  const filter = [
+    '张天翼 - 秃秃大王',
+    '张天翼 - 大林和小林',
+    '余华 - 活着',
+  ];
+  filter.forEach((book) => {
+    ourBooks[book] = allBooks[book];
+  });
+  //return ourBooks;
+
+  return allBooks;
 }
 
 const listsFile = config.catalogue + '.lists';
@@ -17,7 +29,9 @@ const bookCatalogue = {
     const books = loadBooks();
     return Object.keys(books);
   },
-  getPath: (bookName) => loadBooks()[bookName].segmentedText,
+  // This toggles whether we use CTA or Jieba rigth now
+  // getPath: (bookName) => loadBooks()[bookName].segmentedText,
+  getPath: (bookName) => loadBooks()[bookName].outputTxt,
   allBookData: () => {},
   loadList: (listname) => {
     if (listname == 'all' || listname == undefined) {
@@ -75,7 +89,7 @@ const bookCatalogue = {
       res.json({success: 'success'});
     });
 
-    app.post('/deletelist', (req,res) => {
+    app.post('/deletelist', (req, res) => {
       const listname = req.body.title;
       bookCatalogue.deleteList(listname);
     });
@@ -87,7 +101,8 @@ const bookCatalogue = {
       const ourBooks = bookCatalogue.loadList(listname);
       const listcts = await Promise.all(ourBooks.map(async (bookKey) => {
         const book = books[bookKey];
-        const document = await loadDocument(book.segmentedText);
+        // const document = await loadDocument(book.segmentedText);
+        const document = await loadDocument(book.outputTxt);
         const stats = document.documentStats();
         return {
           author: book.author,

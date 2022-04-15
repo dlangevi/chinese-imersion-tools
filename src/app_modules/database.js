@@ -1,7 +1,5 @@
 import fs from 'fs';
-import sqlite3 from '@vscode/sqlite3';
 import catalogue from './bookCatalogue.js';
-import {open} from 'sqlite';
 import known from './knownWords.js';
 import wordStats from './wordStats.js';
 
@@ -13,7 +11,12 @@ class Database {
   constructor() {
     const url = 'mongodb://127.0.0.1:27017/chinese';
     mongoose.connect(url);
-    const db = mongoose.connection;
+    this.db = mongoose.connection;
+  }
+
+  close() {
+    mongoose.connection.close(function() {
+    });
   }
 
   async getBookData(filename) {
@@ -34,7 +37,7 @@ class Database {
       if (err) {
         console.log(book.segText.length);
         console.log(filename);
-        console.log(err);
+        // console.log(err);
       }
     });
   }
