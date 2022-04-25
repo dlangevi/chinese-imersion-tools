@@ -6,8 +6,6 @@ import {
 import {
   markLearnedColumn,
   wordColumn,
-  occuranceColumn,
-  starsColumn,
 } from './tableDefn.js';
 import {
   CenteredRenderer,
@@ -66,7 +64,7 @@ const Sentences = {
 };
 
 async function main() {
-	await topNavLoaded();
+  await topNavLoaded();
   const eGridDiv = document.querySelector('#sentenceGrid');
   new agGrid.Grid(eGridDiv, Sentences);
 

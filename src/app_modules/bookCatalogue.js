@@ -8,7 +8,7 @@ function loadBooks() {
   const filter = [
     '张天翼 - 秃秃大王',
     '张天翼 - 大林和小林',
-    '莫晨欢 - 地球上线'
+    '莫晨欢 - 地球上线',
   ];
   filter.forEach((book) => {
     ourBooks[book] = allBooks[book];
@@ -51,7 +51,6 @@ const bookCatalogue = {
   register: (app) => {
     // Sentences
     app.post('/filelist', (req, res, next) => {
-      const books = loadBooks();
       const listName = req.body.list;
       res.json(bookCatalogue.loadList(listName));
     });
@@ -64,17 +63,18 @@ const bookCatalogue = {
     // Library
     app.get('/filelistdata', async (req, res, next) => {
       const books = loadBooks();
-      const bookData = await Promise.all(Object.values(books).map(async (book) => {
-        const document = await loadDocument(book
-            .segmentedText);
-        const stats = document.documentStats();
-        return {
-          author: book.author,
-          title: book.title,
-          words: stats.totalWords,
-          percent: stats.currentKnown.toFixed(2),
-        };
-      }));
+      const bookData = await Promise.all(
+          Object.values(books).map(async (book) => {
+            const document = await loadDocument(book
+                .segmentedText);
+            const stats = document.documentStats();
+            return {
+              author: book.author,
+              title: book.title,
+              words: stats.totalWords,
+              percent: stats.currentKnown.toFixed(2),
+            };
+          }));
       res.json(bookData);
     });
 

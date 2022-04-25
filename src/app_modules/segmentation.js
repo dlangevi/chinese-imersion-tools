@@ -1,7 +1,5 @@
 import nodejieba from 'nodejieba';
-// import Segment from 'segment';
 import Segment from 'novel-segment';
-import {segment} from 'hanzi-tools';
 import fs from 'fs';
 import books from './bookCatalogue.js';
 
@@ -21,7 +19,7 @@ function loadCTA(bookname) {
   const output = [];
   for (let i = 0; i < json.length; i++) {
     const sentance = json[i];
-    const [last, id] = sentance[sentance.length - 1];
+    const last = sentance[sentance.length - 1][0];
     // Todo, maybe we want this
     if (false && last == '…') {
       const next = json[i+1];
@@ -124,7 +122,8 @@ function loadJieba(txtPath) {
       if (end.length > 0) {
         result.push([]);
       }
-    } else if (word == '？' | word == '！'| word == '。' | word == '…' | word == '.') {
+    } else if (word == '？' | word == '！'| word == '。' |
+      word == '…' | word == '.') {
       if (end.length == 0) {
         const previous = result[result.length -2];
         previous.push([word, type]);
@@ -161,16 +160,19 @@ function stringify(sentence) {
 }
 
 
-const TYPE = {
+/* const TYPE = {
   NONE: 0, // None - Indicative of an error
   INVALID: 1, // Invalid - Invalid utf8 text
   CHINESE: 2, // Chinese - A word made up of Chinese text
   ALPHA: 3, // Alpha - A word made up of letters from the English alphabet
   NUMBER: 4, // Number - A word made up of Arabic numerals
-  WHITESPACE: 5, // Whitespace - A block of whitespace (spaces, tabs, newlines etc).
+  WHITESPACE: 5, // Whitespace - A block of whitespace
+                 // (spaces, tabs, newlines etc).
   CHINESEPUNCTUATION: 6, // ChinesePunctuation - Chinese punctuation
-  ASCIIPUNCTUATION: 7, // AsciiPunctuation - Standard ascii (English) punctuation.
-};
+  ASCIIPUNCTUATION: 7, // AsciiPunctuation - Standard ascii
+                       // (English) punctuation.
+};*/
+
 
 function compareSentenceChunks(cta, jieba) {
   const minLen = Math.min(cta.length, jieba.length);

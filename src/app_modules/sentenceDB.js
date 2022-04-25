@@ -62,14 +62,15 @@ export class SentenceDB {
     const start = Date.now();
     console.log(word);
     const targets = [];
-    await Promise.all(Object.entries(this.documents).map(async ([bookName, document]) => {
-      if (list.includes(bookName)) {
-        const sentences = await document.lookupSentences(word, 20);
-        sentences.forEach((sentence) => {
-          targets.push(sentence);
-        });
-      }
-    }));
+    await Promise.all(
+        Object.entries(this.documents).map(async ([bookName, document]) => {
+          if (list.includes(bookName)) {
+            const sentences = await document.lookupSentences(word, 20);
+            sentences.forEach((sentence) => {
+              targets.push(sentence);
+            });
+          }
+        }));
     const end = Date.now();
     console.log(`${(end - start) / 1000} seconds to lookup`);
     return targets;

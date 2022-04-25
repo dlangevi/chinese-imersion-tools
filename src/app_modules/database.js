@@ -1,7 +1,3 @@
-import fs from 'fs';
-import catalogue from './bookCatalogue.js';
-import known from './knownWords.js';
-import wordStats from './wordStats.js';
 
 import mongoose from 'mongoose';
 
@@ -54,7 +50,7 @@ class Database {
   }
 }
 
-const bookSchema = mongoose.Schema({
+const bookSchema = new mongoose.Schema({
   filename: {
     type: String,
     required: true,

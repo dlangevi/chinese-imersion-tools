@@ -45,16 +45,16 @@ const DocumentWords = {
 };
 
 async function main() {
-	await topNavLoaded();
+  await topNavLoaded();
   const dGridDiv = document.querySelector('#docWordGrid');
   new agGrid.Grid(dGridDiv, DocumentWords);
 
   DocumentWords.columnApi.sizeColumnsToFit(dGridDiv.offsetWidth - 40);
   observeTable('#docWordGrid', DocumentWords);
-	const filter = DocumentWords.api.getFilterInstance('isKnown');
-	filter.setModel({
-		state: 'unknown',
-	});
+  const filter = DocumentWords.api.getFilterInstance('isKnown');
+  filter.setModel({
+    state: 'unknown',
+  });
 
   const customList = localStorage.getItem('listSelect');
   if (customList) {

@@ -30,7 +30,7 @@ window.addEventListener('DOMContentLoaded', async (event) => {
   document.querySelector('#saveProgress').addEventListener('click',
       saveWordList);
 
-  window.addEventListener('keydown', function (e) {
+  window.addEventListener('keydown', function(e) {
     if (e.key == 't') {
       migakuParse();
     }
@@ -43,7 +43,7 @@ window.addEventListener('DOMContentLoaded', async (event) => {
   });
 
   await loadLists();
-	isTopNavLoaded = true;
+  isTopNavLoaded = true;
 });
 
 async function loadLists() {
@@ -68,21 +68,23 @@ async function loadLists() {
 }
 
 export function topNavLoaded() {
-		var timeout = 10000; // 10s
-    var start = Date.now();
-    return new Promise(waitForLoad); // set the promise object within the ensureFooIsSet object
- 
-    // waitForFoo makes the decision whether the condition is met
-    // or not met or the timeout has been exceeded which means
-    // this promise will be rejected
-    function waitForLoad(resolve, reject) {
-        if (isTopNavLoaded)
-            resolve(isTopNavLoaded);
-        else if (timeout && (Date.now() - start) >= timeout)
-            reject(new Error("timeout"));
-        else
-            setTimeout(waitForLoad.bind(this, resolve, reject), 30);
+  const timeout = 10000; // 10s
+  const start = Date.now();
+  return new Promise(waitForLoad);
+
+  // waitForLoad makes the decision whether the condition is met
+  // or not met or the timeout has been exceeded which means
+  // this promise will be rejected
+  // @this foo ??? what is the right thing to do here
+  function waitForLoad(resolve, reject) {
+    if (isTopNavLoaded) {
+      resolve(isTopNavLoaded);
+    } else if (timeout && (Date.now() - start) >= timeout) {
+      reject(new Error('timeout'));
+    } else {
+      setTimeout(waitForLoad.bind(this, resolve, reject), 30);
     }
+  }
 }
 
 function toggleMigakuContainer() {

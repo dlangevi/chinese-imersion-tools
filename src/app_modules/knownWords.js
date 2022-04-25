@@ -15,11 +15,11 @@ function currentDateString() {
   const year = d.getFullYear();
   let month = d.getMonth() + 1;
   if (month < 10) {
-    month = `0${month}`
+    month = `0${month}`;
   }
-  let day = d.getDate()
+  let day = d.getDate();
   if (day < 10) {
-    day = `0${day}`
+    day = `0${day}`;
   }
   return `${year}-${month}-${day}`;
 }
@@ -32,15 +32,15 @@ function toMilli(dateString) {
 
 
 function tableData() {
-  const summed = {}
-  Object.values(known).forEach(data => {
+  const summed = {};
+  Object.values(known).forEach((data) => {
     if (!(data.added in summed)) {
       summed[data.added] = 0;
     }
     summed[data.added] += 1;
   });
 
-  const sorted = Object.entries(summed).sort()
+  const sorted = Object.entries(summed).sort();
   let acc = 0;
   for (let i = 0; i < sorted.length; i++) {
     acc += sorted[i][1];
@@ -48,20 +48,20 @@ function tableData() {
   }
 
   return {
-    lables: sorted.map(([x, y]) => x).map(dateString => toMilli(dateString)),
-    data : sorted.map(([x, y]) => y),
-  }
+    lables: sorted.map(([x, y]) => x).map((dateString) => toMilli(dateString)),
+    data: sorted.map(([x, y]) => y),
+  };
 }
 
 function addWord(word, age) {
   // If this is a new word, add it with the current date
   if (!known.hasOwnProperty(word)) {
-    known[word] = {added: currentDateString()}
-    known[word].interval = age; 
+    known[word] = {added: currentDateString()};
+    known[word].interval = age;
     console.log(`Adding new word ${word} ${JSON.stringify(known[word])}`);
   } else {
     // else just update the interval
-    known[word].interval = age; 
+    known[word].interval = age;
   }
 }
 

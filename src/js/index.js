@@ -12,7 +12,7 @@ async function main() {
 
   // Area Chart Example
   const ctxArea = document.getElementById('myAreaChart');
-  const myLineChartArea = new Chart(ctxArea, {
+  new Chart(ctxArea, {
     type: 'line',
     data: {
       labels: data.tableData.lables,

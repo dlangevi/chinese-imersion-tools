@@ -17,7 +17,7 @@ export class MultiDocumentProcessor {
   #aggregateTotalWellKnownWords = 0;
 
   constructor(booknames) {
-    this.booknames = booknames
+    this.booknames = booknames;
   }
 
   async init() {
@@ -240,7 +240,6 @@ function sentenceKnownIncludes(sentence, target, howKnown) {
     }
   });
   return allKnown && found;
-
 }
 
 function sentenceKnown(sentence, exception, howKnown) {

@@ -75,7 +75,6 @@ const Sentences = {
 };
 
 async function main() {
-	
   const eGridDiv = document.querySelector('#sentenceGrid');
   new agGrid.Grid(eGridDiv, Sentences);
 
@@ -83,7 +82,7 @@ async function main() {
   Sentences.columnApi.sizeColumnsToFit(eGridDiv.offsetWidth - 40);
   observeTable('#sentenceGrid', Sentences);
 
-	await topNavLoaded();
+  await topNavLoaded();
   await loadList();
 
   document.querySelector('#listSelect').addEventListener('change',
