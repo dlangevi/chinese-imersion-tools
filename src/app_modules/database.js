@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 // The data base will have functions that interact with the backend. Only will
 // handle saving and loading data
 class Database {
-  disableDatabase = true;
+  disableDatabase = false;
   constructor() {
     const url = 'mongodb://127.0.0.1:27017/chinese';
     mongoose.connect(url);
@@ -73,11 +73,6 @@ const bookSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  /* segText: {
-    type: Array,
-    of: Array,
-    required: true,
-  }*/
   segTextSource: {
     type: String,
     required: true,

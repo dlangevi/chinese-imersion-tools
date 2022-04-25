@@ -6,12 +6,14 @@ import {MultiDocumentProcessor} from './documentProcessor.js';
  *
  */
 export class SentenceDB {
+  loaded = false;
   constructor() {
     this.books = catalogue.listBooks();
     // this.books = ['一只大雁 - 我男朋友好像有病']
   }
 
   async reloadSentences() {
+    this.loaded = true;
     const start = Date.now();
     this.sentences = {};
     this.documents = {};
@@ -79,5 +81,4 @@ export class SentenceDB {
 
 const sentenceDB = new SentenceDB();
 // if we dont await does the service come up faster?
-sentenceDB.reloadSentences();
 export default sentenceDB;

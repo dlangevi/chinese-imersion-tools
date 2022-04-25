@@ -28,6 +28,9 @@ documentProcessor.register(app);
 app.post('/lookupWord', async (req, res, next) => {
   const word = req.body.word;
   const list = req.body.list;
+  if (!sentenceDB.loaded) {
+    await sentenceDB.reloadSentences();
+  }
   let sentences = sentenceDB.lookupWordFast(word, list);
   if (sentences.length == 0) {
     sentences = await sentenceDB.lookupWordSlow(word, list);
