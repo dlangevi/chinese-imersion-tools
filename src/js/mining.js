@@ -73,7 +73,7 @@ const Sentences = {
 };
 
 async function main() {
-	await topNavLoaded();
+  await topNavLoaded();
   const eGridDiv = document.querySelector('#sentenceGrid');
   new agGrid.Grid(eGridDiv, Sentences);
 

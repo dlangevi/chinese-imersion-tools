@@ -8,12 +8,12 @@ function loadBooks() {
   const filter = [
     '张天翼 - 秃秃大王',
     '张天翼 - 大林和小林',
-    '余华 - 活着',
+    '莫晨欢 - 地球上线'
   ];
   filter.forEach((book) => {
     ourBooks[book] = allBooks[book];
   });
-  //return ourBooks;
+  // return ourBooks;
 
   return allBooks;
 }
@@ -101,8 +101,8 @@ const bookCatalogue = {
       const ourBooks = bookCatalogue.loadList(listname);
       const listcts = await Promise.all(ourBooks.map(async (bookKey) => {
         const book = books[bookKey];
-        // const document = await loadDocument(book.segmentedText);
-        const document = await loadDocument(book.outputTxt);
+        const path = bookCatalogue.getPath(bookKey);
+        const document = await loadDocument(path);
         const stats = document.documentStats();
         return {
           author: book.author,

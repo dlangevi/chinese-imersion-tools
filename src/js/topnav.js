@@ -30,6 +30,12 @@ window.addEventListener('DOMContentLoaded', async (event) => {
   document.querySelector('#saveProgress').addEventListener('click',
       saveWordList);
 
+  window.addEventListener('keydown', function (e) {
+    if (e.key == 't') {
+      migakuParse();
+    }
+  }, false);
+
   document.querySelector('#listSelect').addEventListener('change', () => {
     const selector = document.querySelector('#listSelect');
     const currentList = selector.value;

@@ -1,7 +1,7 @@
 import fs from 'fs';
 import known from './knownWords.js';
 import wordStats from './wordStats.js';
-import {database} from './database.js'
+import {database} from './database.js';
 import {segmentation} from './segmentation.js';
 
 
@@ -28,6 +28,7 @@ export class Document {
   async load(title) {
     this.title = title;
     const bookValue = await database.getBookData(this.#filename);
+    // const bookValue = [];
 
     if (bookValue.length > 1) {
       console.log(`duplicate books for ${this.#filename}`);
@@ -42,6 +43,7 @@ export class Document {
     } else {
       // This is the most computationally heavy block and also
       // is deterministic, so cache the results
+      console.log(`${title}: Not in database`);
       this.segTextSource = fs.readFileSync(
           this.#filename,
           'UTF-8', 'r');
@@ -170,6 +172,7 @@ export class Document {
       percent: occurances / this.totalWords * 100,
       stars: wordStats.frequency(word),
     };
+    Ligatures;
   }
 }
 

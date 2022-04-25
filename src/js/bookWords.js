@@ -24,7 +24,8 @@ const DocumentWords = {
       cellRenderer: CenteredRenderer,
     },
     markLearnedColumn(),
-    wordColumn(),
+    wordColumn({
+    }),
     starsColumn(),
     occuranceColumn({
       width: 80,

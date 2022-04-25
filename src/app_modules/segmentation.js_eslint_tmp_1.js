@@ -66,14 +66,14 @@ function loadJieba(txtPath) {
   // 'lower' accuracy than CTA, but it is not as bad as others
   // let json = []
   // const json = nodejieba.cut(txt);
-
-  const json = [];
+  
+  let json = []
   const txtLines = txt.split('\n');
-  txtLines.forEach((line) => {
+  txtLines.forEach(line => {
     const split = nodejieba.cut(line);
-    split.forEach((word) => json.push(word));
-  });
-  console.log(txtPath, ':', json.length);
+    split.forEach(word => json.push(word));
+   });
+  console.log(txtPath, ':', json.length)
 
   // Detects names better but makes stuff like 有庆死, 看凤霞
   // const json = nodejieba.cut(txt, true);

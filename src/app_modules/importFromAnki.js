@@ -1,7 +1,5 @@
 import fetch from 'node-fetch';
 import knownWords from './knownWords.js';
-import config from './config.js';
-import fs from 'fs/promises';
 
 async function invoke(action, params) {
   const response = await fetch('http://127.0.0.1:8765', {
@@ -61,7 +59,9 @@ async function exportAnkiKeywords() {
 
 function isChinese(word) {
   // unicode ranges for chinese characters
-  const isOnlyChinese = /^[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff66-\uff9f]*$/.test(word);
+  const isOnlyChinese =
+    /^[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff66-\uff9f]*$/
+        .test(word);
   if (!isOnlyChinese) {
     console.log(`${word} is sus, skipping it`);
   }

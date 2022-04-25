@@ -8,6 +8,7 @@ import mongoose from 'mongoose';
 // The data base will have functions that interact with the backend. Only will
 // handle saving and loading data
 class Database {
+  disableDatabase = true;
   constructor() {
     const url = 'mongodb://127.0.0.1:27017/chinese';
     mongoose.connect(url);
@@ -20,11 +21,17 @@ class Database {
   }
 
   async getBookData(filename) {
+    if (this.disableDatabase) {
+      return [];
+    }
     return await Book.find({filename: filename},
         '-segTextSource').exec();
   }
 
   saveBook(filename, book) {
+    if (this.disableDatabase) {
+      return;
+    }
     const databaseBook = new Book();
     databaseBook.filename = filename;
     databaseBook.wordTable = book.wordTable;
