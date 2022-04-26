@@ -2,7 +2,8 @@ import fs from 'fs';
 import wordStats from './wordStats.js';
 import config from './config.js';
 
-
+// @todo save and load this from the database,
+// and handle per user word lists
 const known = JSON.parse(fs.readFileSync(
     config.knownWordsJson, 'UTF-8', 'r'));
 const knownCharacters = new Set();
@@ -10,27 +11,47 @@ Object.keys(known).forEach((word) => {
   Array.from(word).forEach((ch) => knownCharacters.add(ch));
 });
 
+/**
+ * Return the current date formated 'YYYY-MM-DD'
+ * @return {string}
+ */
 function currentDateString() {
-  const d = new Date();
-  const year = d.getFullYear();
-  let month = d.getMonth() + 1;
+  return toDateString(new Date());
+}
+
+/**
+ * Format a date to the form 'YYYY-MM-DD'
+ * @param {Date} date
+ * @return {string}
+ */
+export function toDateString(date) {
+  const year = date.getFullYear();
+  let month = date.getMonth() + 1;
   if (month < 10) {
     month = `0${month}`;
   }
-  let day = d.getDate();
+  let day = date.getDate();
   if (day < 10) {
     day = `0${day}`;
   }
   return `${year}-${month}-${day}`;
 }
 
+/**
+ * Convert a 'YYYY-MM-DD' string into milliseconds
+ * @param {Date} dateString - input date
+ * @return {number}
+ */
 function toMilli(dateString) {
   const [year, month, day] = dateString.split('-');
   const date = new Date(year, month -1, day);
   return date.getTime();
 }
 
-
+/**
+ * Data for the index.html word progress chart
+ * @return {Object}
+ */
 function tableData() {
   const summed = {};
   Object.values(known).forEach((data) => {
@@ -48,8 +69,8 @@ function tableData() {
   }
 
   return {
-    lables: sorted.map(([x, y]) => x).map((dateString) => toMilli(dateString)),
-    data: sorted.map(([x, y]) => y),
+    lables: sorted.map(([x, _]) => x).map((dateString) => toMilli(dateString)),
+    data: sorted.map(([_, y]) => y),
   };
 }
 
@@ -66,17 +87,10 @@ function addWord(word, age) {
 }
 
 function saveWords(callback) {
-  fs.writeFile(config.knownWordsJson, JSON.stringify(known), (err) => {
+  fs.writeFile(config.knownWordsJson, JSON.stringify(known), (_) => {
     const words = Object.keys(known);
     console.log(`Saved ${words.length} words`);
     fs.writeFile(config.knownWords, words.join('\n'), callback);
-  });
-}
-
-// from Anki, a dict of word => interval
-function mergeWords(intervalDict) {
-  Object.entries(intervalDict).forEach(([word, interval]) => {
-    addWord(word, interval);
   });
 }
 
@@ -91,27 +105,13 @@ function knownWordsTable() {
   });
 }
 
-function knownCharsTable() {
-  return [...knownCharacters].map((ch) => {
-    return {
-      word: ch,
-      isKnown: (ch in known),
-    };
-  });
-}
-
 function numKnownCharacters() {
   return knownCharacters.size;
-}
-
-function knownLevels() {
-  return wordStats.frequencyStats(known);
 }
 
 // exports various dictionaries
 const knownWords = {
   addWord: addWord,
-  mergeWords: mergeWords,
   isKnown: (word, howKnown = 0) => {
     // if word is completly unknown return false
     if (!(word in known)) {
@@ -125,48 +125,9 @@ const knownWords = {
   },
 
   knownWordsTable: knownWordsTable,
-  knownCharsTable: knownCharsTable,
   knownWords: () => Object.keys(known).length,
   saveWords: saveWords,
   knownCharacters: numKnownCharacters,
-  knownLevels: knownLevels,
-
-  register: (app) => {
-    app.get('/saveWordlist', (req, res, next) => {
-      // todo, do a callback promise or smth
-      saveWords((err) => {
-        console.log('Saved wordlist');
-        res.json({
-          success: err,
-          totalWords: knownWords.knownWords(),
-        });
-      });
-    });
-
-    app.post('/addWords', (req, res, next) => {
-      const words = req.body.words;
-      console.log(words);
-      words.forEach((word) => addWord(word, 10000));
-      fs.appendFile(config.exportedWords,
-          words.join('\n') + '\n',
-          (err) => {
-            const myWords = knownWordsTable();
-            res.json({
-              success: err,
-              totalWords: myWords.length,
-              words: myWords,
-            });
-          });
-    });
-
-    app.get('/stats', (req, res, next) => {
-      const myWords = knownWordsTable();
-      res.json({
-        totalWords: myWords.length,
-        totalChars: knownCharacters.size,
-        tableData: tableData(),
-      });
-    });
-  },
+  tableData: tableData,
 };
 export default knownWords;

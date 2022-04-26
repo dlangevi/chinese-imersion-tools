@@ -11,7 +11,8 @@
     "build:pug": "node scripts/npm/build-pug.js",
     "build:scripts": "node scripts/npm/build-scripts.js",
     "build:scss": "node scripts/npm/build-scss.js",
-    "clean": "node scripts/npm/clean.js"
+    "clean": "node scripts/npm/clean.js",
+    "test": "mocha src/app_modules/test"
   },
   "repository": {
     "type": "git",
@@ -39,6 +40,7 @@
     "concurrently": "6.3.0",
     "eslint": "^8.12.0",
     "eslint-config-google": "^0.14.0",
+    "mocha": "^9.2.2",
     "postcss": "8.4.12",
     "prettier": "2.6.0",
     "sass": "1.49.9",

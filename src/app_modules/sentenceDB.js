@@ -12,6 +12,7 @@ export class SentenceDB {
     // this.books = ['一只大雁 - 我男朋友好像有病']
   }
 
+
   async reloadSentences() {
     this.loaded = true;
     const start = Date.now();

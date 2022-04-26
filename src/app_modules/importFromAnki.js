@@ -85,7 +85,9 @@ function fixWord(word) {
 export function register(app) {
   app.get('/loadAnki', (req, res, next) => {
     exportAnkiKeywords().then((ankiObject) => {
-      knownWords.mergeWords(ankiObject);
+      Object.entries(ankiObject).forEach(([word, interval]) => {
+        knownWords.addWord(word, interval);
+      });
       res.json({
         success: 1,
         words: knownWords.knownWords(),
