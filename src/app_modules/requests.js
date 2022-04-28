@@ -1,5 +1,8 @@
 import known from './knownWords.js';
 import sentenceDB from './sentenceDB.js';
+import bookCatalogue from './bookCatalogue.js';
+import {loadDocument} from './documentStats.js';
+
 
 export function registerRequests(app) {
   /*
@@ -32,10 +35,48 @@ export function registerRequests(app) {
   /*
    *   Book Library
    */
-
+  app.get('/listlist', (_, res) => {
+    res.json(Object.keys(bookCatalogue.allLists()));
+  });
   /*
    *   List Manager
    */
+  app.post('/filelist', (req, res) => {
+    const listName = req.body.list;
+    res.json(bookCatalogue.loadList(listName));
+  });
+
+  app.post('/savelist', (req, res) => {
+    const listname = req.body.title;
+    const books = req.body.books;
+    bookCatalogue.saveList(listname, books);
+    res.json({success: 'success'});
+  });
+
+  app.post('/deletelist', (req, res) => {
+    const listname = req.body.title;
+    bookCatalogue.deleteList(listname);
+    res.json({success: 'success'});
+  });
+
+  app.post('/loadlist', async (req, res) => {
+    const listname = req.body.title;
+    const books = bookCatalogue.allBooks();
+    const ourBooks = bookCatalogue.loadList(listname);
+    const listcts = await Promise.all(ourBooks.map(async (bookName) => {
+      const book = books[bookName];
+      const document = await loadDocument(bookName);
+      const stats = document.documentStats();
+      return {
+        author: book.author,
+        title: book.title,
+        words: stats.totalWords,
+        percent: stats.currentKnown.toFixed(2),
+        percentChars: stats.currentKnownChar.toFixed(2),
+      };
+    }));
+    res.json(listcts);
+  });
 
   /*
    *   Sentence Mining

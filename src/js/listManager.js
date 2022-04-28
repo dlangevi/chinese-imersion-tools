@@ -70,7 +70,9 @@ async function main() {
 }
 
 async function loadFileList() {
-  const response = await fetch('/filelistdata');
+  const response = await post('/loadlist', {
+    title: 'all',
+  });
   const data = await response.json();
   Tables.bookList.api.setRowData(data);
   return;

@@ -3,7 +3,6 @@ import known from './knownWords.js';
 import wordStats from './wordStats.js';
 import {database} from './database.js';
 import {segmentation} from './segmentation.js';
-import bookCatalogue from './bookCatalogue.js';
 
 
 /*
@@ -173,12 +172,13 @@ export class Document {
       percent: occurances / this.totalWords * 100,
       stars: wordStats.frequency(word),
     };
+    Ligatures;
   }
 }
 
 const documents = {};
 export async function loadDocument(title) {
-  const filename = bookCatalogue.getPath(title);
+  const filename = bookCatalogue.getPath(title):
 
   console.log('loading ', filename, title);
   if (!documents[filename]) {

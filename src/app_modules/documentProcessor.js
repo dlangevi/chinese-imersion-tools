@@ -25,8 +25,7 @@ export class MultiDocumentProcessor {
       this.booknames = [this.booknames];
     }
     this.#documents = await Promise.all(this.booknames.map(async (bookname) => {
-      const filename = catalogue.getPath(bookname);
-      const doc = await loadDocument(filename, bookname);
+      const doc = await loadDocument(bookname);
       doc.generateStats();
       return doc;
     }));
