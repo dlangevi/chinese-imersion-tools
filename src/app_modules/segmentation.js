@@ -1,7 +1,7 @@
-import nodejieba from 'nodejieba';
-import Segment from 'novel-segment';
+import rsjieba from '@node-rs/jieba';
 import fs from 'fs';
 import books from './bookCatalogue.js';
+
 
 // Here we will handle the segmentation of text. There will be two supported
 // methods for now.
@@ -54,24 +54,12 @@ function compareLoadTimes(txtPath) {
   console.log(`${(end - start) / 1000} seconds to cut true`);
 }
 
-const novelSegment = new Segment();
-novelSegment.useDefault();
-
 function loadJieba(txtPath) {
   const txt = fs.readFileSync(txtPath, 'UTF-8', 'r');
   // Misses names, but also makes less compound words
   // Haha, I see why they recommended the default. This still produces a
   // 'lower' accuracy than CTA, but it is not as bad as others
-  // let json = []
-  // const json = nodejieba.cut(txt);
-
-  const json = [];
-  const txtLines = txt.split('\n');
-  txtLines.forEach((line) => {
-    const split = nodejieba.cut(line);
-    split.forEach((word) => json.push(word));
-  });
-  console.log(txtPath, ':', json.length);
+  const json = rsjieba.cut(txt);
 
   // Detects names better but makes stuff like 有庆死, 看凤霞
   // const json = nodejieba.cut(txt, true);
@@ -85,15 +73,7 @@ function loadJieba(txtPath) {
   // Doesn't get as many names still makes 两条腿
   // const json = nodejieba.cutForSearch(txt);
 
-  // 9 years old with no maintainence, a little slow but alright
-  // const json = segment.doSegment(txt, {simple: true});
-  // const json = novelSegment.doSegment(txt, {simple: true});
-
-  // Ok VERY SLOW, but also segments similar to cta (in terms of how much stuff
-  // gets cut up)
-  // const json = segment(txt);
-  // const finalJson =  json.reduce((result, word, index) => {
-  return json.reduce((result, word, index) => {
+  const result = json.reduce((result, word, index) => {
     let type = '';
     // const punc = /\p{Script_Extensions=Han}/u;
     // const punc = /\p{CJK_Symbols_and_Punctuation}/u;
@@ -145,6 +125,7 @@ function loadJieba(txtPath) {
     }
     return result;
   }, [[]]);
+  return result;
 }
 
 function tostring(sentence) {

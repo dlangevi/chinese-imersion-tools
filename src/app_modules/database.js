@@ -1,4 +1,3 @@
-
 import mongoose from 'mongoose';
 
 // The data base will have functions that interact with the backend. Only will

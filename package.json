@@ -35,6 +35,7 @@
     "pug": "3.0.2"
   },
   "devDependencies": {
+    "@node-rs/jieba": "^1.6.0",
     "autoprefixer": "10.4.4",
     "chokidar": "3.5.3",
     "concurrently": "6.3.0",

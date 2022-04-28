@@ -81,5 +81,6 @@ export class SentenceDB {
 }
 
 const sentenceDB = new SentenceDB();
+// sentenceDB.reloadSentences();
 // if we dont await does the service come up faster?
 export default sentenceDB;
