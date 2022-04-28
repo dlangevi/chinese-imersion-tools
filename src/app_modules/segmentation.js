@@ -7,51 +7,12 @@ import books from './bookCatalogue.js';
 // methods for now.
 //
 // 1) Read in json dumped results from CTA
-// 2) Use nodejieba to directly read the text
-//
-
-
+// 2) Use node-rs/jieba to directly read the text
 function loadCTA(bookname) {
   const ctaPath = books.getPath(bookname);
   const ctaJson = fs.readFileSync(ctaPath, 'UTF-8', 'r');
   const json = JSON.parse(ctaJson);
-
-  const output = [];
-  for (let i = 0; i < json.length; i++) {
-    const sentance = json[i];
-    const last = sentance[sentance.length - 1][0];
-    // Todo, maybe we want this
-    if (false && last == '…') {
-      const next = json[i+1];
-      i = i+1;
-      output.push(sentance.concat(next));
-    } else {
-      output.push(sentance);
-    }
-  }
-  return output;
-  // For now dont do anything, but we will want to change the id's later
-  return ctaJson.map((sentence) => {
-    return sentence.map(([word, id]) => {
-      return [word, id];
-    });
-  });
-}
-
-function compareLoadTimes(txtPath) {
-  const txt = fs.readFileSync(txtPath, 'UTF-8', 'r');
-  let start = Date.now();
-  nodejieba.tag(txt);
-  let end = Date.now();
-  console.log(`${(end - start) / 1000} seconds to tag`);
-  start = Date.now();
-  nodejieba.cut(txt);
-  end = Date.now();
-  console.log(`${(end - start) / 1000} seconds to cut`);
-  start = Date.now();
-  nodejieba.cut(txt, true);
-  end = Date.now();
-  console.log(`${(end - start) / 1000} seconds to cut true`);
+  return json;
 }
 
 function loadJieba(txtPath) {
@@ -128,19 +89,6 @@ function loadJieba(txtPath) {
   return result;
 }
 
-function tostring(sentence) {
-  return sentence.reduce((string, [word, type]) => {
-    return string + word;
-  }, '');
-}
-
-function stringify(sentence) {
-  return sentence.reduce((string, [word, type]) => {
-    return string + `[${word}, ${type}]`;
-  }, '');
-}
-
-
 /* const TYPE = {
   NONE: 0, // None - Indicative of an error
   INVALID: 1, // Invalid - Invalid utf8 text
@@ -155,84 +103,8 @@ function stringify(sentence) {
 };*/
 
 
-function compareSentenceChunks(cta, jieba) {
-  const minLen = Math.min(cta.length, jieba.length);
-  console.log(`
-  CTA generated sentences: ${cta.length}
-  Jieba generated sentences: ${jieba.length}
-`);
-
-  let ctaIndex = 0;
-  let jiebaIndex = 0;
-  for (let i = 0; i < minLen; i++) {
-    const sentanceA = tostring(cta[ctaIndex]);
-    const sentanceB = tostring(jieba[jiebaIndex]);
-    if (sentanceA !== sentanceB) {
-      console.log(`
-  Correct sentances: 
-    ${i}
-  Failed on
-    CTA:   ${sentanceA} 
-    Jieba: ${sentanceB}
-
-    CTA: 
-      i-1: ${stringify(cta[i-1])}
-      i:   ${stringify(cta[i])}
-      i+1: ${stringify(cta[i+1])}
-
-    Jieba:
-      i-1: ${stringify(jieba[i-1])}
-      i:   ${stringify(jieba[i])}
-      i+1: ${stringify(jieba[i+1])}
-`);
-      return;
-      if (sentanceA.length > sentanceB.length) {
-        jiebaIndex += 1;
-      } else {
-        ctaIndex += 1;
-      }
-    }
-    jiebaIndex += 1;
-    ctaIndex += 1;
-  }
-  console.log('scanned min and passed, this shouldnt be possible');
-}
-
-function compareWordChunks(a, b) {
-  const minLen = Math.min(a.length, b.length);
-  for (let i = 0; i < minLen; i++) {
-    const senA = a[i];
-    const senB = b[i];
-    const minSenLen = Math.min(senA.length, senB.length);
-    let allMatch = true;
-    for (let j = 0; j < minSenLen; j++) {
-      if (senA[j][0] != senB[j][0]) {
-        allMatch = false;
-        console.log(senA[j][0], senB[j][0]);
-        break;
-      }
-      if (senA[j][1] != senB[j][1]) {
-        console.log(senA[j], senB[j]);
-        allMatch = false;
-        break;
-      }
-    }
-
-    if (!allMatch) {
-      console.log(`
-  Failed on
-    CTA:   ${tostring(senA)} 
-    Jieba: ${tostring(senB)}
-`);
-    }
-  }
-}
-
 const segmentation = {
   loadCTA: loadCTA,
   loadJieba: loadJieba,
-  compareSentenceChunks: compareSentenceChunks,
-  compareWordChunks: compareWordChunks,
-  compareLoadTimes: compareLoadTimes,
 };
 export {segmentation};
