@@ -1,8 +1,10 @@
+import {fetchUser} from './shared.js';
+
 async function main() {
   // TODO load some info from anki + from our set of words to display here
   const stats = document.querySelector('#myStats');
 
-  const response = await fetch('/stats');
+  const response = await fetchUser('/stats');
   const data = await response.json();
   console.log(data);
   stats.innerHTML = `

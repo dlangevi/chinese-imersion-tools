@@ -1,9 +1,9 @@
 import {withLoader} from './spinner.js';
-import {migakuParse} from './shared.js';
+import {migakuParse, fetchUser} from './shared.js';
 
 let isTopNavLoaded = false;
 
-window.addEventListener('DOMContentLoaded', async (event) => {
+window.addEventListener('DOMContentLoaded', async () => {
   // Toggle the side navigation
   const sidebarToggle = document.body.querySelector('#sidebarToggle');
   // document.body.classList.toggle('sb-sidenav-toggled');
@@ -47,7 +47,7 @@ window.addEventListener('DOMContentLoaded', async (event) => {
 });
 
 async function loadLists() {
-  const response = await fetch('/listlist');
+  const response = await fetchUser('/listlist');
   const data = await response.json();
   const selector = document.querySelector('#listSelect');
   const opt = document.createElement('option');
@@ -100,7 +100,7 @@ function toggleMigakuContainer() {
 
 async function saveWordList() {
   withLoader(async () => {
-    const response = await fetch('/saveWordlist');
+    const response = await fetchUser('/saveWordlist');
     const data = await response.json();
     console.log(data);
   });

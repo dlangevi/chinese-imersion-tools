@@ -2,12 +2,23 @@ export async function post(endpoint, object) {
   const response = await fetch(endpoint, {
     method: 'POST',
     headers: {
+      'authorization': 'dlangevi',
       'Content-Type': 'application/json;charset=utf-8',
     },
     body: JSON.stringify(object),
   });
   return response;
 }
+
+export async function fetchUser(endpoint) {
+  const response = await fetch(endpoint, {
+    headers: {
+      'authorization': 'dlangevi',
+    },
+  });
+  return response;
+}
+
 
 export function observeTable(divId, table) {
   const tableDiv = document.querySelector(divId);
@@ -28,4 +39,3 @@ export function migakuParse() {
     console.log('Consider installing Migaku');
   }
 }
-

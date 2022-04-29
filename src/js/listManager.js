@@ -4,6 +4,7 @@ import {
 import {
   observeTable,
   post,
+  fetchUser,
 } from './shared.js';
 
 async function main() {
@@ -79,7 +80,7 @@ async function loadFileList() {
 }
 
 async function loadListList() {
-  const response = await fetch('/listlist');
+  const response = await fetchUser('/listlist');
   const data = await response.json();
   const selector = document.querySelector('#myBookLists');
   data.forEach((title) => {

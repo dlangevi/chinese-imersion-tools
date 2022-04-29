@@ -4,11 +4,19 @@ import bookCatalogue from './bookCatalogue.js';
 import {loadDocument} from './documentStats.js';
 
 
+function authenticateUser(req, res, next) {
+  const authHeader = req.headers.authorization;
+  const token = authHeader;
+  if (token == null) return res.sendStatus(401);
+  req.user = token;
+  next();
+}
+
 export function registerRequests(app) {
   /*
    *   Top Nav
    */
-  app.get('/saveWordlist', (_, res) => {
+  app.get('/saveWordlist', authenticateUser, (_, res) => {
     // todo, do a callback promise or smth
     known.saveWords((err) => {
       console.log('Saved wordlist');
@@ -23,7 +31,8 @@ export function registerRequests(app) {
   /*
    *   Dashboard
    */
-  app.get('/stats', (_, res) => {
+  app.get('/stats', authenticateUser, (req, res) => {
+    console.log(req.user);
     const myWords = known.knownWordsTable();
     res.json({
       totalWords: myWords.length,
@@ -35,31 +44,31 @@ export function registerRequests(app) {
   /*
    *   Book Library
    */
-  app.get('/listlist', (_, res) => {
+  app.get('/listlist', authenticateUser, (_, res) => {
     res.json(Object.keys(bookCatalogue.allLists()));
   });
   /*
    *   List Manager
    */
-  app.post('/filelist', (req, res) => {
+  app.post('/filelist', authenticateUser, (req, res) => {
     const listName = req.body.list;
     res.json(bookCatalogue.loadList(listName));
   });
 
-  app.post('/savelist', (req, res) => {
+  app.post('/savelist', authenticateUser, (req, res) => {
     const listname = req.body.title;
     const books = req.body.books;
     bookCatalogue.saveList(listname, books);
     res.json({success: 'success'});
   });
 
-  app.post('/deletelist', (req, res) => {
+  app.post('/deletelist', authenticateUser, (req, res) => {
     const listname = req.body.title;
     bookCatalogue.deleteList(listname);
     res.json({success: 'success'});
   });
 
-  app.post('/loadlist', async (req, res) => {
+  app.post('/loadlist', authenticateUser, async (req, res) => {
     const listname = req.body.title;
     const books = bookCatalogue.allBooks();
     const ourBooks = bookCatalogue.loadList(listname);
@@ -85,7 +94,7 @@ export function registerRequests(app) {
   /*
    *   Book Words
    */
-  app.post('/addWords', (req, res) => {
+  app.post('/addWords', authenticateUser, (req, res) => {
     const words = req.body.words;
     console.log(words);
     words.forEach((word) => known.addWord(word, 10000));
@@ -104,7 +113,7 @@ export function registerRequests(app) {
   /*
    *   Word Lookup
    */
-  app.post('/lookupWord', async (req, res, next) => {
+  app.post('/lookupWord', authenticateUser, async (req, res) => {
     const words = req.body.word;
     const list = req.body.list;
     if (!sentenceDB.loaded) {
