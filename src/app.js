@@ -1,9 +1,9 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 
-import documentProcessor from './app_modules/documentProcessor.js';
-import {register} from './app_modules/importFromAnki.js';
-import {registerRequests} from './app_modules/requests.js';
+import documentProcessor from './server/documentProcessor.js';
+import {register} from './server/importFromAnki.js';
+import {registerRequests} from './server/requests.js';
 
 // Init App
 const app = express();
