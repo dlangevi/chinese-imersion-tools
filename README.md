@@ -21,10 +21,10 @@ the flashcard creation process.
 
 Currently I think the only thing this will depend on is mongodb and npm. Clone
 the repo, install mongodb and you should be able to run this on your own
-computer. You will also need to write a 'config.json' file which sits in the
-repo. Currently most of the user data is stored on the filesystem, and this file
-tells us where various files should be stored. Honestly I wouldn't bother trying
-to run this until I have moved all fs storage to mongodb
+computer. You will also need to write a 'config.json' file and a .env file which
+sits in the repo. Currently most of the user data is stored on the filesystem,
+and this file tells us where various files should be stored. Honestly I wouldn't
+bother trying to run this until I have moved all fs storage to mongodb
 
 ## Roadmap for the future
 

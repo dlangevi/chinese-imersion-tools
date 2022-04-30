@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from 'express';
 import bodyParser from 'body-parser';
 
@@ -21,6 +22,6 @@ register(app);
 documentProcessor.register(app);
 
 
-app.listen(3000, () => {
-  console.log('Server started on port 3000');
+app.listen(process.env.PROCESS_PORT, () => {
+  console.log(`Server started on port ${process.env.PROCESS_PORT}`);
 });
