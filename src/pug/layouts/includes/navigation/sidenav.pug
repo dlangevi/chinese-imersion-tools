@@ -7,37 +7,37 @@ nav(class=['sb-sidenav', 'accordion'] class=sidenavStyle)#sidenavAccordion
             .sb-sidenav-menu-heading
                 | Core
         
-            a.nav-link(href='index.html')
+            a.nav-link(href='index')
                 .sb-nav-link-icon
                     i.fas.fa-tachometer-alt
                 | Dashboard
 
-            a.nav-link(href='library.html') 
+            a.nav-link(href='library') 
                 .sb-nav-link-icon
                     i.fas.fa-book-open
                 | Book Library
 
-            a.nav-link(href='listManager.html') 
+            a.nav-link(href='listManager') 
                 .sb-nav-link-icon
                     i.fas.fa-book-open
                 | List Manager
 
-            a.nav-link(href='mining.html') 
+            a.nav-link(href='mining') 
                 .sb-nav-link-icon
                     i.fas.fa-utensil-spoon
                 | Sentence Mining
                 
-            a.nav-link(href='bookwords.html') 
+            a.nav-link(href='bookwords') 
                 .sb-nav-link-icon
                     i.fas.fa-utensil-spoon
                 | Book Words
 
-            a.nav-link(href='listMining.html') 
+            a.nav-link(href='listMining') 
                 .sb-nav-link-icon
                     i.fas.fa-utensil-spoon
                 | List Mining
 
-            a.nav-link(href='wordLookup.html') 
+            a.nav-link(href='wordLookup') 
                 .sb-nav-link-icon
                     i.fas.fa-utensil-spoon
                 | Word Lookup
@@ -45,5 +45,7 @@ nav(class=['sb-sidenav', 'accordion'] class=sidenavStyle)#sidenavAccordion
                         
     .sb-sidenav-footer
         
-        .small Logged in as:
-        | Start Bootstrap
+        if isAuthenticated
+          .small Logged in as: #{user}
+        else
+          .small Not Logged In:

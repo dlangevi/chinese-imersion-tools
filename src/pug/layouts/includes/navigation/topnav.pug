@@ -1,7 +1,9 @@
+include ../../../mixins/auth-nav
+
 nav.sb-topnav.navbar.navbar-expand.navbar-dark.bg-dark
 
     // Navbar Brand
-    a.navbar-brand.ps-3(href='index.html')
+    a.navbar-brand.ps-3(href='index')
         | IMMERSE YOURSELF 
 
     // Sidebar Toggle
@@ -17,18 +19,6 @@ nav.sb-topnav.navbar.navbar-expand.navbar-dark.bg-dark
     button#syncButton.btn.btn-primary.m-1 Sync Anki
     button#saveProgress.btn.btn-primary.m-1 Save Progress
 
-    // Navbar
-    ul.navbar-nav.ms-auto.ms-md-0.me-3.me-lg-4
-        li.nav-item.dropdown
-            a#navbarDropdown.nav-link.dropdown-toggle(href='#' role='button' data-bs-toggle='dropdown' aria-expanded='false')
-                i.fas.fa-user.fa-fw
-            ul.dropdown-menu.dropdown-menu-end(aria-labelledby='navbarDropdown')
-                li
-                    a.dropdown-item(href='#!') Settings
-                li
-                    a.dropdown-item(href='#!') Activity Log
-                li
-                    hr.dropdown-divider
-                li
-                    a.dropdown-item(href='#!') Logout
+    +auth-nav(isAuthenticated)
+
 
