@@ -12,7 +12,7 @@
     "build:scripts": "node scripts/npm/build-scripts.js",
     "build:scss": "node scripts/npm/build-scss.js",
     "clean": "node scripts/npm/clean.js",
-    "test": "mocha src/app_modules/test"
+    "test": "mocha src/server/test"
   },
   "repository": {
     "type": "git",
