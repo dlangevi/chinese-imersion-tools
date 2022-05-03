@@ -1,8 +1,8 @@
 import 'dotenv/config';
 import express from 'express';
 import bodyParser from 'body-parser';
-import {auth} from 'express-openid-connect';
-
+import authorization from 'express-openid-connect';
+const {auth, requiresAuth} = authorization;
 
 import documentProcessor from './server/documentProcessor.js';
 import {register} from './server/importFromAnki.js';
@@ -23,17 +23,19 @@ app.use(
       baseURL: process.env.BASE_URL,
       clientID: process.env.AUTH0_CLIENT_ID,
       secret: process.env.SESSION_SECRET,
-      authRequired: false,
+      authRequired: true,
       auth0Logout: true,
     }),
 );
 
 app.use((req, res, next) => {
   res.locals.isAuthenticated = req.oidc.isAuthenticated();
-  res.locals.user = req.oidc.user.nickname;
-  console.log(`is auth: ${res.locals.isAuthenticated}`);
+  if (res.locals.isAuthenticated) {
+    res.locals.user = req.oidc.user.nickname;
+  }
   next();
 });
+
 
 app.use(bodyParser.json());
 
