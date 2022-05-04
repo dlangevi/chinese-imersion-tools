@@ -16,14 +16,13 @@ export function registerRequests(app) {
   /*
    *   Top Nav
    */
-  app.get('/saveWordlist', authenticateUser, (_, res) => {
+  app.get('/saveWordlist', authenticateUser, async (req, res) => {
     // todo, do a callback promise or smth
-    known.saveWords((err) => {
-      console.log('Saved wordlist');
-      res.json({
-        success: err,
-        totalWords: known.knownWords(),
-      });
+    const err = await known.saveWords(req.user);
+    console.log('Saved wordlist');
+    res.json({
+      success: err,
+      totalWords: known.knownWords(),
     });
   });
 

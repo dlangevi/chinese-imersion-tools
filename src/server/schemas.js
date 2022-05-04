@@ -31,12 +31,30 @@ const bookSchema = new mongoose.Schema({
 
 const Book = mongoose.model('book', bookSchema);
 
-const userSchema = new mongoose.Schema({
-  username: {
+const wordEntry = new mongoose.Schema({
+  added: {
     type: String,
     required: true,
   },
-
+  interval: {
+    type: Number,
+    required: true,
+  },
 });
 
-export {Book};
+const wordListSchema = new mongoose.Schema({
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+    index: true,
+  },
+  words: {
+    type: Map,
+    of: wordEntry,
+  },
+});
+
+const WordList = mongoose.model('wordList', wordListSchema);
+
+export {Book, WordList};

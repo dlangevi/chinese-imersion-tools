@@ -1,19 +1,19 @@
 import mongoose from 'mongoose';
-import {Book} from './schemas.js';
+import {Book, WordList} from './schemas.js';
 
 // The data base will have functions that interact with the backend. Only will
 // handle saving and loading data
 class Database {
   disableDatabase = false;
   constructor() {
-    const url = 'mongodb://127.0.0.1:27017/chinese';
-    mongoose.connect(url);
-    this.db = mongoose.connection;
+    // const url = 'mongodb://127.0.0.1:27017/chinese';
+    // mongoose.connect(url);
+    // this.db = mongoose.connection;
   }
 
   close() {
-    mongoose.connection.close(function() {
-    });
+    // mongoose.connection.close(function() {
+    // });
   }
 
   async getBookData(filename) {
@@ -22,6 +22,27 @@ class Database {
     }
     return await Book.find({filename: filename},
         '-segTextSource').exec();
+  }
+
+  async getWordList(username) {
+    const words = await WordList.findOne({username: username}).lean().exec();
+    Object.values(words.words).forEach((entry) => {
+      delete entry._id;
+    });
+    return words;
+  }
+
+  async updateWordList(username, wordList) {
+    const words = await WordList.findOne({username: username}).exec();
+    if (words) {
+      words.words = wordList;
+      await words.save();
+    } else {
+      const newWordList = new WordList();
+      newWordList.username = username;
+      newWordList.words = wordList;
+      await newWordList.save();
+    }
   }
 
   saveBook(filename, book) {
@@ -50,5 +71,13 @@ class Database {
   }
 }
 
+async function connectDB(url) {
+  await mongoose.connect(url);
+}
+
+async function closeDB() {
+  await mongoose.connection.close();
+}
+
 const database = new Database();
-export {database};
+export {database, connectDB, closeDB};

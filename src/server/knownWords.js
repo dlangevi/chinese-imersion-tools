@@ -1,6 +1,7 @@
 import fs from 'fs';
 import wordStats from './wordStats.js';
 import config from './config.js';
+import {database} from './database.js';
 
 // @todo save and load this from the database,
 // and handle per user word lists
@@ -77,8 +78,10 @@ function tableData() {
 function addWord(word, age) {
   // If this is a new word, add it with the current date
   if (!known.hasOwnProperty(word)) {
-    known[word] = {added: currentDateString()};
-    known[word].interval = age;
+    known[word] = {
+      added: currentDateString(),
+      interval: age,
+    };
     console.log(`Adding new word ${word} ${JSON.stringify(known[word])}`);
   } else {
     // else just update the interval
@@ -86,12 +89,28 @@ function addWord(word, age) {
   }
 }
 
-function saveWords(callback) {
-  fs.writeFile(config.knownWordsJson, JSON.stringify(known), (_) => {
+async function loadWords(username) {
+  const words = await database.getWordList(username);
+  // return words.toObject();
+  return words;
+}
+
+async function saveWordsDB(username, wordList) {
+  await database.updateWordList(username, wordList);
+}
+async function saveWords(username) {
+  try {
+    await fs.promises.writeFile(config.knownWordsJson, JSON.stringify(known));
     const words = Object.keys(known);
     console.log(`Saved ${words.length} words`);
-    fs.writeFile(config.knownWords, words.join('\n'), callback);
-  });
+    await fs.promises.writeFile(config.knownWords, words.join('\n'));
+    if (username) {
+      await database.updateWordList(username, known);
+      console.log(`Saved words for ${username}`);
+    }
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 function knownWordsTable() {
@@ -127,6 +146,8 @@ const knownWords = {
   knownWordsTable: knownWordsTable,
   knownWords: () => Object.keys(known).length,
   saveWords: saveWords,
+  saveWordsDB: saveWordsDB,
+  loadWords: loadWords,
   knownCharacters: numKnownCharacters,
   tableData: tableData,
 };
