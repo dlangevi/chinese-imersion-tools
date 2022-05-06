@@ -25,8 +25,12 @@ const DocumentWords = {
     },
     markLearnedColumn(),
     wordColumn({
+      sortIndex: 3,
     }),
-    starsColumn(),
+    starsColumn({
+      sort: 'desc',
+      sortIndex: 2,
+    }),
     occuranceColumn({
       width: 80,
     }),
@@ -85,7 +89,7 @@ async function main() {
       () => {
         const query = window.location.search;
 
-        window.location = '/mining.html' + query;
+        window.location = '/mining' + query;
       });
 
   document.querySelector('#listSelect').addEventListener('change',
@@ -159,9 +163,18 @@ function reCalcWordStats() {
   const needed = targets.map((target)=> countWords(currentKnown, target,
       stats.totalWords, currentWords));
 
+  const text = targets.map((target, index) => {
+    const needs = needed[index];
+    return `
+    <span> Learn the 
+      ${needs} top words to reach ${target}p of the book
+    <\span> 
+    <br>`;
+  });
   document.querySelector('#known').innerHTML = currentKnown.toFixed(2);
-  document.querySelector('#neededWords').innerHTML = needed.join(',');
-  document.querySelector('#target').innerHTML = targets.join(',');
+  document.querySelector('#neededWords').innerHTML = text.join('');
+  // document.querySelector('#neededWords').innerHTML = needed.join(',');
+  // document.querySelector('#target').innerHTML = targets.join(',');
 }
 
 function countWords(currentKnown, target, totalWords, currentWords) {

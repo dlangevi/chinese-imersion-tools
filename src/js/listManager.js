@@ -6,8 +6,10 @@ import {
   post,
   fetchUser,
 } from './shared.js';
+import {topNavLoaded} from './topnav.js';
 
 async function main() {
+  await topNavLoaded();
   const eGridDiv = document.querySelector('#allBookList');
   new agGrid.Grid(eGridDiv, Tables.bookList);
   const wGridDiv = document.querySelector('#myBookList');
@@ -21,8 +23,16 @@ async function main() {
   const dropZoneParams = Tables.myBookList.api.getRowDropZoneParams();
   Tables.bookList.api.addRowDropZone(dropZoneParams);
 
-  await loadFileList();
+  const listSelector = document.querySelector('#listSelect');
+  await loadFileList(listSelector.value);
   await loadListList();
+
+  document.querySelector('#listSelect').addEventListener('change',
+      () => {
+        const selector = document.querySelector('#listSelect');
+        const currentList = selector.value;
+        loadFileList(currentList);
+      });
 
   document.querySelector('#addList').addEventListener('click', async () => {
     const name = prompt('Name please');
@@ -59,20 +69,14 @@ async function main() {
         });
       });
 
-  document.querySelector('#openList').addEventListener('click',
-      async () => {
-        const selector = document.querySelector('#myBookLists');
-        const currentList = selector.value;
-        window.location = '/mining.html?list=' + currentList;
-      });
 
   document.querySelector('#myBookLists').addEventListener('change',
       () => loadListContents());
 }
 
-async function loadFileList() {
+async function loadFileList(sublist='all') {
   const response = await post('/loadlist', {
-    title: 'all',
+    title: sublist,
   });
   const data = await response.json();
   Tables.bookList.api.setRowData(data);

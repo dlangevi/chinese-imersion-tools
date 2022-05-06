@@ -97,7 +97,7 @@ async function main() {
   document.querySelector('#toWords').addEventListener('click',
       () => {
         const query = window.location.search;
-        window.location = '/bookwords.html' + query;
+        window.location = '/bookwords' + query;
       });
 
   document.querySelector('#listSelect').addEventListener('change',
