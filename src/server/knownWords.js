@@ -105,7 +105,7 @@ async function saveWords(username) {
     console.log(`Saved ${words.length} words`);
     await fs.promises.writeFile(config.knownWords, words.join('\n'));
     if (username) {
-      await database.updateWordList(username, known);
+      // await database.updateWordList(username, known);
       console.log(`Saved words for ${username}`);
     }
   } catch (err) {

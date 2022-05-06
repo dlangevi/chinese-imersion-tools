@@ -144,20 +144,29 @@ function reCalcWordStats() {
   if (!stats) return;
   let currentKnown = 0;
   const currentWords = [];
-  DocumentWords.api.forEachNode((rowNode, index) => {
+  DocumentWords.api.forEachNode((rowNode) => {
     if (rowNode.data.isKnown == true) {
       currentKnown += rowNode.data.occurances;
     }
   });
-  DocumentWords.api.forEachNodeAfterFilter((rowNode, index) => {
+  DocumentWords.api.forEachNodeAfterFilter((rowNode) => {
     if (rowNode.data.isKnown == false) {
       currentWords.push(rowNode.data);
     }
   });
   currentKnown = currentKnown / stats.totalWords * 100;
-  const target = Math.floor(determineTarget(currentKnown));
+  const targets = determineTargets(currentKnown);
+  const needed = targets.map((target)=> countWords(currentKnown, target,
+      stats.totalWords, currentWords));
+
+  document.querySelector('#known').innerHTML = currentKnown.toFixed(2);
+  document.querySelector('#neededWords').innerHTML = needed.join(',');
+  document.querySelector('#target').innerHTML = targets.join(',');
+}
+
+function countWords(currentKnown, target, totalWords, currentWords) {
   const gap = target - currentKnown;
-  let neededOccurances = (gap/100) * stats.totalWords;
+  let neededOccurances = (gap/100) * totalWords;
   let neededWords = 0;
   currentWords.sort((a, b) => b.occurances - a.occurances);
   currentWords.every((row) => {
@@ -168,29 +177,28 @@ function reCalcWordStats() {
     neededOccurances -= row.occurances;
     return true;
   });
-  let willKnow = target;
+  // const willKnow = target;
   console.log(neededOccurances);
-  console.log(stats.totalWords);
-  if (neededOccurances > 0) {
-    willKnow = target - (neededOccurances / stats.totalWords * 100);
-    willKnow = willKnow.toFixed(2);
-  }
-
-
-  document.querySelector('#known').innerHTML = currentKnown.toFixed(2);
-  document.querySelector('#neededWords').innerHTML = neededWords;
-  document.querySelector('#target').innerHTML = willKnow;
+  // console.log(stats.totalWords);
+  // if (neededOccurances > 0) {
+  // willKnow = target - (neededOccurances / stats.totalWords * 100);
+  // willKnow = willKnow.toFixed(2);
+  // }
+  return neededWords;
 }
 
-function determineTarget(currentKnown) {
+function determineTargets(currentKnown) {
   if (currentKnown < 86) {
-    return 86;
+    return [86, 90, 91];
   } else if (currentKnown < 90) {
-    return 90;
+    return [90, 91, 92];
+  } else if (currentKnown < 95) {
+    const a = Math.floor(currentKnown);
+    return [a + 1, a+ 2, a+3];
   } else if (currentKnown < 99) {
-    return currentKnown + 1;
+    return [Math.floor(currentKnown + 1)];
   } else {
-    return 100;
+    return [100];
   }
 }
 
