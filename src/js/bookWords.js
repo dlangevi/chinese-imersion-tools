@@ -205,12 +205,12 @@ function determineTargets(currentKnown) {
     return [86, 90, 91];
   } else if (currentKnown < 90) {
     return [90, 91, 92];
-  } else if (currentKnown < 95) {
+  } else if (currentKnown < 98) {
     const a = Math.floor(currentKnown);
     return [a + 1, a+ 2, a+3];
   } else if (currentKnown < 99) {
-    return [Math.floor(currentKnown + 1)];
-  } else {
+    return [99, 100];
+  } else if (currentKnown < 100) {
     return [100];
   }
 }
