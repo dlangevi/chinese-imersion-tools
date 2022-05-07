@@ -71,10 +71,6 @@ app.get('/listManager', (req, res) => {
   res.render('listManager', {activeRoute: req.originalUrl});
 });
 
-app.get('/listMining', (req, res) => {
-  res.render('listMining', {activeRoute: req.originalUrl});
-});
-
 app.get('/mining', (req, res) => {
   res.render('mining', {activeRoute: req.originalUrl});
 });
