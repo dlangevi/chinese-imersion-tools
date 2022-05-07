@@ -17,7 +17,7 @@ export class MarkLearnedRenderer {
     this.eventListener = () => {
       const row = params.node;
       const rowData = params.node.data;
-      exportWords([rowData]);
+      exportWord(rowData);
       if (rowData.isKnown == false) {
         row.setDataValue('isKnown', true);
       }
@@ -78,15 +78,16 @@ export class CenteredRenderer {
   }
 }
 
-async function exportWords(rows) {
+async function exportWord(rowData) {
   withLoader(async () => {
-    const words = [...new Set(rows.map((row) => row.word))];
+    // We are manually marking a word as learned, so set a large interval
+    const words = {[rowData.word]: 10000};
     const contents = await post('/addWords', {
       words: words,
     });
     const obj = await contents.json();
     console.log(
-        `Exported words ${words.join(',')} now ` +
+        `Exported words ${Object.keys(words).join(',')} now ` +
       `know ${obj.totalWords} total words`,
     );
   });

@@ -1,8 +1,7 @@
-import fetch from 'node-fetch';
-import knownWords from './knownWords.js';
-
+// Must have ankiconnect installed as a plugin in your anki installation
 async function invoke(action, params) {
-  const response = await fetch('http://127.0.0.1:8765', {
+  const response = await fetch('http://localhost:8765', {
+  // const response = await fetch('http://120.0.0.1:8765', {
     method: 'Post',
     body: JSON.stringify({
       action: action,
@@ -15,7 +14,8 @@ async function invoke(action, params) {
   return response.json();
 }
 
-async function exportAnkiKeywords() {
+// @todo: make this configurable from the app to pick certian decks and fields
+export async function importAnkiKeywords() {
   const reading = await invoke('findCards', {
     query: 'deck:Reading -"note:Audio Card"',
   });
@@ -79,18 +79,4 @@ function fixWord(word) {
     console.log(`warning ${word} is ${origWord}`);
   }
   return word;
-}
-
-export function register(app) {
-  app.get('/loadAnki', (req, res, next) => {
-    exportAnkiKeywords().then((ankiObject) => {
-      Object.entries(ankiObject).forEach(([word, interval]) => {
-        knownWords.addWord(word, interval);
-      });
-      res.json({
-        success: 1,
-        words: knownWords.knownWords(),
-      });
-    });
-  });
 }

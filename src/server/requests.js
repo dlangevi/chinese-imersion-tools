@@ -95,8 +95,9 @@ export function registerRequests(app) {
    */
   app.post('/addWords', authenticateUser, (req, res) => {
     const words = req.body.words;
-    console.log(words);
-    words.forEach((word) => known.addWord(word, 10000));
+    Object.entries(words).forEach(([word, interval]) => {
+      known.addWord(word, interval);
+    });
     const myWords = known.knownWordsTable();
     res.json({
       success: 'success',

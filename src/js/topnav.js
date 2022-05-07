@@ -1,5 +1,6 @@
 import {withLoader} from './spinner.js';
-import {migakuParse, fetchUser} from './shared.js';
+import {migakuParse, fetchUser, post} from './shared.js';
+import {importAnkiKeywords} from './ankiInterface.js';
 
 let isTopNavLoaded = false;
 
@@ -108,7 +109,10 @@ async function saveWordList() {
 
 async function ankiLoad() {
   withLoader(async () => {
-    const response = await fetch('/loadAnki');
+    const words = await importAnkiKeywords();
+    const response = await post('/addWords', {
+      words: words,
+    });
     const data = await response.json();
     console.log(data);
   });

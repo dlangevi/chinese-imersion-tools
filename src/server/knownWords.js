@@ -83,9 +83,10 @@ function addWord(word, age) {
       interval: age,
     };
     console.log(`Adding new word ${word} ${JSON.stringify(known[word])}`);
-  } else {
+  } else if (known[word].interval !== age) {
     // else just update the interval
     known[word].interval = age;
+    console.log(`Updating Word interval for ${word} to ${age}`);
   }
 }
 

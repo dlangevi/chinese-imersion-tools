@@ -3,9 +3,8 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import authorization from 'express-openid-connect';
 const {auth} = authorization;
-import {connectDB, closeDB} from './server/database.js';
+import {connectDB} from './server/database.js';
 import documentProcessor from './server/documentProcessor.js';
-import {register} from './server/importFromAnki.js';
 import {registerRequests} from './server/requests.js';
 
 connectDB( 'mongodb://127.0.0.1:27017/chinese' );
@@ -43,8 +42,6 @@ app.use(bodyParser.json());
 registerRequests(app);
 
 // Sentence Mining Calls
-register(app);
-
 documentProcessor.register(app);
 
 
