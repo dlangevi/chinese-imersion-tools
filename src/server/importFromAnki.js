@@ -16,7 +16,6 @@ async function invoke(action, params) {
 }
 
 async function exportAnkiKeywords() {
-  await invoke('sync');
   const reading = await invoke('findCards', {
     query: 'deck:Reading -"note:Audio Card"',
   });
