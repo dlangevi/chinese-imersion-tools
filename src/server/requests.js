@@ -81,6 +81,8 @@ export function registerRequests(app) {
         words: stats.totalWords,
         percent: stats.currentKnown.toFixed(2),
         percentChars: stats.currentKnownChar.toFixed(2),
+        wordsTo86: document.wordsToTarget(86),
+        wordsTo90: document.wordsToTarget(90),
       };
     }));
     res.json(listcts);

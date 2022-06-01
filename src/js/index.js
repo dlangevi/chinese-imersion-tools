@@ -20,7 +20,7 @@ async function main() {
       labels: data.tableData.lables,
       datasets: [{
         label: 'Words',
-        lineTension: 0.3,
+        lineTension: 0.6,
         backgroundColor: 'rgba(2,117,216,0.2)',
         borderColor: 'rgba(2,117,216,1)',
         pointRadius: 0,

@@ -66,6 +66,21 @@ const bookListCols = [
     sortable: true,
     filter: 'agNumberColumnFilter',
   },
+
+  {
+    headerName: 'To 86',
+    field: 'wordsTo86',
+    width: 50,
+    sortable: true,
+    filter: 'agNumberColumnFilter',
+  },
+  {
+    headerName: 'To 90',
+    field: 'wordsTo90',
+    width: 50,
+    sortable: true,
+    filter: 'agNumberColumnFilter',
+  },
 ];
 
 const Tables = {

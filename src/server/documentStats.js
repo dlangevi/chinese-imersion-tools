@@ -125,6 +125,33 @@ export class Document {
     });
   }
 
+  wordsToTarget(target) {
+    const stats = this.documentStats();
+    const unknownWords = Object.entries(
+        this.wordTable).map(([word, frequency]) => {
+      return {word: word, occurances: frequency};
+    }).filter((entry) => {
+      const word = entry.word;
+      return !(known.isKnown(word));
+    });
+    unknownWords.sort((a, b) => b.occurances- a.occurances);
+    const gap = target - stats.currentKnown;
+    if (gap < 0) {
+      return 0;
+    }
+    let neededOccurances = gap/100 * this.totalWords;
+    let neededWords = 0;
+    unknownWords.every((entry) => {
+      if (neededOccurances < 0) {
+        return false;
+      }
+      neededWords += 1;
+      neededOccurances -= entry.occurances;
+      return true;
+    });
+    return neededWords;
+  }
+
   async text() {
     if (this.segText == undefined) {
       await this.#loadSegText();
