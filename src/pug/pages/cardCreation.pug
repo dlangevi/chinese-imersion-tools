@@ -1,0 +1,60 @@
+extends ../layouts/dashboard.pug
+
+block config
+    - var bodyClass = 'sb-nav-fixed'
+    - var pageTitle = 'Mining'
+    - var sidenavStyle = 'sb-sidenav-dark'
+
+block content
+
+  .container-fluid.h-100.px-4
+    .d-flex.flex-column.h-100
+      .row
+        .col-6
+          include includes/page-header.pug
+        .col-6.my-auto.ms-auto
+          #stats
+            div Total number of unknown words in 1T sentences:
+              span#oneTwords 
+              |(Currently know 
+              span#known
+              |p of the book)
+            div Total number of occurances covered: 
+              span#occurances
+              |(
+              span#percent 
+              |p of the total book)
+
+      .row
+        .col-7
+          button#process.but.btn-primary Process
+
+        .col-5
+          .input-group
+            select#jsonFiles.form-select
+
+      .row.flex-grow-1
+        #candidateGrid.ag-theme-material
+        .container
+          form#form
+            fieldset
+              h2 Add Sentence
+              input.next-step(type='button' name='next-step' value='Next Step')
+            fieldset
+              h2 Add Definitions
+              input.next-step(type='button' name='next-step' value='Next Step')
+              input.previous-step(type='button' name='previous-step' value='Previous Step')
+            fieldset
+              h2 Add Image
+              input.next-step(type='button' name='next-step' value='Final Step')
+              input.previous-step(type='button' name='previous-step' value='Previous Step')
+            fieldset
+              .finish
+                h2.text.text-center
+                  strong FINISHED
+              input#createCard(type='button', value='Create Card')
+              input.previous-step(type='button' name='previous-step' value='Previous Step')
+
+append scripts
+    script(type='module', src='js/cardCreation.js')
+ 

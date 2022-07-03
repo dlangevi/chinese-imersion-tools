@@ -1,11 +1,9 @@
-
 #migaku-toolbar-container {
   display: none;
 }
 
 #jsonFiles {
   // display: inline-block;
-
 }
 
 .wrapper {
@@ -17,16 +15,13 @@
 }
 
 .ag-theme-material .ag-cell {
-
   line-height: 25px !important;
-
 }
 
-
-#docWordGrid, #sentenceGrid {
+#docWordGrid,
+#sentenceGrid {
   font-size: 25px;
   min-height: 200px;
-
 }
 
 #bookList {
@@ -67,4 +62,70 @@
 
 .markLearned:hover {
   background-color: #18a30f;
+}
+
+h2 {
+  color: #2f8d46;
+}
+#form {
+  text-align: center;
+  position: relative;
+  margin-top: 20px;
+}
+
+#form fieldset {
+  background: white;
+  border: 0 none;
+  border-radius: 0.5rem;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0;
+  padding-bottom: 20px;
+  position: relative;
+}
+
+.finish {
+  text-align: center;
+}
+
+#form fieldset:not(:first-of-type) {
+  display: none;
+}
+
+#form .previous-step,
+.next-step, #createCard {
+  width: 100px;
+  font-weight: bold;
+  color: white;
+  border: 0 none;
+  border-radius: 0px;
+  cursor: pointer;
+  padding: 10px 5px;
+  margin: 10px 5px 10px 0px;
+  float: right;
+}
+
+.form,
+.previous-step {
+  background: #616161;
+}
+
+.form,
+.next-step, #createCard {
+  background: #2f8d46;
+}
+
+#form .previous-step:hover,
+#form .previous-step:focus {
+  background-color: #000000;
+}
+
+#form .next-step:hover,
+#form .next-step:focus {
+  background-color: #2f8d46;
+}
+
+.text {
+  color: #2f8d46;
+  font-weight: normal;
 }

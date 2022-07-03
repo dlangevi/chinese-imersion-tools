@@ -14,6 +14,42 @@ async function invoke(action, params) {
   return response.json();
 }
 
+export async function createCard() {
+  // const result = await invoke('modelNames', {
+  const result = await invoke('addNote', {
+    note: {
+      'deckName': 'Testing',
+      'modelName': 'Reading Card',
+      'fields': {
+        Simplified: 'test',
+        Meaning: 'test',
+        EnglishMeaning: 'test',
+        SentenceSimplified: 'test',
+      },
+      'options': {
+        'allowDuplicate': true,
+      },
+      'audio': [{
+        'url': 'https://assets.languagepod101.com/dictionary/japanese/audiomp3.php?kanji=猫&kana=ねこ',
+        'filename': 'yomichan_ねこ_猫.mp3',
+        'skipHash': '7e2c2f954ef6051373ba916f000168dc',
+        'fields': [
+          'Audio',
+        ],
+      }],
+      'picture': [{
+        'url': 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/A_black_cat_named_Tilly.jpg/220px-A_black_cat_named_Tilly.jpg',
+        'filename': 'black_cat.jpg',
+        'skipHash': '8d6e4646dfae812bf39651b59d7429ce',
+        'fields': [
+          'SentenceImage',
+        ],
+      }],
+    },
+  });
+  return result;
+}
+
 // @todo: make this configurable from the app to pick certian decks and fields
 export async function importAnkiKeywords() {
   const reading = await invoke('findCards', {

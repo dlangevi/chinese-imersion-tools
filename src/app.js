@@ -79,6 +79,10 @@ app.get('/wordLookup', (req, res) => {
   res.render('wordLookup', {activeRoute: req.originalUrl});
 });
 
+app.get('/cardCreation', (req, res) => {
+  res.render('cardCreation', {activeRoute: req.originalUrl});
+});
+
 app.get('/sign-up', (req, res) => {
   res.oidc.login({
     authorizationParams: {
